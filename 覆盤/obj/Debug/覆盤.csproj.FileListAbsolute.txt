@@ -1,0 +1,12 @@
+C:\Users\lix34\source\repos\覆盤\覆盤\bin\Debug\覆盤.exe.config
+C:\Users\lix34\source\repos\覆盤\覆盤\bin\Debug\覆盤.exe
+C:\Users\lix34\source\repos\覆盤\覆盤\bin\Debug\覆盤.pdb
+C:\Users\lix34\source\repos\覆盤\覆盤\obj\Debug\覆盤.csprojAssemblyReference.cache
+C:\Users\lix34\source\repos\覆盤\覆盤\obj\Debug\覆盤.Form1.resources
+C:\Users\lix34\source\repos\覆盤\覆盤\obj\Debug\覆盤.Properties.Resources.resources
+C:\Users\lix34\source\repos\覆盤\覆盤\obj\Debug\覆盤.csproj.GenerateResource.cache
+C:\Users\lix34\source\repos\覆盤\覆盤\obj\Debug\覆盤.csproj.CoreCompileInputs.cache
+C:\Users\lix34\source\repos\覆盤\覆盤\obj\Debug\覆盤.exe
+C:\Users\lix34\source\repos\覆盤\覆盤\obj\Debug\覆盤.pdb
+C:\Users\lix34\source\repos\覆盤\覆盤\bin\Debug\NPlot.dll
+C:\Users\lix34\source\repos\覆盤\覆盤\obj\Debug\覆盤.csproj.CopyComplete
