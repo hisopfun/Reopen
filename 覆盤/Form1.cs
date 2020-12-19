@@ -26,7 +26,7 @@ namespace 覆盤
         NPlot.PlotSurface2D ps = new NPlot.PlotSurface2D();
         private void Form1_Load(object sender, EventArgs e)
         {
-            kl = new Kline(plotSurface2D1, 1, 300);
+            kl = new Kline(plotSurface2D1, plotSurface2D2, 1, 300);
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -83,59 +83,96 @@ namespace 覆盤
                                 listBox1.EndUpdate();
                             });
 
-                            Application.DoEvents();
-
                             //thread sleep
                             comboBox1.InvokeIfRequired(() =>
                             {
                                 if (Convert.ToInt32(s) > int.Parse(comboBox1.Text))
                                     Thread.Sleep(Convert.ToInt32(s) / int.Parse(comboBox1.Text));
                             });
-     
 
                             //time(ms)
-                            label4.InvokeIfRequired(() => {
-                                label4.Text = word[1].Substring(0, 6).ToString();
+                            label4.InvokeIfRequired(() =>
+                            {
+                                label4.Text = word[1];
                             });
 
                             //time(s)
-                            label3.InvokeIfRequired(() => {
-                                label3.Text = word[1].ToString();
+                            label3.InvokeIfRequired(() =>
+                            {
+                                label3.Text = word[1].Substring(0, 6).ToString();
                             });
                         }
                         label1.InvokeIfRequired(() => {
-                            label1.Text = word[4];
+                            label1.Text = word[4].ToString();
                         });
                         time = word[1].Substring(0, 9);
-                        Application.DoEvents();
+                        //  Application.DoEvents();
                     }
                     else
                     {
+                        
                         label1.InvokeIfRequired(() => {
                             label1.Text = word[4];
                         });
                     }
+                    kl.refreshK(MKdata.txf_1mk);
                 }
             }
+            comboBox1.InvokeIfRequired(() => {
+                comboBox1.Enabled = true;
+            });
+
             T_Quote.Abort();
         }
         public void gui() {
             while (true)
             {
                 Thread.Sleep(100);
-                plotSurface2D1.InvokeIfRequired(() =>
+                kl.refreshK(MKdata.txf_1mk);
+
+                if (MKdata.txf_1mk.Count > 0)
                 {
-                    kl.refreshK(MKdata.txf_1mk);
-                });
+                    ////time(ms)
+                    //if (MKdata.txf_1mk[MKdata.txf_1mk.Count - 1].time != null)
+                    //    label4.InvokeIfRequired(() =>
+                    //    {
+                    //        label4.Text = MKdata.txf_1mk[MKdata.txf_1mk.Count - 1].time.Substring(0, 6).ToString();
+                    //    });
+
+                    ////time(s)
+                    //if (MKdata.txf_1mk[MKdata.txf_1mk.Count - 1].time != null)
+                    //    label3.InvokeIfRequired(() =>
+                    //    {
+                    //        label3.Text = MKdata.txf_1mk[MKdata.txf_1mk.Count - 1].time;
+                    //    });
+
+                    ////close
+                    //if (MKdata.txf_1mk[MKdata.txf_1mk.Count - 1].close != null)
+                    //    label1.InvokeIfRequired(() => {
+                    //        label1.Text = MKdata.txf_1mk[MKdata.txf_1mk.Count - 1].close.ToString();
+                    //    });
+
+                    ////thread sleep
+                    //comboBox1.InvokeIfRequired(() =>
+                    //{
+                    //    if (Convert.ToInt32(s) > int.Parse(comboBox1.Text))
+                    //        Thread.Sleep(Convert.ToInt32(s) / int.Parse(comboBox1.Text));
+                    //});
+                }
             }
         }
         private void button1_Click(object sender, EventArgs e)
         {
+            comboBox1.Enabled = false;
+            //if (T_Quote!= null && T_Quote.IsAlive == true) T_Quote.Abort();
+            button1.Enabled = false;
+            dateTimePicker1.Enabled = false;
+
             T_Quote = new Thread(quote);
             T_Quote.Start();
 
-            T_GUI = new Thread(gui);
-            T_GUI.Start();
+            //T_GUI = new Thread(gui);
+            //T_GUI.Start();
         }
         public DateTime convertToDate(string dt)
         {

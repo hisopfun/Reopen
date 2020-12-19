@@ -6,6 +6,7 @@ public class TXF
     {
         public class MK
         {
+            public string time;
             public string ktime;
             public float open;
             public float high;
@@ -23,12 +24,13 @@ public class TXF
         }
         public List<MK> txf_1mk = new List<MK>();
         public bool Add(string nTime, string nPri, string nQty, string nTQty) {
+            if (nQty == "") return false;
             float Pri = float.Parse(nPri);
             int Qty = int.Parse(nQty);
             int TQty = int.Parse(nTQty);
             if (txf_1mk.Count > 0 && nTime.Substring(0, 4) == txf_1mk[txf_1mk.Count - 1].ktime) {
                 txf_1mk[txf_1mk.Count - 1].ktime = nTime.Substring(0, 4);
-          
+                txf_1mk[txf_1mk.Count - 1].time = nTime;
                 txf_1mk[txf_1mk.Count - 1].high = Math.Max(txf_1mk[txf_1mk.Count - 1].high, Pri);
                 txf_1mk[txf_1mk.Count - 1].low = Math.Min(txf_1mk[txf_1mk.Count - 1].low, Pri);
                 txf_1mk[txf_1mk.Count - 1].close = Pri;
