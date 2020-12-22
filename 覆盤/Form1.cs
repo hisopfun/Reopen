@@ -27,6 +27,7 @@ namespace 覆盤
         private void Form1_Load(object sender, EventArgs e)
         {
             kl = new Kline(plotSurface2D1, plotSurface2D2, 1, 300);
+            //dataGridView1.DataSource = simu.MatList;
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -37,6 +38,9 @@ namespace 覆盤
         Thread T_Quote, T_GUI;
         TXF.MK_data MKdata = new TXF.MK_data();
         Kline kl;
+        public Simulation simu { get; set; } = new Simulation();
+
+
         public void quote() {
             using (StreamReader sr = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\TXF\\" + dateTimePicker1.Value.ToString("MM-dd-yyyy") +"TXF.TXT"))
             {
@@ -50,26 +54,26 @@ namespace 覆盤
                 foreach (string words in wordss) {
                     if (words == "") break;
                     string[] word = words.Split(',');
-                    
+
                     //search start
-                    if (word[1].Substring(0,6) == "084500") istart = true;
+                    if (word[1].Substring(0, 6) == "084500") istart = true;
                     if (!istart) continue;
-                    
+
                     //listbox matinfo
                     listBox1.InvokeIfRequired(() => {
-                        listBox1.Items.Insert(0, $"{word[1].Substring(0,2) + ":" + word[1].Substring(2, 2)+":"+ word[1].Substring(4, 2), -10}" +
-                            $"{ word[2], -8}{word[3], -8}{word[4], -8}{word[5], -8}");
+                        listBox1.Items.Insert(0, $"{word[1].Substring(0, 2) + ":" + word[1].Substring(2, 2) + ":" + word[1].Substring(4, 2),-10}" +
+                            $"{ word[2],-8}{word[3],-8}{word[4],-8}{word[5],-8}");
                     });
 
                     //MK
-                    if (MKdata.Add(time, word[4], word[5], word[6]))
-                        listBox2.InvokeIfRequired(() =>
-                        {
-                            List<TXF.MK_data.MK> mk = MKdata.txf_1mk;
-                            if (mk.Count > 1)
-                                listBox2.Items.Insert(0, mk[mk.Count - 2].ktime + " " + mk[mk.Count - 2].open + " " + mk[mk.Count - 2].high + " "
-                                    + mk[mk.Count - 2].low + " " + mk[mk.Count - 2].close);
-                        });
+                    if (MKdata.Add(time, word[4], word[5], word[6])){}
+                    //listBox2.InvokeIfRequired(() =>
+                    //{
+                    //    List<TXF.MK_data.MK> mk = MKdata.txf_1mk;
+                    //    if (mk.Count > 1)
+                    //        listBox2.Items.Insert(0, mk[mk.Count - 2].ktime + " " + mk[mk.Count - 2].open + " " + mk[mk.Count - 2].high + " "
+                    //            + mk[mk.Count - 2].low + " " + mk[mk.Count - 2].close);
+                    //});
 
                     //run
                     if (word[1].Substring(0, 9) != time)
@@ -77,11 +81,11 @@ namespace 覆盤
                         if (time != "")
                         {
                             int s = s_diff(word[1], time);
-                            label2.InvokeIfRequired(() => {
-                                listBox1.BeginUpdate();
-                                label2.Text = s.ToString();
-                                listBox1.EndUpdate();
-                            });
+                            //label2.InvokeIfRequired(() => {
+                            //    listBox1.BeginUpdate();
+                            //    label2.Text = s.ToString();
+                            //    listBox1.EndUpdate();
+                            //});
 
                             //thread sleep
                             comboBox1.InvokeIfRequired(() =>
@@ -90,21 +94,43 @@ namespace 覆盤
                                     Thread.Sleep(Convert.ToInt32(s) / int.Parse(comboBox1.Text));
                             });
 
-                            //time(ms)
+                            //time(s)
                             label4.InvokeIfRequired(() =>
                             {
-                                label4.Text = word[1];
+                                label4.Text = word[1].Substring(0, 6).ToString();
                             });
 
                             //time(s)
-                            label3.InvokeIfRequired(() =>
-                            {
-                                label3.Text = word[1].Substring(0, 6).ToString();
-                            });
+                            //label3.InvokeIfRequired(() =>
+                            //{
+                            //    label3.Text = word[1].Substring(0, 6).ToString();
+                            //});
                         }
+
+                        //price
                         label1.InvokeIfRequired(() => {
                             label1.Text = word[4].ToString();
                         });
+
+                        //Qty
+                        label3.InvokeIfRequired(() =>
+                        {
+                            label3.Text = simu.Qty("", "").ToString();
+                        });
+
+
+                        //Profit
+                        label9.InvokeIfRequired(() =>
+                        {
+                            label9.Text = simu.Profit(word[4].ToString());
+                        });
+
+                        //Entries
+                        label11.InvokeIfRequired(() =>
+                        {
+                            label11.Text = simu.Entries().ToString();
+                        });
+
                         time = word[1].Substring(0, 9);
                         //  Application.DoEvents();
                     }
@@ -188,6 +214,24 @@ namespace 覆盤
             TimeSpan d = convertToDate(t1) - convertToDate(t2);
             
             return Convert.ToInt32(d.TotalMilliseconds);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (label1.Text == "price") return;
+            simu.MatList.Add(new Simulation.match(label4.Text, "TXF", "B", "1", label1.Text, ""));
+            dataGridView1.DataSource = null;
+            dataGridView1.DataSource = simu.MatList;
+            dataGridView1.Refresh();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (label1.Text == "price") return;
+            simu.MatList.Add(new Simulation.match(label4.Text, "TXF", "S", "1", label1.Text, ""));
+            dataGridView1.DataSource = null;
+            dataGridView1.DataSource = simu.MatList;
+            dataGridView1.Refresh();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)

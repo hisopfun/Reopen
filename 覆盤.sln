@@ -5,11 +5,6 @@ VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "覆盤", "覆盤\覆盤.csproj", "{0066DB97-33EC-4F37-BF72-0637CF570CFE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D7091DB0-C48E-467E-9D2A-A550376FCB8D}"
-	ProjectSection(SolutionItems) = preProject
-		覆盤\Simulation.cs = 覆盤\Simulation.cs
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
