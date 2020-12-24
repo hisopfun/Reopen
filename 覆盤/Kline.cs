@@ -108,7 +108,7 @@ namespace 覆盤
             PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.AxisDrag(true));
         }
 
-        public void refreshK(List<TXF.MK_data.MK> mk)
+        public void refreshK(List<TXF.K_data.K> mk)
         {
             if (autoRefresh == false)
                 return;
@@ -122,14 +122,16 @@ namespace 覆盤
             for (i = 0; i < KLine_num; i++) {
                 if (mk.Count >= i + 1)
                 {
-                    Highest_Qty = Math.Max(Highest_Qty, Convert.ToInt32(mk[i].qty));
-                    Highest = Math.Max(Highest, Convert.ToInt32(mk[i].high));
-                    Lowest = Math.Min(Lowest, Convert.ToInt32(mk[i].low));
-                    TX[0][i] = Convert.ToInt32(mk[i].open);
-                    TX[1][i] = Convert.ToInt32(mk[i].high);
-                    TX[2][i] = Convert.ToInt32(mk[i].low);
-                    TX[3][i] = Convert.ToInt32(mk[i].close);
-                    TX[4][i] = Convert.ToInt32(mk[i].qty);
+                    int istart = mk.Count - KLine_num;
+                    istart = Math.Max(0, istart);
+                    Highest_Qty = Math.Max(Highest_Qty, Convert.ToInt32(mk[i + istart].qty));
+                    Highest = Math.Max(Highest, Convert.ToInt32(mk[i + istart].high));
+                    Lowest = Math.Min(Lowest, Convert.ToInt32(mk[i + istart].low));
+                    TX[0][i] = Convert.ToInt32(mk[i + istart].open);
+                    TX[1][i] = Convert.ToInt32(mk[i + istart].high);
+                    TX[2][i] = Convert.ToInt32(mk[i + istart].low);
+                    TX[3][i] = Convert.ToInt32(mk[i + istart].close);
+                    TX[4][i] = Convert.ToInt32(mk[i + istart].qty);
                 }
                 TX[5][i] = i+1;
             }
@@ -143,7 +145,7 @@ namespace 覆盤
                 CP.AbscissaData = TX[5];// times;
                                         //PS.Add(CP);
                 PS.XAxis1.WorldMin = 0;
-                PS.XAxis1.WorldMax = 300;
+                PS.XAxis1.WorldMax = KLine_num +1 ;
                 PS.YAxis1.WorldMin = Lowest;
                 PS.YAxis1.WorldMax = Highest;
                 PS.YAxis1.TickTextNextToAxis = false;

@@ -27,6 +27,8 @@ namespace 覆盤
         private void Form1_Load(object sender, EventArgs e)
         {
             kl = new Kline(plotSurface2D1, plotSurface2D2, 1, 300);
+            k2 = new Kline(plotSurface2D3, plotSurface2D4, 1, 30);
+            load_dayK();
             //dataGridView1.DataSource = simu.MatList;
         }
 
@@ -36,12 +38,32 @@ namespace 覆盤
         }
 
         Thread T_Quote, T_GUI;
-        TXF.MK_data MKdata = new TXF.MK_data();
-        Kline kl;
+        TXF.K_data MKdata = new TXF.K_data();
+        TXF.K_data DKdata = new TXF.K_data();
+        Kline kl, k2;
         public Simulation simu { get; set; } = new Simulation();
 
 
         public void quote() {
+            if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\TXF\\" + dateTimePicker1.Value.ToString("MM-dd-yyyy") + "TXF.TXT")) {
+
+                comboBox1.InvokeIfRequired(() => {
+                    comboBox1.Enabled = true;
+                });
+
+                button1.InvokeIfRequired(() =>
+                {
+                    button1.Enabled = true;
+                });
+
+                dataGridView1.InvokeIfRequired(() =>
+                {
+                    dateTimePicker1.Enabled = true;
+                });
+                MessageBox.Show("No Data");
+
+                return;
+            }
             using (StreamReader sr = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\TXF\\" + dateTimePicker1.Value.ToString("MM-dd-yyyy") +"TXF.TXT"))
             {
                 string[] wordss = sr.ReadToEnd().Split('\n');
@@ -67,6 +89,11 @@ namespace 覆盤
 
                     //MK
                     if (MKdata.Add(time, word[4], word[5], word[6])){}
+
+                    dateTimePicker1.InvokeIfRequired(() => { 
+                        DKdata.Add(dateTimePicker1.Value.ToString("yyyy/M/d"), word[4], word[5], word[6]);
+                    });
+                    
                     //listBox2.InvokeIfRequired(() =>
                     //{
                     //    List<TXF.MK_data.MK> mk = MKdata.txf_1mk;
@@ -90,7 +117,7 @@ namespace 覆盤
                             //thread sleep
                             comboBox1.InvokeIfRequired(() =>
                             {
-                                if (Convert.ToInt32(s) > int.Parse(comboBox1.Text))
+                                if (Convert.ToInt32(s) - int.Parse(comboBox1.Text) > 0)
                                     Thread.Sleep(Convert.ToInt32(s) / int.Parse(comboBox1.Text));
                             });
 
@@ -106,6 +133,12 @@ namespace 覆盤
                             //    label3.Text = word[1].Substring(0, 6).ToString();
                             //});
                         }
+
+                        //high - low 
+                        label13.InvokeIfRequired(() =>
+                        {
+                            label13.Text = (DKdata.kdata[DKdata.kdata.Count - 1].high - DKdata.kdata[DKdata.kdata.Count - 1].low).ToString();
+                        });
 
                         //price
                         label1.InvokeIfRequired(() => {
@@ -141,11 +174,24 @@ namespace 覆盤
                             label1.Text = word[4];
                         });
                     }
-                    kl.refreshK(MKdata.txf_1mk);
+                    kl.refreshK(MKdata.kdata);
+                    k2.refreshK(DKdata.kdata);
                 }
             }
+
+           
             comboBox1.InvokeIfRequired(() => {
                 comboBox1.Enabled = true;
+            });
+
+            button1.InvokeIfRequired(() =>
+            {
+                button1.Enabled = true;
+            });
+
+            dataGridView1.InvokeIfRequired(() =>
+            {
+                dateTimePicker1.Enabled = true;
             });
 
             T_Quote.Abort();
@@ -154,9 +200,9 @@ namespace 覆盤
             while (true)
             {
                 Thread.Sleep(100);
-                kl.refreshK(MKdata.txf_1mk);
+                //kl.refreshK(MKdata.kdata);
 
-                if (MKdata.txf_1mk.Count > 0)
+                if (MKdata.kdata.Count > 0)
                 {
                     ////time(ms)
                     //if (MKdata.txf_1mk[MKdata.txf_1mk.Count - 1].time != null)
@@ -190,12 +236,12 @@ namespace 覆盤
         private void button1_Click(object sender, EventArgs e)
         {
             comboBox1.Enabled = false;
-            //if (T_Quote!= null && T_Quote.IsAlive == true) T_Quote.Abort();
             button1.Enabled = false;
             dateTimePicker1.Enabled = false;
 
             T_Quote = new Thread(quote);
             T_Quote.Start();
+
 
             //T_GUI = new Thread(gui);
             //T_GUI.Start();
@@ -234,12 +280,48 @@ namespace 覆盤
             dataGridView1.Refresh();
         }
 
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+            load_dayK();
+        }
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (T_Quote != null)
                 T_Quote.Abort();
             if (T_GUI != null)
                 T_GUI.Abort();
+        }
+
+        private void load_dayK() {
+            DKdata.kdata = new List<TXF.K_data.K>();
+            using (StreamReader sr = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\日K.TXT")) {
+                string words = sr.ReadLine();
+                while ((words = sr.ReadLine()) != null) {
+                    string[] word = words.Split(',');
+                    if (Convert.ToDateTime(word[0]).Date >= dateTimePicker1.Value.Date)
+                    {
+                        if (DKdata.kdata.Count < 1) return;
+                        float avgDay5 = 0;
+                        int i;
+                        for (i = 1; i < 6; i++)
+                        {
+                            avgDay5 += DKdata.kdata[DKdata.kdata.Count - i].high - DKdata.kdata[DKdata.kdata.Count - i].low;
+                        }
+                        avgDay5 /= 5;
+                        label12.Text = avgDay5.ToString();
+                        break;
+                    }
+                    DKdata.kdata.Add(new TXF.K_data.K("", 0));
+                    DKdata.kdata[DKdata.kdata.Count - 1].ktime = word[0];
+                    DKdata.kdata[DKdata.kdata.Count - 1].open = float.Parse(word[1]);
+                    DKdata.kdata[DKdata.kdata.Count - 1].high = float.Parse(word[2]);
+                    DKdata.kdata[DKdata.kdata.Count - 1].low = float.Parse(word[3]);
+                    DKdata.kdata[DKdata.kdata.Count - 1].close = float.Parse(word[4]);
+                    DKdata.kdata[DKdata.kdata.Count - 1].qty = int.Parse(word[12]);
+                }
+            }
+            k2.refreshK(DKdata.kdata);
         }
     }
     //擴充方法
