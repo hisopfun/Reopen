@@ -27,7 +27,9 @@ namespace 覆盤
         private void Form1_Load(object sender, EventArgs e)
         {
             kl = new Kline(plotSurface2D1, plotSurface2D2, 1, 300);
-            k2 = new Kline(plotSurface2D3, plotSurface2D4, 1, 30);
+            k2 = new Kline(plotSurface2D3, plotSurface2D4, 1, 40);
+
+            dateTimePicker1.Value = RandomDate.RandomSelectDate();
             load_dayK();
             //dataGridView1.DataSource = simu.MatList;
         }
@@ -45,7 +47,7 @@ namespace 覆盤
 
 
         public void quote() {
-            if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\TXF\\" + dateTimePicker1.Value.ToString("MM-dd-yyyy") + "TXF.TXT")) {
+            if (!RandomDate.CheckDate(dateTimePicker1.Value)) {
 
                 comboBox1.InvokeIfRequired(() => {
                     comboBox1.Enabled = true;
@@ -78,6 +80,7 @@ namespace 覆盤
                     string[] word = words.Split(',');
 
                     //search start
+                    if (word[1].Length < 6) return;
                     if (word[1].Substring(0, 6) == "084500") istart = true;
                     if (!istart) continue;
 
@@ -246,7 +249,8 @@ namespace 覆盤
             //T_GUI = new Thread(gui);
             //T_GUI.Start();
         }
-        public DateTime convertToDate(string dt)
+
+        public DateTime convertToMillisecond(string dt)
         {
             int hh = int.Parse(dt.Substring(0, 2));
             int mm = int.Parse(dt.Substring(2, 2));
@@ -257,7 +261,7 @@ namespace 覆盤
         }
 
         public int s_diff(string t1, string t2) {
-            TimeSpan d = convertToDate(t1) - convertToDate(t2);
+            TimeSpan d = convertToMillisecond(t1) - convertToMillisecond(t2);
             
             return Convert.ToInt32(d.TotalMilliseconds);
         }
@@ -282,6 +286,7 @@ namespace 覆盤
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
+
             load_dayK();
         }
 
