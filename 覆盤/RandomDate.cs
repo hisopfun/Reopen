@@ -7,7 +7,7 @@ using System.IO;
 
 namespace 覆盤
 {
-    static class RandomDate
+    public static class RandomDate
     {
 
         public static DateTime RandomGetDate()
@@ -17,7 +17,6 @@ namespace 覆盤
             TimeSpan ts = new TimeSpan(endTime.Ticks - startTime.Ticks);
             Random r = new Random();
             DateTime nextDT = startTime.AddDays(r.Next(ts.Days + 1));
-            //MessageBox.Show(nextDT.ToString());
             return nextDT;
         }
 
@@ -54,6 +53,24 @@ namespace 覆盤
             }
             return DT;
         }
+    }
 
+    public static class ms {
+        public static DateTime convertToMillisecond(string dt)
+        {
+            int hh = int.Parse(dt.Substring(0, 2));
+            int mm = int.Parse(dt.Substring(2, 2));
+            int ss = int.Parse(dt.Substring(4, 2));
+            int fff = int.Parse(dt.Substring(6, 3));
+
+            return new DateTime(2020, 1, 1, hh, mm, ss, fff);
+        }
+
+        public static int s_diff(string t1, string t2)
+        {
+            TimeSpan d = convertToMillisecond(t1) - convertToMillisecond(t2);
+
+            return Convert.ToInt32(d.TotalMilliseconds);
+        }
     }
 }

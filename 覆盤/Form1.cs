@@ -23,11 +23,12 @@ namespace 覆盤
         {
             InitializeComponent();
         }
-        NPlot.PlotSurface2D ps = new NPlot.PlotSurface2D();
         private void Form1_Load(object sender, EventArgs e)
         {
-            kl = new Kline(plotSurface2D1, plotSurface2D2, 1, 300);
+            k1 = new Kline(plotSurface2D1, plotSurface2D2, 1, 300);
             k2 = new Kline(plotSurface2D3, plotSurface2D4, 1, 40);
+            k2.KP = new candlep(k2);
+            radioButton1.Checked = true;
 
             dateTimePicker1.Value = RandomDate.RandomSelectDate();
             load_dayK();
@@ -42,8 +43,8 @@ namespace 覆盤
         Thread T_Quote, T_GUI;
         TXF.K_data MKdata = new TXF.K_data();
         TXF.K_data DKdata = new TXF.K_data();
-        Kline kl, k2;
-        public Simulation simu { get; set; } = new Simulation();
+        Kline k1, k2;
+        public Simulation simu = new Simulation();
 
 
         public void quote() {
@@ -71,9 +72,11 @@ namespace 覆盤
                 string[] wordss = sr.ReadToEnd().Split('\n');
                 string time = "";
                 bool istart = false;
-                listBox1.InvokeIfRequired(() => {
-                    ExtensionMethods.DoubleBuffered(listBox1, true);
-                });
+
+                //matlistBox
+                //listBox1.InvokeIfRequired(() => {
+                //    ExtensionMethods.DoubleBuffered(listBox1, true);
+                //});
 
                 foreach (string words in wordss) {
                     if (words == "") break;
@@ -82,13 +85,14 @@ namespace 覆盤
                     //search start
                     if (word[1].Length < 6) return;
                     if (word[1].Substring(0, 6) == "084500") istart = true;
+                    if (int.Parse(word[1].Substring(0, 4)) > 1344) break;
                     if (!istart) continue;
 
                     //listbox matinfo
-                    listBox1.InvokeIfRequired(() => {
-                        listBox1.Items.Insert(0, $"{word[1].Substring(0, 2) + ":" + word[1].Substring(2, 2) + ":" + word[1].Substring(4, 2),-10}" +
-                            $"{ word[2],-8}{word[3],-8}{word[4],-8}{word[5],-8}");
-                    });
+                    //listBox1.InvokeIfRequired(() => {
+                    //    listBox1.Items.Insert(0, $"{word[1].Substring(0, 2) + ":" + word[1].Substring(2, 2) + ":" + word[1].Substring(4, 2),-10}" +
+                    //        $"{ word[2],-8}{word[3],-8}{word[4],-8}{word[5],-8}");
+                    //});
 
                     //MK
                     if (MKdata.Add(time, word[4], word[5], word[6])){}
@@ -110,7 +114,7 @@ namespace 覆盤
                     {
                         if (time != "")
                         {
-                            int s = s_diff(word[1], time);
+                            int s = ms.s_diff(word[1], time);
                             //label2.InvokeIfRequired(() => {
                             //    listBox1.BeginUpdate();
                             //    label2.Text = s.ToString();
@@ -177,8 +181,8 @@ namespace 覆盤
                             label1.Text = word[4];
                         });
                     }
-                    kl.refreshK(MKdata.kdata);
-                    k2.refreshK(DKdata.kdata);
+                    k1.KP.refreshK(MKdata.kdata);
+                    k2.KP.refreshK(DKdata.kdata);
                 }
             }
 
@@ -234,6 +238,10 @@ namespace 覆盤
                     //        Thread.Sleep(Convert.ToInt32(s) / int.Parse(comboBox1.Text));
                     //});
                 }
+
+                if (label4.Text.Substring(0, 4) == "1100") {
+                    textBox1.Text = "After 11:00, it can rise, without large volume.";
+                }
             }
         }
         private void button1_Click(object sender, EventArgs e)
@@ -242,42 +250,41 @@ namespace 覆盤
             button1.Enabled = false;
             dateTimePicker1.Enabled = false;
 
+            MKdata = new TXF.K_data();
+            simu = new Simulation();
+
             T_Quote = new Thread(quote);
             T_Quote.Start();
 
 
-            //T_GUI = new Thread(gui);
-            //T_GUI.Start();
+            T_GUI = new Thread(gui);
+            T_GUI.Start();
         }
 
-        public DateTime convertToMillisecond(string dt)
-        {
-            int hh = int.Parse(dt.Substring(0, 2));
-            int mm = int.Parse(dt.Substring(2, 2));
-            int ss = int.Parse(dt.Substring(4, 2));
-            int fff = int.Parse(dt.Substring(6, 3));
 
-            return new DateTime(2020, 1, 1, hh, mm, ss, fff);
-        }
-
-        public int s_diff(string t1, string t2) {
-            TimeSpan d = convertToMillisecond(t1) - convertToMillisecond(t2);
-            
-            return Convert.ToInt32(d.TotalMilliseconds);
-        }
-
+        //buy
         private void button2_Click(object sender, EventArgs e)
         {
             if (label1.Text == "price") return;
+            if (int.Parse(label4.Text) <= 91500) {
+                textBox1.Text = "Warning : Order Failed!!\n Please place your order after 9:15";
+                return;
+            }
             simu.MatList.Add(new Simulation.match(label4.Text, "TXF", "B", "1", label1.Text, ""));
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = simu.MatList;
             dataGridView1.Refresh();
         }
 
+        //sell
         private void button3_Click(object sender, EventArgs e)
         {
             if (label1.Text == "price") return;
+            if (int.Parse(label4.Text) <= 91500)
+            {
+                textBox1.Text = "Warning : Order Failed!!\n Please place your order after 9:15";
+                return;
+            }
             simu.MatList.Add(new Simulation.match(label4.Text, "TXF", "S", "1", label1.Text, ""));
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = simu.MatList;
@@ -288,6 +295,21 @@ namespace 覆盤
         {
 
             load_dayK();
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            k1.KP = new linep(k1);
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            k1.KP = new candlep(k1);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -326,7 +348,7 @@ namespace 覆盤
                     DKdata.kdata[DKdata.kdata.Count - 1].qty = int.Parse(word[12]);
                 }
             }
-            k2.refreshK(DKdata.kdata);
+            k2.KP.refreshK(DKdata.kdata);
         }
     }
     //擴充方法

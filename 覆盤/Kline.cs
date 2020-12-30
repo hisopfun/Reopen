@@ -8,8 +8,178 @@ using System.Drawing;
 
 namespace 覆盤
 {
+    public interface klineplot
+    {
+        void InitKLinePS();
+        void refreshK(List<TXF.K_data.K> mk);
+    }
+
+    public class candlep : klineplot
+    {
+        Kline KL;
+        public candlep(Kline kl) {
+            KL = kl;
+            InitKLinePS();
+        }
+
+        public void InitKLinePS()
+        {
+            KL.InitPS(KL.PS);
+            KL.InitPS(KL.PS_volumn);
+
+            KL.InitCandle();
+            KL.InitHp();
+
+            KL.PS.Add(KL.CP);
+            KL.PS_volumn.Add(KL.hp);
+            KL.PS.Refresh();
+        }
+
+        void klineplot.refreshK(List<TXF.K_data.K> mk)
+        {
+            if (KL.autoRefresh == false)
+                return;
+
+            List<int[]> TX = new List<int[]>();
+
+            int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
+            for (i = 0; i < 6; i++)
+                TX.Add(new int[KL.KLine_num]);
+
+            for (i = 0; i < KL.KLine_num; i++)
+            {
+                if (mk.Count >= i + 1)
+                {
+                    int istart = mk.Count - KL.KLine_num;
+                    istart = Math.Max(0, istart);
+                    Highest_Qty = Math.Max(Highest_Qty, Convert.ToInt32(mk[i + istart].qty));
+                    Highest = Math.Max(Highest, Convert.ToInt32(mk[i + istart].high));
+                    Lowest = Math.Min(Lowest, Convert.ToInt32(mk[i + istart].low));
+                    TX[0][i] = Convert.ToInt32(mk[i + istart].open);
+                    TX[1][i] = Convert.ToInt32(mk[i + istart].high);
+                    TX[2][i] = Convert.ToInt32(mk[i + istart].low);
+                    TX[3][i] = Convert.ToInt32(mk[i + istart].close);
+                    TX[4][i] = Convert.ToInt32(mk[i + istart].qty);
+                }
+                TX[5][i] = i + 1;
+            }
+
+            KL.PS.InvokeIfRequired(() =>
+            {
+                KL.CP.OpenData = TX[0];// opens;
+                KL.CP.HighData = TX[1];//highs;
+                KL.CP.LowData = TX[2];//lows;
+                KL.CP.CloseData = TX[3];//closes;
+                KL.CP.AbscissaData = TX[5];// times;
+                                           //PS.Add(CP);
+                KL.PS.XAxis1.WorldMin = 0;
+                KL.PS.XAxis1.WorldMax = KL.KLine_num + 1;
+                KL.PS.YAxis1.WorldMin = Lowest;
+                KL.PS.YAxis1.WorldMax = Highest;
+                KL.PS.YAxis1.TickTextNextToAxis = false;
+                KL.PS.Refresh();
+            });
+
+            KL.PS_volumn.InvokeIfRequired(() =>
+            {
+                KL.hp.AbscissaData = TX[5];
+                KL.hp.DataSource = TX[4];
+                KL.PS_volumn.XAxis1.WorldMin = 0;
+                KL.PS_volumn.XAxis1.WorldMax = KL.KLine_num + 1;
+                KL.PS_volumn.YAxis1.WorldMin = 1;
+                KL.PS_volumn.YAxis1.WorldMax = Convert.ToInt32(Highest_Qty * 1.1);
+                //PS_volumn.Location = new System.Drawing.Point(PS.Location.X, PS_volumn.Location.Y);
+                KL.PS_volumn.YAxis1.TickTextNextToAxis = false;
+                KL.PS_volumn.Refresh();
+            });
+        }
+    }
+
+    public class linep : klineplot
+    {
+        Kline KL;
+        public void InitKLinePS()
+        {
+            KL.InitPS(KL.PS);
+            KL.InitPS(KL.PS_volumn);
+
+            KL.InitLp();
+            KL.InitHp();
+
+            KL.PS.Add(KL.linePlot);
+            KL.PS_volumn.Add(KL.hp);
+            KL.PS.Refresh();
+        }
+        public linep(Kline kl)
+        {
+            KL = kl;
+            InitKLinePS();
+        }
+        void klineplot.refreshK(List<TXF.K_data.K> mk)
+        {
+            if (KL.autoRefresh == false)
+                return;
+
+            List<int[]> TX = new List<int[]>();
+
+            int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
+            for (i = 0; i < 6; i++)
+                TX.Add(new int[KL.KLine_num]);
+
+            for (i = 0; i < KL.KLine_num; i++)
+            {
+                if (mk.Count >= i + 1)
+                {
+                    int istart = mk.Count - KL.KLine_num;
+                    istart = Math.Max(0, istart);
+                    Highest_Qty = Math.Max(Highest_Qty, Convert.ToInt32(mk[i + istart].qty));
+                    Highest = Math.Max(Highest, Convert.ToInt32(mk[i + istart].high));
+                    Lowest = Math.Min(Lowest, Convert.ToInt32(mk[i + istart].low));
+                    TX[0][i] = Convert.ToInt32(mk[i + istart].open);
+                    TX[1][i] = Convert.ToInt32(mk[i + istart].high);
+                    TX[2][i] = Convert.ToInt32(mk[i + istart].low);
+                    TX[3][i] = Convert.ToInt32(mk[i + istart].close);
+                    TX[4][i] = Convert.ToInt32(mk[i + istart].qty);
+                }
+                else {
+                    if (mk.Count > 0)
+                        TX[3][i] = TX[3][i-1];
+                }
+                TX[5][i] = i + 1;
+            }
+
+            KL.PS.InvokeIfRequired(() =>
+            {
+
+                KL.linePlot.DataSource = TX[3];//closes;
+                KL.linePlot.AbscissaData = TX[5];// times;
+                                           //PS.Add(CP);
+                KL.PS.XAxis1.WorldMin = 0;
+                KL.PS.XAxis1.WorldMax = KL.KLine_num + 1;
+                KL.PS.YAxis1.WorldMin = Lowest;
+                KL.PS.YAxis1.WorldMax = Highest;
+                KL.PS.YAxis1.TickTextNextToAxis = false;
+                KL.PS.Refresh();
+            });
+
+            KL.PS_volumn.InvokeIfRequired(() =>
+            {
+                KL.hp.AbscissaData = TX[5];
+                KL.hp.DataSource = TX[4];
+                KL.PS_volumn.XAxis1.WorldMin = 0;
+                KL.PS_volumn.XAxis1.WorldMax = KL.KLine_num + 1;
+                KL.PS_volumn.YAxis1.WorldMin = 1;
+                KL.PS_volumn.YAxis1.WorldMax = Convert.ToInt32(Highest_Qty * 1.1);
+                //PS_volumn.Location = new System.Drawing.Point(PS.Location.X, PS_volumn.Location.Y);
+                KL.PS_volumn.YAxis1.TickTextNextToAxis = false;
+                KL.PS_volumn.Refresh();
+            });
+        }
+    }
+
     public class Kline
     {
+
         public List<int[]> TX_1mk = null;
         public NPlot.Windows.PlotSurface2D PS = null;
         public NPlot.Windows.PlotSurface2D PS_volumn = null;
@@ -26,6 +196,8 @@ namespace 覆盤
         public bool autoRefresh = true;
         public object Lock = new object();
 
+        public klineplot KP;
+
         //public ref TXF_MK refTXF();
         public Kline(NPlot.Windows.PlotSurface2D nPS, NPlot.Windows.PlotSurface2D nPS2, int nMK, int nKLine_num)
         {
@@ -33,7 +205,9 @@ namespace 覆盤
             PS_volumn = nPS2;
             MK = nMK;
             KLine_num = nKLine_num;
-            InitKLinePS();
+            KP= new linep(this);
+            //InitKLinePS();
+            KP.InitKLinePS();
         }
 
         public void InitPS(NPlot.Windows.PlotSurface2D PlotSurface2D) {
@@ -60,18 +234,26 @@ namespace 覆盤
             mygrid.VerticalGridType = Grid.GridType.Fine;
             PlotSurface2D.Add(mygrid);
         }
-        public void InitKLinePS()
-        {
-            InitPS(PS);
-            InitPS(PS_volumn);
+        //public void InitKLinePS()
+        //{
+        //    InitPS(PS);
+        //    InitPS(PS_volumn);
 
-            InitCandle();
-            InitHp();
+        //    InitCandle();
+        //    InitLp();
+        //    InitHp();
 
-            PS.Add(CP);
-            PS_volumn.Add(hp);
-            PS.Refresh();
+        //    PS.Add(CP);
+        //    PS_volumn.Add(hp);
+        //    PS.Refresh();
+        //}
+
+        public void InitLp() {
+            int[] times = { 100, 200, 300, 400, 500, 600, 700 };
+            linePlot.AbscissaData = times;
+            linePlot.DataSource = times;
         }
+
         public void InitHp(){
             int[] times = { 100, 200, 300, 400, 500, 600, 700 };
             hp.AbscissaData = times;
@@ -108,62 +290,63 @@ namespace 覆盤
             PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.AxisDrag(true));
         }
 
-        public void refreshK(List<TXF.K_data.K> mk)
-        {
-            if (autoRefresh == false)
-                return;
- 
-            List<int[]> TX = new List<int[]>();
+        //public void refreshK(List<TXF.K_data.K> mk)
+        //{
+        //    if (autoRefresh == false)
+        //        return;
 
-            int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
-            for (i = 0; i < 6; i++)
-                TX.Add(new int[KLine_num]);
+        //    List<int[]> TX = new List<int[]>();
 
-            for (i = 0; i < KLine_num; i++) {
-                if (mk.Count >= i + 1)
-                {
-                    int istart = mk.Count - KLine_num;
-                    istart = Math.Max(0, istart);
-                    Highest_Qty = Math.Max(Highest_Qty, Convert.ToInt32(mk[i + istart].qty));
-                    Highest = Math.Max(Highest, Convert.ToInt32(mk[i + istart].high));
-                    Lowest = Math.Min(Lowest, Convert.ToInt32(mk[i + istart].low));
-                    TX[0][i] = Convert.ToInt32(mk[i + istart].open);
-                    TX[1][i] = Convert.ToInt32(mk[i + istart].high);
-                    TX[2][i] = Convert.ToInt32(mk[i + istart].low);
-                    TX[3][i] = Convert.ToInt32(mk[i + istart].close);
-                    TX[4][i] = Convert.ToInt32(mk[i + istart].qty);
-                }
-                TX[5][i] = i+1;
-            }
+        //    int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
+        //    for (i = 0; i < 6; i++)
+        //        TX.Add(new int[KLine_num]);
 
-            PS.InvokeIfRequired(() =>
-            {
-                CP.OpenData = TX[0];// opens;
-                CP.HighData = TX[1];//highs;
-                CP.LowData = TX[2];//lows;
-                CP.CloseData = TX[3];//closes;
-                CP.AbscissaData = TX[5];// times;
-                                        //PS.Add(CP);
-                PS.XAxis1.WorldMin = 0;
-                PS.XAxis1.WorldMax = KLine_num +1 ;
-                PS.YAxis1.WorldMin = Lowest;
-                PS.YAxis1.WorldMax = Highest;
-                PS.YAxis1.TickTextNextToAxis = false;
-                PS.Refresh();
-            });
+        //    for (i = 0; i < KLine_num; i++)
+        //    {
+        //        if (mk.Count >= i + 1)
+        //        {
+        //            int istart = mk.Count - KLine_num;
+        //            istart = Math.Max(0, istart);
+        //            Highest_Qty = Math.Max(Highest_Qty, Convert.ToInt32(mk[i + istart].qty));
+        //            Highest = Math.Max(Highest, Convert.ToInt32(mk[i + istart].high));
+        //            Lowest = Math.Min(Lowest, Convert.ToInt32(mk[i + istart].low));
+        //            TX[0][i] = Convert.ToInt32(mk[i + istart].open);
+        //            TX[1][i] = Convert.ToInt32(mk[i + istart].high);
+        //            TX[2][i] = Convert.ToInt32(mk[i + istart].low);
+        //            TX[3][i] = Convert.ToInt32(mk[i + istart].close);
+        //            TX[4][i] = Convert.ToInt32(mk[i + istart].qty);
+        //        }
+        //        TX[5][i] = i + 1;
+        //    }
 
-            PS_volumn.InvokeIfRequired(() =>
-            {
-                hp.AbscissaData = TX[5];
-                hp.DataSource = TX[4];
-                PS_volumn.XAxis1.WorldMin = 0;
-                PS_volumn.XAxis1.WorldMax = KLine_num;
-                PS_volumn.YAxis1.WorldMin = 1;
-                PS_volumn.YAxis1.WorldMax = Convert.ToInt32(Highest_Qty * 1.1);
-                //PS_volumn.Location = new System.Drawing.Point(PS.Location.X, PS_volumn.Location.Y);
-                PS_volumn.YAxis1.TickTextNextToAxis = false;
-                PS_volumn.Refresh();
-            });
-        }
+        //    PS.InvokeIfRequired(() =>
+        //    {
+        //        CP.OpenData = TX[0];// opens;
+        //        CP.HighData = TX[1];//highs;
+        //        CP.LowData = TX[2];//lows;
+        //        CP.CloseData = TX[3];//closes;
+        //        CP.AbscissaData = TX[5];// times;
+        //                                //PS.Add(CP);
+        //        PS.XAxis1.WorldMin = 0;
+        //        PS.XAxis1.WorldMax = KLine_num + 1;
+        //        PS.YAxis1.WorldMin = Lowest;
+        //        PS.YAxis1.WorldMax = Highest;
+        //        PS.YAxis1.TickTextNextToAxis = false;
+        //        PS.Refresh();
+        //    });
+
+        //    PS_volumn.InvokeIfRequired(() =>
+        //    {
+        //        hp.AbscissaData = TX[5];
+        //        hp.DataSource = TX[4];
+        //        PS_volumn.XAxis1.WorldMin = 0;
+        //        PS_volumn.XAxis1.WorldMax = KLine_num;
+        //        PS_volumn.YAxis1.WorldMin = 1;
+        //        PS_volumn.YAxis1.WorldMax = Convert.ToInt32(Highest_Qty * 1.1);
+        //        //PS_volumn.Location = new System.Drawing.Point(PS.Location.X, PS_volumn.Location.Y);
+        //        PS_volumn.YAxis1.TickTextNextToAxis = false;
+        //        PS_volumn.Refresh();
+        //    });
+        //}
     }
 }

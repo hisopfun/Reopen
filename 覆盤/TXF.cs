@@ -24,6 +24,7 @@ public class TXF
         }
         public List<K> kdata = new List<K>();
         public bool Add(string nTime, string nPri, string nQty, string nTQty) {
+            if (nTime == "") return false;
             if (nQty == "") return false;
             float Pri = float.Parse(nPri);
             int Qty = int.Parse(nQty);
