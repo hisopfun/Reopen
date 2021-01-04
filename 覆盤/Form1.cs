@@ -32,7 +32,17 @@ namespace 覆盤
 
             dateTimePicker1.Value = RandomDate.RandomSelectDate();
             load_dayK();
+
+            Init();
             //dataGridView1.DataSource = simu.MatList;
+        }
+
+        private void Init() {
+            plotSurface2D5.Add(mACD.LP_DIF);
+            plotSurface2D5.Add(mACD.LP_DEM);
+            plotSurface2D5.Add(mACD.horizontalLine);
+            plotSurface2D1.Add(mACD.EMA1.LP_Ema);
+            plotSurface2D1.Add(mACD.EMA2.LP_Ema);
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -44,7 +54,9 @@ namespace 覆盤
         TXF.K_data MKdata = new TXF.K_data();
         TXF.K_data DKdata = new TXF.K_data();
         Kline k1, k2;
-        public Simulation simu = new Simulation();
+        //Technical_analysis.EMA eMA2 = new Technical_analysis.EMA(12);
+        Technical_analysis.MACD mACD = new Technical_analysis.MACD();
+        Simulation simu = new Simulation();
 
 
         public void quote() {
@@ -100,6 +112,26 @@ namespace 覆盤
                     dateTimePicker1.InvokeIfRequired(() => { 
                         DKdata.Add(dateTimePicker1.Value.ToString("yyyy/M/d"), word[4], word[5], word[6]);
                     });
+
+                    //EMA
+                    //label14.InvokeIfRequired(() => {
+                    //    //label14.Text = eMA2.ema(MKdata.kdata).ToString();
+                    //});
+                    plotSurface2D1.InvokeIfRequired(() =>
+                    {
+                        plotSurface2D1.Refresh();
+                    });
+
+
+                    mACD.macd(MKdata.kdata);
+                    plotSurface2D5.InvokeIfRequired(() =>
+                    {
+                        plotSurface2D5.XAxis1 = mACD.LP_DIF.SuggestXAxis();
+                        plotSurface2D5.YAxis1 = mACD.LP_DIF.SuggestYAxis();
+
+                        plotSurface2D5.YAxis1.TickTextNextToAxis = false;
+                        plotSurface2D5.Refresh();
+                    });
                     
                     //listBox2.InvokeIfRequired(() =>
                     //{
@@ -124,8 +156,8 @@ namespace 覆盤
                             //thread sleep
                             comboBox1.InvokeIfRequired(() =>
                             {
-                                if (Convert.ToInt32(s) - int.Parse(comboBox1.Text) > 0)
-                                    Thread.Sleep(Convert.ToInt32(s) / int.Parse(comboBox1.Text));
+                                //if (Convert.ToInt32(s) - int.Parse(comboBox1.Text) > 0) 
+                                //    Thread.Sleep(Convert.ToInt32(s) / int.Parse(comboBox1.Text));
                             });
 
                             //time(s)
@@ -239,8 +271,18 @@ namespace 覆盤
                     //});
                 }
 
-                if (label4.Text.Substring(0, 4) == "1100") {
-                    textBox1.Text = "After 11:00, it can rise, without large volume.";
+                string time = "";
+                label4.InvokeIfRequired(() =>
+                {
+                    time = label4.Text;
+                });
+                
+                if (time.Substring(0, 4) == "1100") {
+                    textBox1.InvokeIfRequired(() =>
+                    {
+                        textBox1.Text = "After 11:00, it can rise, without large volume.";
+                    });
+                    
                 }
             }
         }
@@ -305,11 +347,15 @@ namespace 覆盤
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
             k1.KP = new linep(k1);
+            Init();
+            k1.KP.refreshK(MKdata.kdata);
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
             k1.KP = new candlep(k1);
+            Init();
+            k1.KP.refreshK(MKdata.kdata);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
