@@ -125,20 +125,24 @@ namespace 覆盤
             int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
             for (i = 0; i < 6; i++)
                 TX.Add(new int[KL.KLine_num]);
+            List<float> close = new List<float>();
 
             for (i = 0; i < KL.KLine_num; i++)
             {
                 if (mk.Count >= i + 1)
                 {
+                    if (mk.Count > close.Count) 
+                        close.Add(new float());
                     int istart = mk.Count - KL.KLine_num;
                     istart = Math.Max(0, istart);
                     Highest_Qty = Math.Max(Highest_Qty, Convert.ToInt32(mk[i + istart].qty));
                     Highest = Math.Max(Highest, Convert.ToInt32(mk[i + istart].high));
                     Lowest = Math.Min(Lowest, Convert.ToInt32(mk[i + istart].low));
-                    TX[0][i] = Convert.ToInt32(mk[i + istart].open);
-                    TX[1][i] = Convert.ToInt32(mk[i + istart].high);
-                    TX[2][i] = Convert.ToInt32(mk[i + istart].low);
-                    TX[3][i] = Convert.ToInt32(mk[i + istart].close);
+                    //TX[0][i] = Convert.ToInt32(mk[i + istart].open);
+                    //TX[1][i] = Convert.ToInt32(mk[i + istart].high);
+                    //TX[2][i] = Convert.ToInt32(mk[i + istart].low);
+                    //TX[3][i] = Convert.ToInt32(mk[i + istart].close);
+                    close[i] = Convert.ToInt32(mk[i + istart].close);
                     TX[4][i] = Convert.ToInt32(mk[i + istart].qty);
                 }
                 else {
@@ -151,7 +155,7 @@ namespace 覆盤
             KL.PS.InvokeIfRequired(() =>
             {
 
-                KL.linePlot.DataSource = TX[3];//closes;
+                KL.linePlot.DataSource = close;//closes;
                 KL.linePlot.AbscissaData = TX[5];// times;
                                            //PS.Add(CP);
                 KL.PS.XAxis1.WorldMin = 0;

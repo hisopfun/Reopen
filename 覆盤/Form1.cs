@@ -41,8 +41,9 @@ namespace 覆盤
             plotSurface2D5.Add(mACD.LP_DIF);
             plotSurface2D5.Add(mACD.LP_DEM);
             plotSurface2D5.Add(mACD.horizontalLine);
-            plotSurface2D1.Add(mACD.EMA1.LP_Ema);
-            plotSurface2D1.Add(mACD.EMA2.LP_Ema);
+            //plotSurface2D1.Add(ema3.LP_EMA);
+            plotSurface2D1.Add(mACD.EMA1.LP_EMA);
+            plotSurface2D1.Add(mACD.EMA2.LP_EMA);
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -55,6 +56,7 @@ namespace 覆盤
         TXF.K_data DKdata = new TXF.K_data();
         Kline k1, k2;
         //Technical_analysis.EMA eMA2 = new Technical_analysis.EMA(12);
+        //Technical_analysis.EMA ema3 = new Technical_analysis.EMA(3, System.Drawing.Color.Brown);
         Technical_analysis.MACD mACD = new Technical_analysis.MACD();
         Simulation simu = new Simulation();
 
@@ -117,6 +119,7 @@ namespace 覆盤
                     //label14.InvokeIfRequired(() => {
                     //    //label14.Text = eMA2.ema(MKdata.kdata).ToString();
                     //});
+                    //ema3.ema(MKdata.kdata);
                     plotSurface2D1.InvokeIfRequired(() =>
                     {
                         plotSurface2D1.Refresh();
@@ -276,8 +279,10 @@ namespace 覆盤
                 {
                     time = label4.Text;
                 });
-                
-                if (time.Substring(0, 4) == "1100") {
+
+                if (time == "") 
+                    return;
+                else if (time.Substring(0, 4) == "1100") {
                     textBox1.InvokeIfRequired(() =>
                     {
                         textBox1.Text = "After 11:00, it can rise, without large volume.";
@@ -294,6 +299,9 @@ namespace 覆盤
 
             MKdata = new TXF.K_data();
             simu = new Simulation();
+            mACD = new Technical_analysis.MACD();
+            Init();
+
 
             T_Quote = new Thread(quote);
             T_Quote.Start();
