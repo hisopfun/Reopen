@@ -23,6 +23,17 @@ namespace 覆盤
         {
             InitializeComponent();
         }
+
+        object Lock = new object();
+        Thread T_Quote, T_GUI;
+        TXF.K_data MKdata = new TXF.K_data();
+        TXF.K_data DKdata = new TXF.K_data();
+        Kline k1, k2;
+        Technical_analysis.MACD mACD = new Technical_analysis.MACD();
+        Simulation simu = new Simulation();
+        TIMES times = new TIMES(1);
+
+
         private void Form1_Load(object sender, EventArgs e)
         {
             k1 = new Kline(plotSurface2D1, plotSurface2D2, 1, 300);
@@ -38,12 +49,20 @@ namespace 覆盤
         }
 
         private void Init() {
+            if (radioButton1.Checked)
+                k1.KP = new linep(k1);
+            if (radioButton2.Checked)
+                k1.KP = new candlep(k1);
+
+            plotSurface2D5.Clear();
             plotSurface2D5.Add(mACD.LP_DIF);
             plotSurface2D5.Add(mACD.LP_DEM);
             plotSurface2D5.Add(mACD.horizontalLine);
             //plotSurface2D1.Add(ema3.LP_EMA);
             plotSurface2D1.Add(mACD.EMA1.LP_EMA);
             plotSurface2D1.Add(mACD.EMA2.LP_EMA);
+
+            k1.KP.refreshK(MKdata.kdata);
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -51,14 +70,7 @@ namespace 覆盤
 
         }
 
-        Thread T_Quote, T_GUI;
-        TXF.K_data MKdata = new TXF.K_data();
-        TXF.K_data DKdata = new TXF.K_data();
-        Kline k1, k2;
-        //Technical_analysis.EMA eMA2 = new Technical_analysis.EMA(12);
-        //Technical_analysis.EMA ema3 = new Technical_analysis.EMA(3, System.Drawing.Color.Brown);
-        Technical_analysis.MACD mACD = new Technical_analysis.MACD();
-        Simulation simu = new Simulation();
+        
 
 
         public void quote() {
@@ -91,6 +103,10 @@ namespace 覆盤
                 //listBox1.InvokeIfRequired(() => {
                 //    ExtensionMethods.DoubleBuffered(listBox1, true);
                 //});
+                string date = "";
+                dateTimePicker1.InvokeIfRequired(() => {
+                    date = dateTimePicker1.Value.ToString("yyyy/M/d");
+                });
 
                 foreach (string words in wordss) {
                     if (words == "") break;
@@ -102,47 +118,21 @@ namespace 覆盤
                     if (int.Parse(word[1].Substring(0, 4)) > 1344) break;
                     if (!istart) continue;
 
-                    //listbox matinfo
-                    //listBox1.InvokeIfRequired(() => {
-                    //    listBox1.Items.Insert(0, $"{word[1].Substring(0, 2) + ":" + word[1].Substring(2, 2) + ":" + word[1].Substring(4, 2),-10}" +
-                    //        $"{ word[2],-8}{word[3],-8}{word[4],-8}{word[5],-8}");
-                    //});
 
                     //MK
                     if (MKdata.Add(time, word[4], word[5], word[6])){}
-
-                    dateTimePicker1.InvokeIfRequired(() => { 
-                        DKdata.Add(dateTimePicker1.Value.ToString("yyyy/M/d"), word[4], word[5], word[6]);
-                    });
-
-                    //EMA
-                    //label14.InvokeIfRequired(() => {
-                    //    //label14.Text = eMA2.ema(MKdata.kdata).ToString();
-                    //});
-                    //ema3.ema(MKdata.kdata);
-                    plotSurface2D1.InvokeIfRequired(() =>
-                    {
-                        plotSurface2D1.Refresh();
-                    });
-
+                    DKdata.Add(date , word[4], word[5], word[6]);
 
                     mACD.macd(MKdata.kdata);
-                    plotSurface2D5.InvokeIfRequired(() =>
-                    {
-                        plotSurface2D5.XAxis1 = mACD.LP_DIF.SuggestXAxis();
-                        plotSurface2D5.YAxis1 = mACD.LP_DIF.SuggestYAxis();
-
-                        plotSurface2D5.YAxis1.TickTextNextToAxis = false;
-                        plotSurface2D5.Refresh();
-                    });
-                    
-                    //listBox2.InvokeIfRequired(() =>
+                    //plotSurface2D5.InvokeIfRequired(() =>
                     //{
-                    //    List<TXF.MK_data.MK> mk = MKdata.txf_1mk;
-                    //    if (mk.Count > 1)
-                    //        listBox2.Items.Insert(0, mk[mk.Count - 2].ktime + " " + mk[mk.Count - 2].open + " " + mk[mk.Count - 2].high + " "
-                    //            + mk[mk.Count - 2].low + " " + mk[mk.Count - 2].close);
+                    //    plotSurface2D5.XAxis1 = mACD.LP_DIF.SuggestXAxis();
+                    //    plotSurface2D5.YAxis1 = mACD.LP_DIF.SuggestYAxis();
+
+                    //    plotSurface2D5.YAxis1.TickTextNextToAxis = false;
+                    //    plotSurface2D5.Refresh();
                     //});
+                    
 
                     //run
                     if (word[1].Substring(0, 9) != time)
@@ -157,67 +147,65 @@ namespace 覆盤
                             //});
 
                             //thread sleep
-                            comboBox1.InvokeIfRequired(() =>
-                            {
-                                //if (Convert.ToInt32(s) - int.Parse(comboBox1.Text) > 0) 
-                                //    Thread.Sleep(Convert.ToInt32(s) / int.Parse(comboBox1.Text));
-                            });
-
-                            //time(s)
-                            label4.InvokeIfRequired(() =>
-                            {
-                                label4.Text = word[1].Substring(0, 6).ToString();
-                            });
-
-                            //time(s)
-                            //label3.InvokeIfRequired(() =>
+                            //comboBox1.InvokeIfRequired(() =>
                             //{
-                            //    label3.Text = word[1].Substring(0, 6).ToString();
+                            //    if (Convert.ToInt32(s) - int.Parse(comboBox1.Text) > 0) 
+                            //        Thread.Sleep(Convert.ToInt32(s) / int.Parse(comboBox1.Text));
                             //});
+                            int ss = times.tDiff(word[1]);
+                            if (ss > 0)
+                                Thread.Sleep(ss);
+
+
+                            //time(s)
+                            //label4.InvokeIfRequired(() =>
+                            //{
+                            //    label4.Text = word[1].Substring(0, 6).ToString();
+                            //});
+
                         }
 
                         //high - low 
-                        label13.InvokeIfRequired(() =>
-                        {
-                            label13.Text = (DKdata.kdata[DKdata.kdata.Count - 1].high - DKdata.kdata[DKdata.kdata.Count - 1].low).ToString();
-                        });
+                        //label13.InvokeIfRequired(() =>
+                        //{
+                        //    label13.Text = (DKdata.kdata[DKdata.kdata.Count - 1].high - DKdata.kdata[DKdata.kdata.Count - 1].low).ToString();
+                        //});
 
                         //price
-                        label1.InvokeIfRequired(() => {
-                            label1.Text = word[4].ToString();
-                        });
+                        //label1.InvokeIfRequired(() => {
+                        //    label1.Text = word[4].ToString();
+                        //});
 
                         //Qty
-                        label3.InvokeIfRequired(() =>
-                        {
-                            label3.Text = simu.Qty("", "").ToString();
-                        });
+                        //label3.InvokeIfRequired(() =>
+                        //{
+                        //    label3.Text = simu.Qty("", "").ToString();
+                        //});
 
 
                         //Profit
-                        label9.InvokeIfRequired(() =>
-                        {
-                            label9.Text = simu.Profit(word[4].ToString());
-                        });
+                        //label9.InvokeIfRequired(() =>
+                        //{
+                        //    label9.Text = simu.Profit(word[4].ToString());
+                        //});
 
                         //Entries
-                        label11.InvokeIfRequired(() =>
-                        {
-                            label11.Text = simu.Entries().ToString();
-                        });
+                        //label11.InvokeIfRequired(() =>
+                        //{
+                        //    label11.Text = simu.Entries().ToString();
+                        //});
 
                         time = word[1].Substring(0, 9);
-                        //  Application.DoEvents();
                     }
-                    else
-                    {
+                    //else
+                    //{
                         
-                        label1.InvokeIfRequired(() => {
-                            label1.Text = word[4];
-                        });
-                    }
-                    k1.KP.refreshK(MKdata.kdata);
-                    k2.KP.refreshK(DKdata.kdata);
+                    //    label1.InvokeIfRequired(() => {
+                    //        label1.Text = word[4];
+                    //    });
+                    //}
+                    //k1.KP.refreshK(MKdata.kdata);
+                    //k2.KP.refreshK(DKdata.kdata);
                 }
             }
 
@@ -241,37 +229,79 @@ namespace 覆盤
         public void gui() {
             while (true)
             {
-                Thread.Sleep(100);
-                //kl.refreshK(MKdata.kdata);
+                Thread.Sleep(1);
 
-                if (MKdata.kdata.Count > 0)
+                lock (Lock)
                 {
-                    ////time(ms)
-                    //if (MKdata.txf_1mk[MKdata.txf_1mk.Count - 1].time != null)
-                    //    label4.InvokeIfRequired(() =>
-                    //    {
-                    //        label4.Text = MKdata.txf_1mk[MKdata.txf_1mk.Count - 1].time.Substring(0, 6).ToString();
-                    //    });
+                    if (MKdata.kdata.Count > 0)
+                    {
+                        ////time
+                        if (MKdata.kdata[MKdata.kdata.Count - 1].time != null)
+                            label4.InvokeIfRequired(() =>
+                            {
+                                label4.Text = MKdata.kdata[MKdata.kdata.Count - 1].time.Substring(0, 6).ToString();
+                            });
 
-                    ////time(s)
-                    //if (MKdata.txf_1mk[MKdata.txf_1mk.Count - 1].time != null)
-                    //    label3.InvokeIfRequired(() =>
-                    //    {
-                    //        label3.Text = MKdata.txf_1mk[MKdata.txf_1mk.Count - 1].time;
-                    //    });
 
-                    ////close
-                    //if (MKdata.txf_1mk[MKdata.txf_1mk.Count - 1].close != null)
-                    //    label1.InvokeIfRequired(() => {
-                    //        label1.Text = MKdata.txf_1mk[MKdata.txf_1mk.Count - 1].close.ToString();
-                    //    });
+                        //close
+                        if (MKdata.kdata[MKdata.kdata.Count - 1].close != null)
+                            label1.InvokeIfRequired(() =>
+                            {
+                                label1.Text = MKdata.kdata[MKdata.kdata.Count - 1].close.ToString();
+                            });
 
-                    ////thread sleep
-                    //comboBox1.InvokeIfRequired(() =>
-                    //{
-                    //    if (Convert.ToInt32(s) > int.Parse(comboBox1.Text))
-                    //        Thread.Sleep(Convert.ToInt32(s) / int.Parse(comboBox1.Text));
-                    //});
+                        //high - low 
+                        label13.InvokeIfRequired(() =>
+                        {
+                            label13.Text = (DKdata.kdata[DKdata.kdata.Count - 1].high - DKdata.kdata[DKdata.kdata.Count - 1].low).ToString();
+                        });
+
+                        //Qty
+                        label3.InvokeIfRequired(() =>
+                        {
+                            label3.Text = simu.Qty("", "").ToString();
+                        });
+
+                        //Profit
+                        label9.InvokeIfRequired(() =>
+                        {
+                            label9.Text = simu.Profit(MKdata.kdata[MKdata.kdata.Count - 1].close.ToString());
+                        });
+
+                        //Entries
+                        label11.InvokeIfRequired(() =>
+                        {
+                            label11.Text = simu.Entries().ToString();
+                        });
+
+                        //try
+                        //{
+                        plotSurface2D5.InvokeIfRequired(() =>
+                        {
+                            //plotSurface2D5.XAxis1 = mACD.LP_DIF.SuggestXAxis();
+                            //plotSurface2D5.YAxis1 = mACD.LP_DIF.SuggestYAxis();
+                            plotSurface2D5.XAxis1.WorldMax = 300;
+                            plotSurface2D5.XAxis1.WorldMin = 0;
+                            plotSurface2D5.YAxis1.WorldMax = mACD.highest;
+                            plotSurface2D5.YAxis1.WorldMin = mACD.lowest;
+
+                            plotSurface2D5.YAxis1.TickTextNextToAxis = false;
+                            plotSurface2D5.Refresh();
+                        });
+                        //}
+                        //catch (Exception ex) {
+
+                        //}
+
+                        k1.KP.refreshK(MKdata.kdata);
+                        k2.KP.refreshK(DKdata.kdata);
+                        ////thread sleep
+                        //comboBox1.InvokeIfRequired(() =>
+                        //{
+                        //    if (Convert.ToInt32(s) > int.Parse(comboBox1.Text))
+                        //        Thread.Sleep(Convert.ToInt32(s) / int.Parse(comboBox1.Text));
+                        //});
+                    }
                 }
 
                 string time = "";
@@ -296,16 +326,25 @@ namespace 覆盤
             comboBox1.Enabled = false;
             button1.Enabled = false;
             dateTimePicker1.Enabled = false;
+            Lock = new object();
 
-            MKdata = new TXF.K_data();
-            simu = new Simulation();
-            mACD = new Technical_analysis.MACD();
-            Init();
+            lock (Lock)
+            {
+                MKdata = new TXF.K_data();
+                times = new TIMES(int.Parse(comboBox1.Text));
+                simu = new Simulation();
+                mACD = new Technical_analysis.MACD();
+                Init();
+            }
+            
 
+            if (T_Quote != null)
+                T_Quote.Abort();
+            if (T_GUI != null)
+                T_GUI.Abort();
 
             T_Quote = new Thread(quote);
             T_Quote.Start();
-
 
             T_GUI = new Thread(gui);
             T_GUI.Start();
@@ -354,16 +393,13 @@ namespace 覆盤
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            k1.KP = new linep(k1);
             Init();
-            k1.KP.refreshK(MKdata.kdata);
+
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
-            k1.KP = new candlep(k1);
             Init();
-            k1.KP.refreshK(MKdata.kdata);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)

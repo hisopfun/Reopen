@@ -6,7 +6,7 @@ public class TXF
     {
         public class K
         {
-            public string time;
+            public string time = "000000";
             public string ktime;
             public float open;
             public float high;

@@ -17,6 +17,7 @@ namespace 覆盤
             public NPlot.LinePlot LP_DIF = new NPlot.LinePlot();
             public NPlot.LinePlot LP_DEM = new NPlot.LinePlot();
             public NPlot.HorizontalLine horizontalLine = new NPlot.HorizontalLine(0);
+            public float highest = int.MinValue, lowest = int.MaxValue;
             public MACD() {
                 InitLp();
                 times = new float[300];
@@ -69,8 +70,11 @@ namespace 覆盤
                 //    DIF[i] = EMA1.SMA_[i] - EMA2.SMA_[i];
                 //}
                 if (EMA1.Chart_EMA.Count > 0 && EMA2.Chart_EMA.Count > 0)
+                {
                     DIF[DIF.Count - 1] = EMA1.Chart_EMA[EMA1.Chart_EMA.Count - 1] - EMA2.Chart_EMA[EMA2.Chart_EMA.Count - 1];
-
+                    highest = Math.Max(highest, DIF[DIF.Count - 1]);
+                    lowest = Math.Min(lowest, DIF[DIF.Count - 1]);
+                }
 
                 //if (mk.Count == EMA2.ema_count + DEM.ema_count + 2) {
                 //    int n = 34;

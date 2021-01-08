@@ -69,8 +69,44 @@ namespace 覆盤
         public static int s_diff(string t1, string t2)
         {
             TimeSpan d = convertToMillisecond(t1) - convertToMillisecond(t2);
+            return Convert.ToInt32(d.TotalMilliseconds);
+        }
+
+        public static int s_diff(DateTime t1, DateTime t2)
+        {
+            TimeSpan d = t1 - t2;
 
             return Convert.ToInt32(d.TotalMilliseconds);
         }
     }
+
+    public class TIMES {
+        public DateTime sysTime;
+        public DateTime lastTime;
+        public int speed = 1;
+
+        public TIMES(int nSpeed) {
+            speed = nSpeed;
+        }
+
+        public int tDiff(string dt) {
+            int sys_diff = 0, diff = 0;
+            if (lastTime.Date == new DateTime(0001,1,1)) {
+                lastTime = ms.convertToMillisecond(dt);
+                sysTime = DateTime.Now;
+            }
+            //diff = ms.s_diff(ms.convertToMillisecond(dt), lastTime);
+            //sys_diff = ms.s_diff(DateTime.Now, sysTime) ;
+            diff = ms.s_diff(ms.convertToMillisecond(dt), lastTime);
+
+            if (lastTime != ms.convertToMillisecond(dt))
+            {
+                lastTime = ms.convertToMillisecond(dt);
+                sysTime = DateTime.Now;
+            }
+
+            return Math.Max(0, diff / speed);
+        }
+    }
+
 }

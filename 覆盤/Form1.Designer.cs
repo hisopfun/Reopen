@@ -60,7 +60,6 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label14 = new System.Windows.Forms.Label();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -454,7 +453,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.label14);
             this.groupBox1.Controls.Add(this.radioButton2);
             this.groupBox1.Controls.Add(this.radioButton1);
             this.groupBox1.Controls.Add(this.plotSurface2D1);
@@ -467,17 +465,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Chart";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
-            // 
-            // label14
-            // 
-            this.label14.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label14.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label14.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(172, 12);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(142, 25);
-            this.label14.TabIndex = 102;
-            this.label14.Text = "HLDiff";
             // 
             // radioButton2
             // 
@@ -610,7 +597,6 @@
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label14;
         private NPlot.Windows.PlotSurface2D plotSurface2D5;
     }
 }
