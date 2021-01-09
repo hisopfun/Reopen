@@ -29,6 +29,7 @@ namespace 覆盤
 
             KL.InitCandle();
             KL.InitHp();
+            KL.InitLPP();
 
             KL.PS.Add(KL.CP);
             KL.PS_volumn.Add(KL.hp);
@@ -71,12 +72,17 @@ namespace 覆盤
                 KL.CP.LowData = TX[2];//lows;
                 KL.CP.CloseData = TX[3];//closes;
                 KL.CP.AbscissaData = TX[5];// times;
-                                           //PS.Add(CP);
-                KL.PS.XAxis1.WorldMin = 0;
-                KL.PS.XAxis1.WorldMax = KL.KLine_num + 1;
-                KL.PS.YAxis1.WorldMin = Lowest;
-                KL.PS.YAxis1.WorldMax = Highest;
-                KL.PS.YAxis1.TickTextNextToAxis = false;
+
+                //KL.lpp.AbscissaData = new int[] { mk.Count };
+                //KL.lpp.DataSource = new float[] { mk[mk.Count-1].close };
+                //KL.lpp.TextData = new string[] { "⮜" };//⬅⮜←⟵
+
+                //KL.PS.XAxis1.WorldMin = 0;
+                //KL.PS.XAxis1.WorldMax = KL.KLine_num + 1;
+                //KL.PS.YAxis1.WorldMin = Lowest;
+                //KL.PS.YAxis1.WorldMax = Highest;
+                //KL.PS.YAxis1.TickTextNextToAxis = false;
+                KL.AdjustChart(mk, Highest, Lowest);
                 KL.PS.Refresh();
             });
 
@@ -105,6 +111,7 @@ namespace 覆盤
 
             KL.InitLp();
             KL.InitHp();
+            KL.InitLPP();
 
             KL.PS.Add(KL.linePlot);
             KL.PS_volumn.Add(KL.hp);
@@ -157,12 +164,8 @@ namespace 覆盤
 
                 KL.linePlot.DataSource = close;//closes;
                 KL.linePlot.AbscissaData = TX[5];// times;
-                                           //PS.Add(CP);
-                KL.PS.XAxis1.WorldMin = 0;
-                KL.PS.XAxis1.WorldMax = KL.KLine_num + 1;
-                KL.PS.YAxis1.WorldMin = Lowest;
-                KL.PS.YAxis1.WorldMax = Highest;
-                KL.PS.YAxis1.TickTextNextToAxis = false;
+
+                KL.AdjustChart(mk, Highest, Lowest);
                 KL.PS.Refresh();
             });
 
@@ -189,6 +192,8 @@ namespace 覆盤
         public NPlot.Windows.PlotSurface2D PS_volumn = null;
         public NPlot.CandlePlot CP = new CandlePlot();
         public NPlot.HistogramPlot hp = new HistogramPlot();
+        public NPlot.LabelPointPlot lpp = new LabelPointPlot();
+
         public int MK = 0;
         public int KLine_num = 0;
         //public TXF.MK_data TXF_1MK;
@@ -238,19 +243,28 @@ namespace 覆盤
             mygrid.VerticalGridType = Grid.GridType.Fine;
             PlotSurface2D.Add(mygrid);
         }
-        //public void InitKLinePS()
-        //{
-        //    InitPS(PS);
-        //    InitPS(PS_volumn);
 
-        //    InitCandle();
-        //    InitLp();
-        //    InitHp();
+        public void InitLPP() {
+            int[] times = { 500 };
+            lpp.DataSource = new int[] { 100 };
+            lpp.AbscissaData = times;
+            lpp.Font = new Font("Arial",25);
+            lpp.Marker.Type = Marker.MarkerType.None;
+            lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Right;
+            lpp.Marker.Size = 5;
+            PS.Add(lpp);
 
-        //    PS.Add(CP);
-        //    PS_volumn.Add(hp);
-        //    PS.Refresh();
-        //}
+            //NPlot.PointPlot pp = new PointPlot();
+            //pp.Marker.Pen = Pens.Red;
+            //pp.Marker.Type = Marker.MarkerType.Triangle;
+            //pp.Marker.FillBrush = Brushes.DarkRed;
+            ////pp.Marker.Filled = true;
+            //pp.Marker.Size = 50;
+            //pp.DataSource = new int[] { 500 };
+            //pp.AbscissaData = new int[] { 200 };
+            //PS.Add(pp);
+
+        }
 
         public void InitLp() {
             int[] times = { 100, 200, 300, 400, 500, 600, 700 };
@@ -286,12 +300,56 @@ namespace 覆盤
             CP.HighData = highs;
             CP.AbscissaData = times;
             CP.Color = Color.Gray;
-
+            CP.Centered = false;
             //PS.Add(linePlot);
             //PS.Add(pointPlot);
             PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.HorizontalDrag());
             PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.VerticalDrag());
             PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.AxisDrag(true));
+        }
+
+        public void DrawLpp(string BS, int Price, int iTime)
+        {
+
+            NPlot.LabelPointPlot lpp = new LabelPointPlot()
+            {
+                DataSource = new int[] { Price },
+                AbscissaData = new int[] { iTime },
+                TextData = new string[] { BS }
+            };
+
+
+            lpp.Marker.Size = 10;
+            if (BS == "B")
+            {
+                lpp.Marker.Color = System.Drawing.Color.Red;
+                lpp.Marker.Type = Marker.MarkerType.TriangleUp;
+            }
+            else
+            {
+                lpp.Marker.Color = System.Drawing.Color.Green;
+                lpp.Marker.Type = Marker.MarkerType.TriangleDown;
+            }
+            lpp.Marker.Filled = true;
+            PS.Add(lpp);
+        }
+
+        public void DrawAllLpp(Simulation simu) {
+            foreach (Simulation.match mat in simu.MatList) {
+                DrawLpp(mat.BS, int.Parse(mat.Price), mat.iTIME);
+            }
+        }
+
+        public void AdjustChart(List<TXF.K_data.K> mk, float Highest, float Lowest) {
+            lpp.AbscissaData = new int[] { mk.Count };
+            lpp.DataSource = new float[] { mk[mk.Count - 1].close };
+            lpp.TextData = new string[] { "⟵" };//⬅⮜←⟵
+
+            PS.XAxis1.WorldMin = 0;
+            PS.XAxis1.WorldMax = KLine_num + 1;
+            PS.YAxis1.WorldMin = Lowest;
+            PS.YAxis1.WorldMax = Highest;
+            PS.YAxis1.TickTextNextToAxis = false;
         }
 
         //public void refreshK(List<TXF.K_data.K> mk)

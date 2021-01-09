@@ -22,6 +22,7 @@ namespace 覆盤
             public string Qty { get;  }
             public string Price { get;  }
             public string MITLabel;
+            public int iTIME = 0;
 
             public NPlot.LinePlot LineChart = new NPlot.LinePlot();
 

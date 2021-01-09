@@ -90,7 +90,7 @@ namespace 覆盤
         }
 
         public int tDiff(string dt) {
-            int sys_diff = 0, diff = 0;
+            int diff;
             if (lastTime.Date == new DateTime(0001,1,1)) {
                 lastTime = ms.convertToMillisecond(dt);
                 sysTime = DateTime.Now;
