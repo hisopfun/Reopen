@@ -44,13 +44,6 @@
             this.label7 = new System.Windows.Forms.Label();
             this.btn_Buy = new System.Windows.Forms.Button();
             this.btn_Sell = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.plotSurface2D3 = new NPlot.Windows.PlotSurface2D();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.plotSurface2D4 = new NPlot.Windows.PlotSurface2D();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -58,17 +51,25 @@
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.plotSurface2D5 = new NPlot.Windows.PlotSurface2D();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.plotSurface2D4 = new NPlot.Windows.PlotSurface2D();
+            this.plotSurface2D3 = new NPlot.Windows.PlotSurface2D();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
             this.groupBox1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.tabPage1.SuspendLayout();
+            this.tabControl1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -227,110 +228,140 @@
             // btn_Buy
             // 
             this.btn_Buy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.btn_Buy.Location = new System.Drawing.Point(12, 215);
+            this.btn_Buy.Location = new System.Drawing.Point(11, 372);
             this.btn_Buy.Name = "btn_Buy";
             this.btn_Buy.Size = new System.Drawing.Size(75, 25);
             this.btn_Buy.TabIndex = 87;
-            this.btn_Buy.Text = "買";
+            this.btn_Buy.Text = "B";
             this.btn_Buy.UseVisualStyleBackColor = false;
             this.btn_Buy.Click += new System.EventHandler(this.btn_Buy_Click);
             // 
             // btn_Sell
             // 
             this.btn_Sell.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.btn_Sell.Location = new System.Drawing.Point(212, 215);
+            this.btn_Sell.Location = new System.Drawing.Point(209, 372);
             this.btn_Sell.Name = "btn_Sell";
             this.btn_Sell.Size = new System.Drawing.Size(75, 25);
             this.btn_Sell.TabIndex = 88;
-            this.btn_Sell.Text = "賣";
+            this.btn_Sell.Text = "S";
             this.btn_Sell.UseVisualStyleBackColor = false;
             this.btn_Sell.Click += new System.EventHandler(this.btn_Sell_Click);
             // 
-            // dataGridView1
+            // label12
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
-            this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(266, 182);
-            this.dataGridView1.TabIndex = 89;
+            this.label12.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.label12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label12.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(145, 193);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(142, 25);
+            this.label12.TabIndex = 98;
+            this.label12.Text = "5AVG ";
             // 
-            // plotSurface2D3
+            // label13
             // 
-            this.plotSurface2D3.AutoScaleAutoGeneratedAxes = false;
-            this.plotSurface2D3.AutoScaleTitle = false;
-            this.plotSurface2D3.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.plotSurface2D3.DateTimeToolTip = false;
-            this.plotSurface2D3.Legend = null;
-            this.plotSurface2D3.LegendZOrder = -1;
-            this.plotSurface2D3.Location = new System.Drawing.Point(3, 3);
-            this.plotSurface2D3.Name = "plotSurface2D3";
-            this.plotSurface2D3.RightMenu = null;
-            this.plotSurface2D3.ShowCoordinates = true;
-            this.plotSurface2D3.Size = new System.Drawing.Size(263, 177);
-            this.plotSurface2D3.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-            this.plotSurface2D3.TabIndex = 96;
-            this.plotSurface2D3.Text = "plotSurface2D3";
-            this.plotSurface2D3.Title = "";
-            this.plotSurface2D3.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.plotSurface2D3.XAxis1 = null;
-            this.plotSurface2D3.XAxis2 = null;
-            this.plotSurface2D3.YAxis1 = null;
-            this.plotSurface2D3.YAxis2 = null;
+            this.label13.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.label13.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label13.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Location = new System.Drawing.Point(145, 227);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(142, 25);
+            this.label13.TabIndex = 99;
+            this.label13.Text = "HLDiff";
             // 
-            // tabControl1
+            // groupBox1
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Location = new System.Drawing.Point(12, 245);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(277, 364);
-            this.tabControl1.TabIndex = 97;
+            this.groupBox1.Controls.Add(this.radioButton2);
+            this.groupBox1.Controls.Add(this.radioButton1);
+            this.groupBox1.Controls.Add(this.plotSurface2D1);
+            this.groupBox1.Controls.Add(this.plotSurface2D2);
+            this.groupBox1.Controls.Add(this.plotSurface2D5);
+            this.groupBox1.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Location = new System.Drawing.Point(368, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(1021, 934);
+            this.groupBox1.TabIndex = 100;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Chart";
             // 
-            // tabPage1
+            // radioButton2
             // 
-            this.tabPage1.Controls.Add(this.plotSurface2D4);
-            this.tabPage1.Controls.Add(this.plotSurface2D3);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage1.Size = new System.Drawing.Size(269, 338);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "日K";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.radioButton2.Location = new System.Drawing.Point(70, 16);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(81, 23);
+            this.radioButton2.TabIndex = 1;
+            this.radioButton2.Text = "Candle";
+            this.radioButton2.UseVisualStyleBackColor = true;
+            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
-            // plotSurface2D4
+            // radioButton1
             // 
-            this.plotSurface2D4.AutoScaleAutoGeneratedAxes = false;
-            this.plotSurface2D4.AutoScaleTitle = false;
-            this.plotSurface2D4.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.plotSurface2D4.DateTimeToolTip = false;
-            this.plotSurface2D4.Legend = null;
-            this.plotSurface2D4.LegendZOrder = -1;
-            this.plotSurface2D4.Location = new System.Drawing.Point(3, 189);
-            this.plotSurface2D4.Name = "plotSurface2D4";
-            this.plotSurface2D4.RightMenu = null;
-            this.plotSurface2D4.ShowCoordinates = true;
-            this.plotSurface2D4.Size = new System.Drawing.Size(263, 149);
-            this.plotSurface2D4.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-            this.plotSurface2D4.TabIndex = 97;
-            this.plotSurface2D4.Text = "plotSurface2D4";
-            this.plotSurface2D4.Title = "";
-            this.plotSurface2D4.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.plotSurface2D4.XAxis1 = null;
-            this.plotSurface2D4.XAxis2 = null;
-            this.plotSurface2D4.YAxis1 = null;
-            this.plotSurface2D4.YAxis2 = null;
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Checked = true;
+            this.radioButton1.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.radioButton1.Location = new System.Drawing.Point(6, 17);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(58, 22);
+            this.radioButton1.TabIndex = 0;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "Line";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox1.Location = new System.Drawing.Point(15, 772);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(273, 164);
+            this.textBox1.TabIndex = 101;
+            this.textBox1.Text = "聯絡資訊hisopfun@gmail.com       歡迎乾爹們斗內贊助";
+            // 
+            // plotSurface2D5
+            // 
+            this.plotSurface2D5.AutoScaleAutoGeneratedAxes = false;
+            this.plotSurface2D5.AutoScaleTitle = false;
+            this.plotSurface2D5.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.plotSurface2D5.DateTimeToolTip = false;
+            this.plotSurface2D5.Legend = null;
+            this.plotSurface2D5.LegendZOrder = -1;
+            this.plotSurface2D5.Location = new System.Drawing.Point(6, 760);
+            this.plotSurface2D5.Name = "plotSurface2D5";
+            this.plotSurface2D5.RightMenu = null;
+            this.plotSurface2D5.ShowCoordinates = true;
+            this.plotSurface2D5.Size = new System.Drawing.Size(1009, 164);
+            this.plotSurface2D5.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+            this.plotSurface2D5.TabIndex = 103;
+            this.plotSurface2D5.Text = "plotSurface2D5";
+            this.plotSurface2D5.Title = "";
+            this.plotSurface2D5.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.plotSurface2D5.XAxis1 = null;
+            this.plotSurface2D5.XAxis2 = null;
+            this.plotSurface2D5.YAxis1 = null;
+            this.plotSurface2D5.YAxis2 = null;
+            // 
+            // label14
+            // 
+            this.label14.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label14.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(12, 193);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(127, 25);
+            this.label14.TabIndex = 104;
+            this.label14.Text = "5AVG";
+            // 
+            // label15
+            // 
+            this.label15.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label15.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.Location = new System.Drawing.Point(12, 228);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(127, 25);
+            this.label15.TabIndex = 105;
+            this.label15.Text = "H - L";
             // 
             // tabPage2
             // 
@@ -349,111 +380,6 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "成交明細";
             this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage3.Size = new System.Drawing.Size(269, 338);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "未平倉";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // label12
-            // 
-            this.label12.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label12.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(12, 187);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(127, 25);
-            this.label12.TabIndex = 98;
-            this.label12.Text = "5AVG ";
-            // 
-            // label13
-            // 
-            this.label13.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label13.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label13.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(145, 187);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(142, 25);
-            this.label13.TabIndex = 99;
-            this.label13.Text = "HLDiff";
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.radioButton2);
-            this.groupBox1.Controls.Add(this.radioButton1);
-            this.groupBox1.Controls.Add(this.plotSurface2D1);
-            this.groupBox1.Controls.Add(this.plotSurface2D2);
-            this.groupBox1.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(368, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1021, 754);
-            this.groupBox1.TabIndex = 100;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Chart";
-            // 
-            // radioButton2
-            // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.radioButton2.Location = new System.Drawing.Point(70, 16);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(81, 23);
-            this.radioButton2.TabIndex = 1;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Candle";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
-            // 
-            // radioButton1
-            // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.radioButton1.Location = new System.Drawing.Point(6, 17);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(58, 22);
-            this.radioButton1.TabIndex = 0;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Line";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
-            // 
-            // textBox1
-            // 
-            this.textBox1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(12, 614);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(273, 145);
-            this.textBox1.TabIndex = 101;
-            // 
-            // plotSurface2D5
-            // 
-            this.plotSurface2D5.AutoScaleAutoGeneratedAxes = false;
-            this.plotSurface2D5.AutoScaleTitle = false;
-            this.plotSurface2D5.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.plotSurface2D5.DateTimeToolTip = false;
-            this.plotSurface2D5.Legend = null;
-            this.plotSurface2D5.LegendZOrder = -1;
-            this.plotSurface2D5.Location = new System.Drawing.Point(374, 772);
-            this.plotSurface2D5.Name = "plotSurface2D5";
-            this.plotSurface2D5.RightMenu = null;
-            this.plotSurface2D5.ShowCoordinates = true;
-            this.plotSurface2D5.Size = new System.Drawing.Size(1009, 164);
-            this.plotSurface2D5.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-            this.plotSurface2D5.TabIndex = 103;
-            this.plotSurface2D5.Text = "plotSurface2D5";
-            this.plotSurface2D5.Title = "";
-            this.plotSurface2D5.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.plotSurface2D5.XAxis1 = null;
-            this.plotSurface2D5.XAxis2 = null;
-            this.plotSurface2D5.YAxis1 = null;
-            this.plotSurface2D5.YAxis2 = null;
             // 
             // label2
             // 
@@ -521,12 +447,98 @@
             this.label11.TabIndex = 100;
             this.label11.Text = "0";
             // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowHeadersVisible = false;
+            this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
+            this.dataGridView1.RowTemplate.Height = 24;
+            this.dataGridView1.Size = new System.Drawing.Size(266, 182);
+            this.dataGridView1.TabIndex = 89;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.plotSurface2D4);
+            this.tabPage1.Controls.Add(this.plotSurface2D3);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPage1.Size = new System.Drawing.Size(269, 338);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "日K";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // plotSurface2D4
+            // 
+            this.plotSurface2D4.AutoScaleAutoGeneratedAxes = false;
+            this.plotSurface2D4.AutoScaleTitle = false;
+            this.plotSurface2D4.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.plotSurface2D4.DateTimeToolTip = false;
+            this.plotSurface2D4.Legend = null;
+            this.plotSurface2D4.LegendZOrder = -1;
+            this.plotSurface2D4.Location = new System.Drawing.Point(3, 189);
+            this.plotSurface2D4.Name = "plotSurface2D4";
+            this.plotSurface2D4.RightMenu = null;
+            this.plotSurface2D4.ShowCoordinates = true;
+            this.plotSurface2D4.Size = new System.Drawing.Size(263, 149);
+            this.plotSurface2D4.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+            this.plotSurface2D4.TabIndex = 97;
+            this.plotSurface2D4.Text = "plotSurface2D4";
+            this.plotSurface2D4.Title = "";
+            this.plotSurface2D4.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.plotSurface2D4.XAxis1 = null;
+            this.plotSurface2D4.XAxis2 = null;
+            this.plotSurface2D4.YAxis1 = null;
+            this.plotSurface2D4.YAxis2 = null;
+            // 
+            // plotSurface2D3
+            // 
+            this.plotSurface2D3.AutoScaleAutoGeneratedAxes = false;
+            this.plotSurface2D3.AutoScaleTitle = false;
+            this.plotSurface2D3.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.plotSurface2D3.DateTimeToolTip = false;
+            this.plotSurface2D3.Legend = null;
+            this.plotSurface2D3.LegendZOrder = -1;
+            this.plotSurface2D3.Location = new System.Drawing.Point(3, 3);
+            this.plotSurface2D3.Name = "plotSurface2D3";
+            this.plotSurface2D3.RightMenu = null;
+            this.plotSurface2D3.ShowCoordinates = true;
+            this.plotSurface2D3.Size = new System.Drawing.Size(263, 177);
+            this.plotSurface2D3.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+            this.plotSurface2D3.TabIndex = 96;
+            this.plotSurface2D3.Text = "plotSurface2D3";
+            this.plotSurface2D3.Title = "";
+            this.plotSurface2D3.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.plotSurface2D3.XAxis1 = null;
+            this.plotSurface2D3.XAxis2 = null;
+            this.plotSurface2D3.YAxis1 = null;
+            this.plotSurface2D3.YAxis2 = null;
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Location = new System.Drawing.Point(11, 402);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(277, 364);
+            this.tabControl1.TabIndex = 97;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1401, 944);
-            this.Controls.Add(this.plotSurface2D5);
+            this.ClientSize = new System.Drawing.Size(1401, 948);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.label14);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label13);
@@ -543,15 +555,15 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
-            this.Text = "TXF SIMU";
+            this.Text = "TXF SIMU (20200601 ~ )  ";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.tabPage1.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -574,13 +586,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button btn_Buy;
         private System.Windows.Forms.Button btn_Sell;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private NPlot.Windows.PlotSurface2D plotSurface2D3;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.TabPage tabPage3;
-        private NPlot.Windows.PlotSurface2D plotSurface2D4;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -588,12 +593,20 @@
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.TextBox textBox1;
         private NPlot.Windows.PlotSurface2D plotSurface2D5;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private NPlot.Windows.PlotSurface2D plotSurface2D4;
+        private NPlot.Windows.PlotSurface2D plotSurface2D3;
+        private System.Windows.Forms.TabControl tabControl1;
     }
 }
 

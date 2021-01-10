@@ -18,7 +18,8 @@ namespace 覆盤
 {
     class SOCKET
     {
-        public Thread t1; Socket Sclient;
+        public Thread t1;
+        public Socket Sclient;
         public string date = "";
         //DateTime connect_time = new DateTime();
         public string datas = "";
