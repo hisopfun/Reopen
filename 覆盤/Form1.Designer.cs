@@ -42,15 +42,9 @@
             this.plotSurface2D2 = new NPlot.Windows.PlotSurface2D();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btn_Buy = new System.Windows.Forms.Button();
+            this.btn_Sell = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
             this.plotSurface2D3 = new NPlot.Windows.PlotSurface2D();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -64,11 +58,16 @@
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.plotSurface2D5 = new NPlot.Windows.PlotSurface2D();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -225,27 +224,27 @@
             this.label7.TabIndex = 86;
             this.label7.Text = "time";
             // 
-            // button2
+            // btn_Buy
             // 
-            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button2.Location = new System.Drawing.Point(12, 215);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 25);
-            this.button2.TabIndex = 87;
-            this.button2.Text = "買";
-            this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btn_Buy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.btn_Buy.Location = new System.Drawing.Point(12, 215);
+            this.btn_Buy.Name = "btn_Buy";
+            this.btn_Buy.Size = new System.Drawing.Size(75, 25);
+            this.btn_Buy.TabIndex = 87;
+            this.btn_Buy.Text = "買";
+            this.btn_Buy.UseVisualStyleBackColor = false;
+            this.btn_Buy.Click += new System.EventHandler(this.btn_Buy_Click);
             // 
-            // button3
+            // btn_Sell
             // 
-            this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.button3.Location = new System.Drawing.Point(212, 215);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 25);
-            this.button3.TabIndex = 88;
-            this.button3.Text = "賣";
-            this.button3.UseVisualStyleBackColor = false;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btn_Sell.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.btn_Sell.Location = new System.Drawing.Point(212, 215);
+            this.btn_Sell.Name = "btn_Sell";
+            this.btn_Sell.Size = new System.Drawing.Size(75, 25);
+            this.btn_Sell.TabIndex = 88;
+            this.btn_Sell.Text = "賣";
+            this.btn_Sell.UseVisualStyleBackColor = false;
+            this.btn_Sell.Click += new System.EventHandler(this.btn_Sell_Click);
             // 
             // dataGridView1
             // 
@@ -261,72 +260,6 @@
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.Size = new System.Drawing.Size(266, 182);
             this.dataGridView1.TabIndex = 89;
-            // 
-            // label2
-            // 
-            this.label2.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label2.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(3, 2);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(87, 22);
-            this.label2.TabIndex = 91;
-            this.label2.Text = "Qty";
-            // 
-            // label3
-            // 
-            this.label3.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label3.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(95, 2);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(101, 22);
-            this.label3.TabIndex = 90;
-            this.label3.Text = "0";
-            // 
-            // label6
-            // 
-            this.label6.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label6.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(3, 23);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(87, 22);
-            this.label6.TabIndex = 93;
-            this.label6.Text = "Profit";
-            // 
-            // label9
-            // 
-            this.label9.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label9.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(95, 23);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(101, 22);
-            this.label9.TabIndex = 92;
-            this.label9.Text = "0";
-            // 
-            // label10
-            // 
-            this.label10.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.label10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label10.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(3, 45);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(87, 22);
-            this.label10.TabIndex = 95;
-            this.label10.Text = "Entries";
-            // 
-            // label11
-            // 
-            this.label11.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label11.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(95, 45);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(101, 22);
-            this.label11.TabIndex = 94;
-            this.label11.Text = "0";
             // 
             // plotSurface2D3
             // 
@@ -401,6 +334,12 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label2);
+            this.tabPage2.Controls.Add(this.label3);
+            this.tabPage2.Controls.Add(this.label9);
+            this.tabPage2.Controls.Add(this.label6);
+            this.tabPage2.Controls.Add(this.label10);
+            this.tabPage2.Controls.Add(this.label11);
             this.tabPage2.Controls.Add(this.dataGridView1);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
@@ -413,12 +352,6 @@
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.label2);
-            this.tabPage3.Controls.Add(this.label3);
-            this.tabPage3.Controls.Add(this.label9);
-            this.tabPage3.Controls.Add(this.label6);
-            this.tabPage3.Controls.Add(this.label10);
-            this.tabPage3.Controls.Add(this.label11);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage3.Name = "tabPage3";
@@ -463,7 +396,6 @@
             this.groupBox1.TabIndex = 100;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Chart";
-            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
             // radioButton2
             // 
@@ -523,6 +455,72 @@
             this.plotSurface2D5.YAxis1 = null;
             this.plotSurface2D5.YAxis2 = null;
             // 
+            // label2
+            // 
+            this.label2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label2.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(4, 185);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(87, 22);
+            this.label2.TabIndex = 97;
+            this.label2.Text = "Qty";
+            // 
+            // label3
+            // 
+            this.label3.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.label3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label3.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(96, 185);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(101, 22);
+            this.label3.TabIndex = 96;
+            this.label3.Text = "0";
+            // 
+            // label9
+            // 
+            this.label9.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.label9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label9.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(96, 206);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(101, 22);
+            this.label9.TabIndex = 98;
+            this.label9.Text = "0";
+            // 
+            // label6
+            // 
+            this.label6.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label6.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(4, 206);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(87, 22);
+            this.label6.TabIndex = 99;
+            this.label6.Text = "Profit";
+            // 
+            // label10
+            // 
+            this.label10.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.label10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label10.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(4, 228);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(87, 22);
+            this.label10.TabIndex = 101;
+            this.label10.Text = "Entries";
+            // 
+            // label11
+            // 
+            this.label11.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.label11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label11.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(96, 228);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(101, 22);
+            this.label11.TabIndex = 100;
+            this.label11.Text = "0";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -534,8 +532,8 @@
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.btn_Sell);
+            this.Controls.Add(this.btn_Buy);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.dateTimePicker1);
@@ -552,7 +550,6 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
-            this.tabPage3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -575,15 +572,9 @@
         private NPlot.Windows.PlotSurface2D plotSurface2D2;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btn_Buy;
+        private System.Windows.Forms.Button btn_Sell;
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label11;
         private NPlot.Windows.PlotSurface2D plotSurface2D3;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
@@ -597,6 +588,12 @@
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.TextBox textBox1;
         private NPlot.Windows.PlotSurface2D plotSurface2D5;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
     }
 }
 

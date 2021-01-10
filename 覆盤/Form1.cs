@@ -25,10 +25,12 @@ namespace 覆盤
         Technical_analysis.MACD mACD = new Technical_analysis.MACD();
         Simulation simu = new Simulation();
         TIMES times = new TIMES(1);
-
-
+        SOCKET SK;
+        
         private void Form1_Load(object sender, EventArgs e)
         {
+         
+
             KL_1MK = new Kline(plotSurface2D1, plotSurface2D2, 1, 300);
             KL_1DK = new Kline(plotSurface2D3, plotSurface2D4, 1, 40);
             KL_1DK.KP = new candlep(KL_1DK);
@@ -38,6 +40,11 @@ namespace 覆盤
             load_dayK();
 
             InitChart();
+
+            //while (SK.t1.IsAlive) ;
+            //using (StreamWriter sw = new StreamWriter(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\06-11-2020.TXT")) {
+            //    sw.Write(SK.datas);
+            //}
             //dataGridView1.DataSource = simu.MatList;
         }
 
@@ -73,6 +80,8 @@ namespace 覆盤
                 InitChart();
             }
 
+            SK = new SOCKET(dateTimePicker1.Value.ToString("MM-dd-yyyy"));
+            SK._Load();
 
             if (T_Quote != null)
                 T_Quote.Abort();
@@ -88,6 +97,7 @@ namespace 覆盤
 
 
         public void quote() {
+            string contents = "";
             if (!RandomDate.CheckDate(dateTimePicker1.Value)) {
 
                 comboBox1.InvokeIfRequired(() => {
@@ -104,41 +114,52 @@ namespace 覆盤
                     dateTimePicker1.Enabled = true;
                 });
                 MessageBox.Show("No Data");
-                NPlot.PointPlot p = new PointPlot();
-                p.Marker.Type = Marker.MarkerType.Circle;
+                //NPlot.PointPlot p = new PointPlot();
+                //p.Marker.Type = Marker.MarkerType.Circle;
                 return;
             }
-            using (StreamReader sr = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\TXF\\" + dateTimePicker1.Value.ToString("MM-dd-yyyy") +"TXF.TXT"))
-            {
-                string[] wordss = sr.ReadToEnd().Split('\n');
-                bool istart = false;
+            //using (StreamReader sr = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\TXF\\" + dateTimePicker1.Value.ToString("MM-dd-yyyy") + "TXF.TXT"))
+            //{
+            //    contents = sr.ReadToEnd();
+            //}
 
-                string date = "";
-                dateTimePicker1.InvokeIfRequired(() => {
-                    date = dateTimePicker1.Value.ToString("yyyy/M/d");
-                });
-
-                foreach (string words in wordss) {
-                    if (words == "") break;
-                    string[] word = words.Split(',');
-
-                    //search start
-                    if (word[1].Length < 6) return;
-                    if (word[1].Substring(0, 6) == "084500") istart = true;
-                    if (int.Parse(word[1].Substring(0, 4)) > 1344) break;
-                    if (!istart) continue;
-
-                    //MK
-                    MKdata.Add(word[1], word[4], word[5], word[6]);
-                    DKdata.Add(date , word[4], word[5], word[6]);
-                    mACD.macd(MKdata.kdata);
-                   
-                    //run
-                    int ss = times.tDiff(word[1]);
-                    if (ss > 0)
-                        Thread.Sleep(ss);
-                }
+            //socket
+            while (SK.t1.IsAlive) ;
+            contents = SK.datas;
+            if (contents.Contains("NO DATA")) {
+                MessageBox.Show("NO DATA");
+                return;
             }
+
+            string[] wordss = contents.Split('\n');
+            bool istart = false;
+
+            string date = "";
+            dateTimePicker1.InvokeIfRequired(() => {
+                date = dateTimePicker1.Value.ToString("yyyy/M/d");
+            });
+
+            foreach (string words in wordss) {
+                if (words == "") break;
+                string[] word = words.Split(',');
+
+                //search start
+                if (word[1].Length < 6) return;
+                if (word[1].Substring(0, 6) == "084500") istart = true;
+                if (int.Parse(word[1].Substring(0, 4)) > 1344) break;
+                if (!istart) continue;
+
+                //MK
+                MKdata.Add(word[1], word[4], word[5], word[6]);
+                DKdata.Add(date , word[4], word[5], word[6]);
+                mACD.macd(MKdata.kdata);
+                   
+                //run
+                int ss = times.tDiff(word[1]);
+                if (ss > 0)
+                    Thread.Sleep(ss);
+            }
+            
 
            
             comboBox1.InvokeIfRequired(() => {
@@ -168,7 +189,7 @@ namespace 覆盤
                     {
 
                         //time
-                        if (MKdata.kdata[MKdata.kdata.Count - 1].time != null)
+                        if (MKdata.kdata!= null)
                             label4.InvokeIfRequired(() =>
                             {
                                 label4.Text = MKdata.kdata[MKdata.kdata.Count - 1].time.Substring(0, 2).ToString() + ":" +
@@ -178,7 +199,7 @@ namespace 覆盤
 
 
                         //close
-                        if (MKdata.kdata[MKdata.kdata.Count - 1].close != null)
+                        if (MKdata.kdata != null)
                             label1.InvokeIfRequired(() =>
                             {
                                 label1.Text = MKdata.kdata[MKdata.kdata.Count - 1].close.ToString();
@@ -247,7 +268,7 @@ namespace 覆盤
 
 
         //buy
-        private void button2_Click(object sender, EventArgs e)
+        private void btn_Buy_Click(object sender, EventArgs e)
         {
             if (label1.Text == "price") return;
             if (int.Parse(label4.Text.Replace(":", string.Empty)) <= 91500) {
@@ -267,7 +288,7 @@ namespace 覆盤
 
 
         //sell
-        private void button3_Click(object sender, EventArgs e)
+        private void btn_Sell_Click(object sender, EventArgs e)
         {
             if (label1.Text == "price") return;
             if (int.Parse(label4.Text.Replace(":", string.Empty)) <= 91500)
@@ -287,14 +308,11 @@ namespace 覆盤
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
-
+            label12.Text = "5AVG";
             load_dayK();
         }
 
-        private void groupBox1_Enter(object sender, EventArgs e)
-        {
 
-        }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
@@ -316,6 +334,8 @@ namespace 覆盤
             }
         }
 
+
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (T_Quote != null)
@@ -325,6 +345,7 @@ namespace 覆盤
         }
 
         private void load_dayK() {
+            return;
             DKdata.kdata = new List<TXF.K_data.K>();
             using (StreamReader sr = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\日K.TXT")) {
                 string words = sr.ReadLine();

@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SOCKET.cs" />
     <Compile Include="RandomDate.cs" />
     <Compile Include="Kline.cs" />
     <Compile Include="Form1.cs">
