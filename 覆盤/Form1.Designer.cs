@@ -554,7 +554,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
-            this.Text = "TXF SIMU (20200601 ~ )  ";
+            this.Text = "未來家教 Futures Tutor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);

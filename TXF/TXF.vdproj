@@ -3,7 +3,7 @@
 "VSVersion" = "3:800"
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
-"ProjectName" = "8:台指少林寺"
+"ProjectName" = "8:未來家教"
 "LanguageId" = "3:1028"
 "CodePage" = "3:950"
 "UILanguageId" = "3:1028"
@@ -40,12 +40,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_55FD0B54B0180C322E6E7A7FB180B365"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_83F117EFDA72472BA22CB6C36EF633A4"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -53,6 +47,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_DC677B2963D322AFED838CCB6A68447D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_55FD0B54B0180C322E6E7A7FB180B365"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -73,6 +73,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -89,6 +105,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -255,9 +279,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:台指少林寺"
+        "ProductName" = "8:未來家教"
         "ProductCode" = "8:{6215C81A-F683-4638-9AFB-0B5AD480A30E}"
-        "PackageCode" = "8:{403466CA-67FC-49C9-BE7F-E54277920F78}"
+        "PackageCode" = "8:{84B11F27-45BB-481F-A5A0-268D49B3CB37}"
         "UpgradeCode" = "8:{A52D9F7C-41D7-4CFA-AAC7-E03DE8F1E167}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -268,7 +292,7 @@
         "Manufacturer" = "8:Tom"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:台指少林寺"
+        "Title" = "8:未來家教"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Tom"
         "Keywords" = "8:"
@@ -379,7 +403,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_822204B8191A4F0EB22B7E5EBB1F621B"
             {
-            "Name" = "8:台指少林寺"
+            "Name" = "8:未來家教"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
