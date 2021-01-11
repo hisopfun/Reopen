@@ -22,3 +22,15 @@ C:\Users\Lix\Desktop\雜\Reopen\覆盤\obj\Debug\覆盤.csproj.CopyComplete
 C:\Users\Lix\Desktop\雜\Reopen\覆盤\obj\Debug\覆盤.exe
 C:\Users\Lix\Desktop\雜\Reopen\覆盤\obj\Debug\覆盤.pdb
 C:\Users\Lix\Desktop\雜\Reopen\覆盤\obj\Debug\覆盤.csprojAssemblyReference.cache
+C:\Users\Lix\Desktop\MIX\Reopen\覆盤\bin\Debug\覆盤.exe.config
+C:\Users\Lix\Desktop\MIX\Reopen\覆盤\bin\Debug\覆盤.exe
+C:\Users\Lix\Desktop\MIX\Reopen\覆盤\bin\Debug\覆盤.pdb
+C:\Users\Lix\Desktop\MIX\Reopen\覆盤\bin\Debug\NPlot.dll
+C:\Users\Lix\Desktop\MIX\Reopen\覆盤\obj\Debug\覆盤.csprojAssemblyReference.cache
+C:\Users\Lix\Desktop\MIX\Reopen\覆盤\obj\Debug\覆盤.Form1.resources
+C:\Users\Lix\Desktop\MIX\Reopen\覆盤\obj\Debug\覆盤.Properties.Resources.resources
+C:\Users\Lix\Desktop\MIX\Reopen\覆盤\obj\Debug\覆盤.csproj.GenerateResource.cache
+C:\Users\Lix\Desktop\MIX\Reopen\覆盤\obj\Debug\覆盤.csproj.CoreCompileInputs.cache
+C:\Users\Lix\Desktop\MIX\Reopen\覆盤\obj\Debug\覆盤.csproj.CopyComplete
+C:\Users\Lix\Desktop\MIX\Reopen\覆盤\obj\Debug\覆盤.exe
+C:\Users\Lix\Desktop\MIX\Reopen\覆盤\obj\Debug\覆盤.pdb

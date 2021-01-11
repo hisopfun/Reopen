@@ -75,6 +75,7 @@ namespace 覆盤
             lock (Lock)
             {
                 MKdata = new TXF.K_data();
+                DKdata = new TXF.K_data();
                 times = new TIMES(int.Parse(comboBox1.Text));
                 simu = new Simulation();
                 mACD = new Technical_analysis.MACD();
@@ -128,7 +129,7 @@ namespace 覆盤
                     textBox1.Text = SK.firstMsg;
             });
 
-            contents = SK.datas;
+            contents = SK.datas.Replace("DONE", "");
             if (contents.Contains("NO DATA") || contents.Contains("無法連線，因為目標電腦拒絕連線")) {
                 MessageBox.Show("NO DATA");
                 comboBox1.InvokeIfRequired(() => {
