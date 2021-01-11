@@ -100,23 +100,7 @@ namespace 覆盤
         public void quote() {
             string contents = "";
             //if (!RandomDate.CheckDate(dateTimePicker1.Value)) {
-
-            //    comboBox1.InvokeIfRequired(() => {
-            //        comboBox1.Enabled = true;
-            //    });
-
-            //    button1.InvokeIfRequired(() =>
-            //    {
-            //        button1.Enabled = true;
-            //    });
-
-            //    dataGridView1.InvokeIfRequired(() =>
-            //    {
-            //        dateTimePicker1.Enabled = true;
-            //    });
             //    MessageBox.Show("No Data");
-            //    //NPlot.PointPlot p = new PointPlot();
-            //    //p.Marker.Type = Marker.MarkerType.Circle;
             //    return;
             //}
             //using (StreamReader sr = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\TXF\\" + dateTimePicker1.Value.ToString("MM-dd-yyyy") + "TXF.TXT"))
@@ -127,22 +111,25 @@ namespace 覆盤
             //socket
             textBox1.InvokeIfRequired(() =>
             {
-                textBox1.Text = "請等待 約30秒";
+                textBox1.Text = "請稍後 約30秒";
             });            
             while (SK.t1.IsAlive) {
                 textBox1.InvokeIfRequired(() =>
                 {
                     textBox1.Text += ".";
                 });
+                
                 Thread.Sleep(1000);
             }
+
             textBox1.InvokeIfRequired(() =>
             {
-                textBox1.Text = "聯絡資訊hisopfun@gmail.com       歡迎乾爹們斗內贊助";
+                if (SK.firstMsg != "")
+                    textBox1.Text = SK.firstMsg;
             });
 
             contents = SK.datas;
-            if (contents.Contains("NO DATA")) {
+            if (contents.Contains("NO DATA") || contents.Contains("無法連線，因為目標電腦拒絕連線")) {
                 MessageBox.Show("NO DATA");
                 comboBox1.InvokeIfRequired(() => {
                     comboBox1.Enabled = true;
@@ -372,7 +359,8 @@ namespace 覆盤
             if (T_GUI != null)
                 T_GUI.Abort();
 
-            while (SK.t1.IsAlive) ;
+            if (SK != null)
+                while (SK.t1.IsAlive) ;
             //if (SK.t1.IsAlive)
             //{
             //    SK.Sclient.Shutdown(SocketShutdown.Both);

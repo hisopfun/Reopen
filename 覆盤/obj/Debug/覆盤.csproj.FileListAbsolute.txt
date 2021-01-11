@@ -21,3 +21,4 @@ C:\Users\Lix\Desktop\雜\Reopen\覆盤\obj\Debug\覆盤.csproj.CoreCompileInputs
 C:\Users\Lix\Desktop\雜\Reopen\覆盤\obj\Debug\覆盤.csproj.CopyComplete
 C:\Users\Lix\Desktop\雜\Reopen\覆盤\obj\Debug\覆盤.exe
 C:\Users\Lix\Desktop\雜\Reopen\覆盤\obj\Debug\覆盤.pdb
+C:\Users\Lix\Desktop\雜\Reopen\覆盤\obj\Debug\覆盤.csprojAssemblyReference.cache

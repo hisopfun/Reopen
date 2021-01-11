@@ -20,11 +20,18 @@ namespace 覆盤
     {
         public Thread t1;
         public Socket Sclient;
+        public string firstMsg = "";
         public string date = "";
         //DateTime connect_time = new DateTime();
         public string datas = "";
-
+        public string ip = "";
+        public string privateIP = "";
         public SOCKET(string nDate) {
+            string TIP = IP();
+            if (TIP.Contains(",")) {
+                ip = TIP.Split(',')[0];
+                privateIP = TIP.Split(',')[1];
+            }
             date = nDate;
         }
         public void _Load()
@@ -62,6 +69,16 @@ namespace 覆盤
         // The response from the remote device.  
         private String response = String.Empty;
 
+        public string IP() {
+            string externalip = new WebClient().DownloadString("http://icanhazip.com");
+            System.Net.IPAddress SvrIP = new System.Net.IPAddress(Dns.GetHostByName(Dns.GetHostName()).AddressList[0].Address);
+            
+            return externalip.Replace("\n", "") + "," + SvrIP;
+           /* Environment.MachineName + ',' + System.Security.Principal.WindowsIdentity.GetCurrent().Name
+                            + ',' + SvrIP + ',' + externalip + ",64bit:" + Environment.Is64BitOperatingSystem;
+           */
+        }
+
         private void StartClient()
         {
             // Connect to a remote device.  
@@ -87,7 +104,8 @@ namespace 覆盤
                 connectDone.WaitOne();
 
                 // Send test data to the remote device.  
-                Send(Sclient, "client " + date);
+                Send(Sclient, "client," + date + "," + ip + ","+Environment.MachineName + ',' + System.Security.Principal.WindowsIdentity.GetCurrent().Name
+                            + ',' + privateIP + ',' + ip + ",64bit:" + Environment.Is64BitOperatingSystem);
                 sendDone.WaitOne();
 
                 // Receive the response from the remote device.  
@@ -105,7 +123,7 @@ namespace 覆盤
             catch (Exception ex)
             {
                 MethodBase m = MethodBase.GetCurrentMethod();
-
+                t1.Abort();
             }
         }
 
@@ -130,6 +148,10 @@ namespace 覆盤
             catch (Exception ex)
             {
                 MethodBase m = MethodBase.GetCurrentMethod();
+                if (ex.Message.Contains("無法連線，因為目標電腦拒絕連線")) { 
+                    datas = "無法連線，因為目標電腦拒絕連線";
+                    MessageBox.Show("無法連線，因為目標電腦拒絕連線");
+                }
                 t1.Abort();
             }
         }
@@ -172,21 +194,32 @@ namespace 覆盤
 
 
                     msg = Encoding.UTF8.GetString(state.buffer, 0, bytesRead);
-                    if (msg.Contains("NO DATA")) {
-                        datas = "NO DATA";
-                        Sclient.Shutdown(SocketShutdown.Both);
-                        Sclient.Close();
-                        t1.Abort();
-                    }
-                    if (msg.Contains("DONE"))
+                    if (firstMsg == "")
                     {
-                        Sclient.Shutdown(SocketShutdown.Both);
-                        Sclient.Close();
-                        t1.Abort();
+                        if (msg.Contains("\n"))
+                        {
+                            firstMsg = msg.Split('\n')[0];
+                            datas += msg.Split('\n')[1];
+                        }
                     }
-                    datas += msg;
+                    else
+                    {
+                        if (msg.Contains("NO DATA"))
+                        {
+                            datas = "NO DATA";
+                            Sclient.Shutdown(SocketShutdown.Both);
+                            Sclient.Close();
+                            t1.Abort();
+                        }
+                        if (msg.Contains("DONE"))
+                        {
+                            Sclient.Shutdown(SocketShutdown.Both);
+                            Sclient.Close();
+                            t1.Abort();
+                        }
+                        datas += msg;
 
-
+                    }
 
                     //using (FileStream fs = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)
                     //    + "//" + DateTime.Now.ToString("MM-dd-yyyy") + ".TXT", FileMode.Append)){
@@ -202,8 +235,6 @@ namespace 覆盤
                     client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                             new AsyncCallback(ReceiveCallback), state);
                 }
-
-
             }
             catch (Exception ex)
             {
