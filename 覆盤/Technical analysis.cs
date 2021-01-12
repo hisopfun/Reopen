@@ -9,21 +9,27 @@ namespace 覆盤
     class Technical_analysis
     {
         public class MACD {
-            public float[] times;
+            public float[] times_DIF, times_DEM;
             public EMA EMA1 = new EMA(12, System.Drawing.Color.Red);
             public EMA EMA2 = new EMA(26, System.Drawing.Color.Blue);
             private List<float> DIF { get; } = new List<float>();
-            private EMA DEM { get; } = new EMA(9, System.Drawing.Color.Yellow);
+            public EMA DEM { get; } = new EMA(9, System.Drawing.Color.Yellow);
             public NPlot.LinePlot LP_DIF = new NPlot.LinePlot();
             public NPlot.LinePlot LP_DEM = new NPlot.LinePlot();
             public NPlot.HorizontalLine horizontalLine = new NPlot.HorizontalLine(0);
             public float highest = int.MinValue, lowest = int.MaxValue;
             public MACD() {
                 InitLp();
-                times = new float[300];
+                times_DIF = new float[300 - 26];
+                times_DEM = new float[300 - 26 - 9 + 1];
                 int i;
-                for (i = 0; i < times.Length; i++) {
-                    times[i] = i;
+                for (i = 0; i < times_DIF.Length; i++) {
+                    times_DIF[i] = i + 26;
+                }
+
+                for (i = 0; i < times_DEM.Length; i++)
+                {
+                    times_DEM[i] = i + 26 + 9 - 1;
                 }
             }
             public void InitLp()
@@ -44,15 +50,13 @@ namespace 覆盤
                 
 
                 LP_DIF.DataSource = DIF;
-                LP_DIF.AbscissaData = times;
+                LP_DIF.AbscissaData = times_DIF;
                 LP_DEM.DataSource = DEM.Chart_EMA;
-                LP_DEM.AbscissaData = times;
-
-        
+                LP_DEM.AbscissaData = times_DEM;
             }
 
             public void dif(List<TXF.K_data.K> mk) {
-                while (mk.Count > DIF.Count)
+                /*while (mk.Count > DIF.Count)
                 {
                     DIF.Add(new float());
                     DEM.Chart_EMA.Add(new float());
@@ -64,12 +68,17 @@ namespace 覆盤
                             DEM.Chart_EMA[DEM.Chart_EMA.Count - 3] = 0;
                         }
                     }
-                }
+                }*/
+
+
                 //int i;
                 //for (i = 25; i < DIF.Count; i++) {
                 //    DIF[i] = EMA1.SMA_[i] - EMA2.SMA_[i];
                 //}
-                if (EMA1.Chart_EMA.Count > 0 && EMA2.Chart_EMA.Count > 0)
+
+                while (mk.Count > DIF.Count + 26)
+                    DIF.Add(new float());
+                if (EMA1.Chart_EMA.Count > 0 && EMA2.Chart_EMA.Count > 0 && DIF.Count > 0)
                 {
                     DIF[DIF.Count - 1] = EMA1.Chart_EMA[EMA1.Chart_EMA.Count - 1] - EMA2.Chart_EMA[EMA2.Chart_EMA.Count - 1];
                     highest = Math.Max(highest, DIF[DIF.Count - 1]);

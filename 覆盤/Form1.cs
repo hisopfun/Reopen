@@ -49,16 +49,25 @@ namespace 覆盤
             //dataGridView1.DataSource = simu.MatList;
         }
 
+        private void InitMACDChart() { 
+            plotSurface2D5.Clear();
+            plotSurface2D5.Add(new Grid()
+            {
+                HorizontalGridType = Grid.GridType.Fine,
+                VerticalGridType = Grid.GridType.Fine
+            });
+
+            plotSurface2D5.Add(mACD.LP_DIF);
+            plotSurface2D5.Add(mACD.LP_DEM);
+            plotSurface2D5.Add(mACD.horizontalLine);
+        }
+
         private void InitChart() {
             if (radioButton1.Checked)
                 KL_1MK.KP = new linep(KL_1MK);
             if (radioButton2.Checked)
                 KL_1MK.KP = new candlep(KL_1MK);
 
-            plotSurface2D5.Clear();
-            plotSurface2D5.Add(mACD.LP_DIF);
-            plotSurface2D5.Add(mACD.LP_DEM);
-            plotSurface2D5.Add(mACD.horizontalLine);
             //plotSurface2D1.Add(ema3.LP_EMA);
             //plotSurface2D1.Add(mACD.EMA1.LP_EMA);
             //plotSurface2D1.Add(mACD.EMA2.LP_EMA);
@@ -80,6 +89,7 @@ namespace 覆盤
                 simu = new Simulation();
                 mACD = new Technical_analysis.MACD();
                 InitChart();
+                InitMACDChart();
             }
 
             SK = new SOCKET(dateTimePicker1.Value.ToString("MM-dd-yyyy"));

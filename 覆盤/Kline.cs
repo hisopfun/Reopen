@@ -238,9 +238,10 @@ namespace 覆盤
             PlotSurface2D.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             PlotSurface2D.Clear();
 
-            Grid mygrid = new Grid();
-            mygrid.HorizontalGridType = Grid.GridType.Fine;
-            mygrid.VerticalGridType = Grid.GridType.Fine;
+            Grid mygrid = new Grid(){
+                HorizontalGridType = Grid.GridType.Fine,
+                VerticalGridType = Grid.GridType.Fine 
+            };
             PlotSurface2D.Add(mygrid);
         }
 
