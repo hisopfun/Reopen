@@ -10,7 +10,6 @@ using System.Net.Sockets;
 
 namespace 覆盤
 {
-
     public partial class Form1 : Form
     {
         public Form1()
@@ -122,9 +121,10 @@ namespace 覆盤
             //socket
             textBox1.InvokeIfRequired(() =>
             {
-                textBox1.Text = "請稍後 約30秒";
-            });            
-            while (SK.t1.IsAlive) {
+                textBox1.Text = "請稍後 約5秒";
+            });      
+            
+            while (SK.ticks.Count <= 0 && SK.t1.IsAlive) {
                 textBox1.InvokeIfRequired(() =>
                 {
                     textBox1.Text += ".";
@@ -158,7 +158,8 @@ namespace 覆盤
                 return;
             }
 
-            string[] wordss = contents.Split('\n');
+
+            //string[] wordss = contents.Split('\n');
             bool istart = false;
 
             string date = "";
@@ -166,27 +167,36 @@ namespace 覆盤
                 date = dateTimePicker1.Value.ToString("yyyy/M/d");
             });
 
-            foreach (string words in wordss) {
-                if (words == "") break;
-                string[] word = words.Split(',');
+            //foreach (string words in wordss) {
+            while (SK.t1.IsAlive || SK.ticks.Count > 0) {
+                if (SK.ticks.Count > 0)
+                {
+                    string words = "";
+                    lock (SK.Lock)
+                        words = SK.ticks.Dequeue();
+                    if (words == null) continue;
+                    if (words == "") break;
+                    string[] word = words.Split(',');
 
-                //search start
-                if (word[1].Length < 6) return;
-                if (word[1].Substring(0, 6) == "084500") istart = true;
-                if (int.Parse(word[1].Substring(0, 4)) > 1344) break;
-                if (!istart) continue;
+                    //search start
+                    if (word[1].Length < 6) return;
+                    if (word[1].Substring(0, 6) == "084500") istart = true;
+                    if (int.Parse(word[1].Substring(0, 4)) > 1344) break;
+                    if (!istart) continue;
 
-                //MK
-                MKdata.Add(word[1], word[4], word[5], word[6]);
-                DKdata.Add(date , word[4], word[5], word[6]);
-                mACD.macd(MKdata.kdata);
-                   
-                //run
-                int ss = times.tDiff(word[1]);
-                if (ss > 0)
-                    Thread.Sleep(ss);
+                    //MK
+                    MKdata.Add(word[1], word[4], word[5], word[6]);
+                    DKdata.Add(date, word[4], word[5], word[6]);
+                    mACD.macd(MKdata.kdata);
+
+                    //run
+                    int ss = times.tDiff(word[1]);
+                    if (ss > 0)
+                        Thread.Sleep(ss);
+                }
             }
             
+
 
            
             comboBox1.InvokeIfRequired(() => {
@@ -371,7 +381,7 @@ namespace 覆盤
                 T_GUI.Abort();
 
             if (SK != null)
-                while (SK.t1.IsAlive) ;
+                SK.t1.Abort();
             //if (SK.t1.IsAlive)
             //{
             //    SK.Sclient.Shutdown(SocketShutdown.Both);

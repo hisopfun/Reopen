@@ -26,6 +26,9 @@ namespace 覆盤
         public string datas = "";
         public string ip = "";
         public string privateIP = "";
+        public Queue<string> ticks = new Queue<string>();
+        public object Lock = new object();
+
         public SOCKET(string nDate) {
             string TIP = IP();
             if (TIP.Contains(",")) {
@@ -194,6 +197,7 @@ namespace 覆盤
 
 
                     msg = Encoding.UTF8.GetString(state.buffer, 0, bytesRead);
+
                     if (firstMsg == "")
                     {
                         if (msg.Contains("\n"))
@@ -218,7 +222,19 @@ namespace 覆盤
                             t1.Abort();
                         }
                         datas += msg;
-
+                        if (datas.Contains('\n'))
+                        {
+                            string[] words = datas.Split('\n');
+                            int i;
+                            for (i = 0; i < words.Length; i++)
+                            {
+                                if (i < words.Length - 1)
+                                    lock(Lock)
+                                        ticks.Enqueue(words[i]);
+                                else
+                                    datas = words[i];
+                            }
+                        }
                     }
 
                     //using (FileStream fs = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)
