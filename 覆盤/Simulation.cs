@@ -13,7 +13,7 @@ namespace 覆盤
         public List<match> MatList { get; set; } = new List<match>();
         public List<match> OrdList { get; set; } = new List<match>();
         public List<match> MITList { get; set; } = new List<match>();
-
+        public NPlot.Windows.PlotSurface2D PS = null;
         public class match
         {
             public string Time { get; }
@@ -24,8 +24,9 @@ namespace 覆盤
             public string MITLabel;
             public int iTIME = 0;
 
-            public NPlot.LinePlot LineChart = new NPlot.LinePlot();
-
+            //public NPlot.LinePlot LineChart = new NPlot.LinePlot();
+            public NPlot.HorizontalLine horizontalLine;
+ 
             public match(string nMatTime, string nFutNo, string nBSCode, string nQty, string nPrice, string nMITLabel)
             {
                 Time = nMatTime;
@@ -34,7 +35,12 @@ namespace 覆盤
                 Qty = nQty;
                 Price = nPrice;
                 MITLabel = nMITLabel;
+                
             }
+        }
+
+        public Simulation(NPlot.Windows.PlotSurface2D nPS) {
+            PS = nPS;
         }
 
         public bool Order(string nMatTime, string nFutNo, string nBSCode, string nQty, string nOrdPri)
@@ -55,9 +61,11 @@ namespace 覆盤
                 Label = ">=";
             }
             MITList.Add(new match(nMatTime, nFutNo, nBSCode, nQty, nMITPri, Label));
+            MITList[MITList.Count - 1].horizontalLine = new HorizontalLine(int.Parse(nMITPri), (nBSCode == "B") ? System.Drawing.Color.Red : System.Drawing.Color.Green);
+            PS.Add(MITList[MITList.Count - 1].horizontalLine);
             return true;
         }
-        public List<string> MITToOrder(string nMatTime, string nBid, string nAsk, string nMatPri, NPlot.Windows.PlotSurface2D PS)
+        public List<string> MITToOrder(string nMatTime, string nBid, string nAsk, string nMatPri)
         {
             List<string> Order = new List<string>();
             //MIT -> order
@@ -78,7 +86,7 @@ namespace 覆盤
             return Order;
         }
 
-        public List<string> DealInfo(string nMatTime, string nBid, string nAsk, string nMatPri, NPlot.Windows.PlotSurface2D PS)
+        public List<string> DealInfo(string nMatTime, string nBid, string nAsk, string nMatPri)
         {
             List<string> deal = new List<string>();
 
@@ -208,7 +216,8 @@ namespace 覆盤
             {
                 if (NotMatList[i].BS.Equals(nBSCode) && NotMatList[i].Price.Equals(nPrice))
                 {
-                    PS.Remove(NotMatList[i].LineChart, false);
+                    PS.Remove(NotMatList[i].horizontalLine, false);
+                    //PS.Remove(NotMatList[i].LineChart, false);
                     NotMatList.Remove(NotMatList[i]);
                     i--;
                     change = true;

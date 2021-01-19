@@ -82,7 +82,7 @@ namespace 覆盤
                 //KL.PS.YAxis1.WorldMin = Lowest;
                 //KL.PS.YAxis1.WorldMax = Highest;
                 //KL.PS.YAxis1.TickTextNextToAxis = false;
-                KL.AdjustChart(mk, Highest, Lowest);
+                KL.AdjustChart(mk, Highest + 10, Lowest - 10);
                 KL.PS.Refresh();
             });
 
@@ -165,7 +165,7 @@ namespace 覆盤
                 KL.linePlot.DataSource = close;//closes;
                 KL.linePlot.AbscissaData = TX[5];// times;
 
-                KL.AdjustChart(mk, Highest, Lowest);
+                KL.AdjustChart(mk, Highest + 10, Lowest - 10);
                 KL.PS.Refresh();
             });
 
@@ -335,9 +335,18 @@ namespace 覆盤
             PS.Add(lpp);
         }
 
-        public void DrawAllLpp(Simulation simu) {
+        public void DrawAllLppHL(Simulation simu) {
+
+            //Mat
             foreach (Simulation.match mat in simu.MatList) {
                 DrawLpp(mat.BS, int.Parse(mat.Price), mat.iTIME);
+            }
+
+            //MIT
+            foreach (Simulation.match mat in simu.MITList)
+            {
+                mat.horizontalLine = new HorizontalLine(int.Parse(mat.Price), (mat.BS == "B") ? System.Drawing.Color.Red : System.Drawing.Color.Green);
+                PS.Add(mat.horizontalLine);
             }
         }
 

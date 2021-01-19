@@ -17,14 +17,14 @@ namespace 覆盤
             InitializeComponent();
         }
 
-        object Lock = new object();
+        object Lock;
         Thread T_Quote, T_GUI;
-        TXF.K_data MKdata = new TXF.K_data();
-        TXF.K_data DKdata = new TXF.K_data();
+        TXF.K_data MKdata;
+        TXF.K_data DKdata;
         Kline KL_1MK, KL_1DK;
-        Technical_analysis.MACD mACD = new Technical_analysis.MACD();
-        Simulation simu = new Simulation();
-        TIMES times = new TIMES(1);
+        Technical_analysis.MACD mACD;
+        Simulation simu;
+        TIMES times;
         SOCKET SK;
         
         private void Form1_Load(object sender, EventArgs e)
@@ -36,16 +36,8 @@ namespace 覆盤
             KL_1DK.KP = new candlep(KL_1DK);
             radioButton1.Checked = true;
 
-            //dateTimePicker1.Value = RandomDate.RandomSelectDate();
             load_dayK();
-
             InitChart();
-
-            //while (SK.t1.IsAlive) ;
-            //using (StreamWriter sw = new StreamWriter(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\06-11-2020.TXT")) {
-            //    sw.Write(SK.datas);
-            //}
-            //dataGridView1.DataSource = simu.MatList;
         }
 
         private void InitMACDChart() { 
@@ -66,12 +58,6 @@ namespace 覆盤
                 KL_1MK.KP = new linep(KL_1MK);
             if (radioButton2.Checked)
                 KL_1MK.KP = new candlep(KL_1MK);
-
-            //plotSurface2D1.Add(ema3.LP_EMA);
-            //plotSurface2D1.Add(mACD.EMA1.LP_EMA);
-            //plotSurface2D1.Add(mACD.EMA2.LP_EMA);
-
-            //k1.KP.refreshK(MKdata.kdata);
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -80,12 +66,14 @@ namespace 覆盤
             dateTimePicker1.Enabled = false;
             Lock = new object();
 
+            dataGridView1.DataSource = null;
+
             lock (Lock)
             {
                 MKdata = new TXF.K_data();
                 DKdata = new TXF.K_data();
                 times = new TIMES(int.Parse(comboBox1.Text));
-                simu = new Simulation();
+                simu = new Simulation(plotSurface2D1);
                 mACD = new Technical_analysis.MACD();
                 InitChart();
                 InitMACDChart();
@@ -109,14 +97,6 @@ namespace 覆盤
 
         public void quote() {
             string contents = "";
-            //if (!RandomDate.CheckDate(dateTimePicker1.Value)) {
-            //    MessageBox.Show("No Data");
-            //    return;
-            //}
-            //using (StreamReader sr = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\TXF\\" + dateTimePicker1.Value.ToString("MM-dd-yyyy") + "TXF.TXT"))
-            //{
-            //    contents = sr.ReadToEnd();
-            //}
 
             //socket
             textBox1.InvokeIfRequired(() =>
@@ -179,15 +159,32 @@ namespace 覆盤
                     string[] word = words.Split(',');
 
                     //search start
-                    if (word[1].Length < 6) return;
-                    if (word[1].Substring(0, 6) == "084500") istart = true;
-                    if (int.Parse(word[1].Substring(0, 4)) > 1344) break;
-                    if (!istart) continue;
+                    if (word[1].Length < 6)                                         return;
+                    if (word[1].Substring(0, 6) == "084500")                        istart = true;
+                    if (int.Parse(word[1].Substring(0, 6)) > 134459 && istart)      break;
+                    if (!istart)                                                    continue;
 
                     //MK
-                    MKdata.Add(word[1], word[4], word[5], word[6]);
-                    DKdata.Add(date, word[4], word[5], word[6]);
+                    MKdata.Add(word[1], word[4], word[5]);
+                    DKdata.Add(date, word[4], word[5]);
                     mACD.macd(MKdata.kdata);
+
+                    //MIT
+                    List<string> Order = simu.MITToOrder(word[1], word[2], word[3], word[4]);
+                    List<string> deal = simu.DealInfo(word[1], word[2], word[3], word[4]);
+                    if (deal != null && deal.Count > 0)
+                    {
+                        //Draw MIT 
+                        simu.MatList[simu.MatList.Count - 1].iTIME = MKdata.kdata.Count;
+                        KL_1MK.DrawAllLppHL(simu);
+
+                        //MatList
+                        dataGridView1.InvokeIfRequired(() =>
+                        {
+                            dataGridView1.DataSource = null;
+                            dataGridView1.DataSource = simu.MatList;
+                        });
+                    }
 
                     //run
                     int ss = times.tDiff(word[1]);
@@ -212,14 +209,14 @@ namespace 覆盤
             {
                 dateTimePicker1.Enabled = true;
             });
-
             T_Quote.Abort();
         }
         public void gui() {
+            bool close = false;
             while (true)
             {
                 Thread.Sleep(1);
-
+                
                 lock (Lock)
                 {
                     if (MKdata.kdata.Count > 0)
@@ -266,10 +263,9 @@ namespace 覆盤
                             label11.Text = simu.Entries().ToString();
                         });
 
+                        //chart
                         plotSurface2D5.InvokeIfRequired(() =>
                         {
-                            //plotSurface2D5.XAxis1 = mACD.LP_DIF.SuggestXAxis();
-                            //plotSurface2D5.YAxis1 = mACD.LP_DIF.SuggestYAxis();
                             plotSurface2D5.XAxis1.WorldMax = 300;
                             plotSurface2D5.XAxis1.WorldMin = 0;
                             plotSurface2D5.YAxis1.WorldMax = mACD.highest;
@@ -278,7 +274,6 @@ namespace 覆盤
                             plotSurface2D5.YAxis1.TickTextNextToAxis = false;
                             plotSurface2D5.Refresh();
                         });
-
                         KL_1MK.KP.refreshK(MKdata.kdata);
                         KL_1DK.KP.refreshK(DKdata.kdata);
                     }
@@ -299,6 +294,10 @@ namespace 覆盤
                     });
                     
                 }
+
+                if (close) T_GUI.Abort();
+                if (!T_Quote.IsAlive) close = true;
+
             }
         }
 
@@ -357,7 +356,12 @@ namespace 覆盤
             lock (Lock)
             {
                 InitChart();
-                KL_1MK.DrawAllLpp(simu);
+                KL_1MK.DrawAllLppHL(simu);
+            }
+            if (!T_GUI.IsAlive)
+            {
+                T_GUI = new Thread(gui);
+                T_GUI.Start();
             }
         }
 
@@ -367,11 +371,38 @@ namespace 覆盤
             lock (Lock)
             {
                 InitChart();
-                KL_1MK.DrawAllLpp(simu);
+                KL_1MK.DrawAllLppHL(simu);
+            }
+            if (!T_GUI.IsAlive)
+            {
+                T_GUI = new Thread(gui);
+                T_GUI.Start();
             }
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (label1.Text == "price") return;
+            if (int.Parse(label4.Text.Replace(":", string.Empty)) <= 91500)
+            {
+                textBox1.Text = "Warning : Order Failed!!\n Please place your order after 9:15";
+                return;
+            }
 
+            simu.MIT(label4.Text, "TXF", "B", "1", textBox2.Text, label1.Text);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (label1.Text == "price") return;
+            if (int.Parse(label4.Text.Replace(":", string.Empty)) <= 91500)
+            {
+                textBox1.Text = "Warning : Order Failed!!\n Please place your order after 9:15";
+                return;
+            }
+
+            simu.MIT(label4.Text, "TXF", "S", "1", textBox2.Text, label1.Text);
+        }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -382,12 +413,6 @@ namespace 覆盤
 
             if (SK != null)
                 SK.t1.Abort();
-            //if (SK.t1.IsAlive)
-            //{
-            //    SK.Sclient.Shutdown(SocketShutdown.Both);
-            //    SK.Sclient.Close();
-            //    SK.t1.Abort();
-            //}
         }
 
         private void load_dayK() {

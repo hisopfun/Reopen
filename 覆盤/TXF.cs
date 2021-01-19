@@ -13,7 +13,7 @@ public class TXF
             public float low;
             public float close;
             public uint qty;
-            public int tqty;
+            public uint tqty;
             public K(string nKtime, float nPri) {
                 ktime = nKtime;
                 open = nPri;
@@ -23,12 +23,11 @@ public class TXF
             }
         }
         public List<K> kdata = new List<K>();
-        public bool Add(string nTime, string nPri, string nQty, string nTQty) {
+        public bool Add(string nTime, string nPri, string nQty) {
             if (nTime == "") return false;
             if (nQty == "") return false;
             float Pri = float.Parse(nPri);
             uint Qty = uint.Parse(nQty);
-            int TQty = int.Parse(nTQty);
             if (kdata.Count > 0 && nTime.Substring(0, 4) == kdata[kdata.Count - 1].ktime) {
                 kdata[kdata.Count - 1].ktime = nTime.Substring(0, 4);
                 kdata[kdata.Count - 1].time = nTime;
@@ -36,7 +35,10 @@ public class TXF
                 kdata[kdata.Count - 1].low = Math.Min(kdata[kdata.Count - 1].low, Pri);
                 kdata[kdata.Count - 1].close = Pri;
                 kdata[kdata.Count - 1].qty += Qty;
-                kdata[kdata.Count - 1].tqty = TQty;
+                if (kdata.Count >= 2)
+                    kdata[kdata.Count - 1].tqty = kdata[kdata.Count - 2].tqty + kdata[kdata.Count - 1].qty;
+                else
+                    kdata[kdata.Count - 1].tqty = kdata[kdata.Count - 1].qty;
                 return false;
             }
             if (nTime != "")
@@ -48,7 +50,10 @@ public class TXF
                 kdata[kdata.Count - 1].low = Math.Min(kdata[kdata.Count - 1].low, Pri);
                 kdata[kdata.Count - 1].close = Pri;
                 kdata[kdata.Count - 1].qty += Qty;
-                kdata[kdata.Count - 1].tqty = TQty;
+                if (kdata.Count >= 2)
+                    kdata[kdata.Count - 1].tqty = kdata[kdata.Count - 2].tqty + kdata[kdata.Count - 1].qty;
+                else
+                    kdata[kdata.Count - 1].tqty = kdata[kdata.Count - 1].qty;
                 return true;
             }
             return false;
