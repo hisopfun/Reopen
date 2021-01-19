@@ -65,6 +65,9 @@
             this.plotSurface2D4 = new NPlot.Windows.PlotSurface2D();
             this.plotSurface2D3 = new NPlot.Windows.PlotSurface2D();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -533,11 +536,47 @@
             this.tabControl1.Size = new System.Drawing.Size(277, 364);
             this.tabControl1.TabIndex = 97;
             // 
+            // textBox2
+            // 
+            this.textBox2.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox2.Location = new System.Drawing.Point(93, 269);
+            this.textBox2.Multiline = true;
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(108, 25);
+            this.textBox2.TabIndex = 106;
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.button2.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(12, 269);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 25);
+            this.button2.TabIndex = 107;
+            this.button2.Text = "MIT";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button3
+            // 
+            this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.button3.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(209, 269);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 25);
+            this.button3.TabIndex = 108;
+            this.button3.Text = "MIT";
+            this.button3.UseVisualStyleBackColor = false;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1401, 942);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.textBox1);
@@ -608,6 +647,9 @@
         private NPlot.Windows.PlotSurface2D plotSurface2D4;
         private NPlot.Windows.PlotSurface2D plotSurface2D3;
         private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }
 

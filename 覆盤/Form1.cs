@@ -389,7 +389,7 @@ namespace 覆盤
                 return;
             }
 
-            //simu.MIT(label4.Text, "TXF", "B", "1", textBox2.Text, label1.Text);
+            simu.MIT(label4.Text, "TXF", "B", "1", textBox2.Text, label1.Text);
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -401,7 +401,7 @@ namespace 覆盤
                 return;
             }
 
-            //simu.MIT(label4.Text, "TXF", "S", "1", textBox2.Text, label1.Text);
+            simu.MIT(label4.Text, "TXF", "S", "1", textBox2.Text, label1.Text);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
