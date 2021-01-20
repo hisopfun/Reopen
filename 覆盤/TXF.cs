@@ -22,38 +22,38 @@ public class TXF
                 close = nPri;
             }
         }
-        public List<K> kdata = new List<K>();
-        public bool Add(string nTime, string nPri, string nQty) {
+        public List<K> klist = new List<K>();
+        public bool Run(string nTime, string nPri, string nQty) {
             if (nTime == "") return false;
             if (nQty == "") return false;
             float Pri = float.Parse(nPri);
             uint Qty = uint.Parse(nQty);
-            if (kdata.Count > 0 && nTime.Substring(0, 4) == kdata[kdata.Count - 1].ktime) {
-                kdata[kdata.Count - 1].ktime = nTime.Substring(0, 4);
-                kdata[kdata.Count - 1].time = nTime;
-                kdata[kdata.Count - 1].high = Math.Max(kdata[kdata.Count - 1].high, Pri);
-                kdata[kdata.Count - 1].low = Math.Min(kdata[kdata.Count - 1].low, Pri);
-                kdata[kdata.Count - 1].close = Pri;
-                kdata[kdata.Count - 1].qty += Qty;
-                if (kdata.Count >= 2)
-                    kdata[kdata.Count - 1].tqty = kdata[kdata.Count - 2].tqty + kdata[kdata.Count - 1].qty;
+            if (klist.Count > 0 && nTime.Substring(0, 4) == klist[klist.Count - 1].ktime) {
+                klist[klist.Count - 1].ktime = nTime.Substring(0, 4);
+                klist[klist.Count - 1].time = nTime;
+                klist[klist.Count - 1].high = Math.Max(klist[klist.Count - 1].high, Pri);
+                klist[klist.Count - 1].low = Math.Min(klist[klist.Count - 1].low, Pri);
+                klist[klist.Count - 1].close = Pri;
+                klist[klist.Count - 1].qty += Qty;
+                if (klist.Count >= 2)
+                    klist[klist.Count - 1].tqty = klist[klist.Count - 2].tqty + klist[klist.Count - 1].qty;
                 else
-                    kdata[kdata.Count - 1].tqty = kdata[kdata.Count - 1].qty;
+                    klist[klist.Count - 1].tqty = klist[klist.Count - 1].qty;
                 return false;
             }
             if (nTime != "")
             {
-                kdata.Add(new K(nTime.Substring(0, 4), Pri));
-                kdata[kdata.Count - 1].ktime = nTime.Substring(0, 4);
-                kdata[kdata.Count - 1].time = nTime;
-                kdata[kdata.Count - 1].high = Math.Max(kdata[kdata.Count - 1].high, Pri);
-                kdata[kdata.Count - 1].low = Math.Min(kdata[kdata.Count - 1].low, Pri);
-                kdata[kdata.Count - 1].close = Pri;
-                kdata[kdata.Count - 1].qty += Qty;
-                if (kdata.Count >= 2)
-                    kdata[kdata.Count - 1].tqty = kdata[kdata.Count - 2].tqty + kdata[kdata.Count - 1].qty;
+                klist.Add(new K(nTime.Substring(0, 4), Pri));
+                klist[klist.Count - 1].ktime = nTime.Substring(0, 4);
+                klist[klist.Count - 1].time = nTime;
+                klist[klist.Count - 1].high = Math.Max(klist[klist.Count - 1].high, Pri);
+                klist[klist.Count - 1].low = Math.Min(klist[klist.Count - 1].low, Pri);
+                klist[klist.Count - 1].close = Pri;
+                klist[klist.Count - 1].qty += Qty;
+                if (klist.Count >= 2)
+                    klist[klist.Count - 1].tqty = klist[klist.Count - 2].tqty + klist[klist.Count - 1].qty;
                 else
-                    kdata[kdata.Count - 1].tqty = kdata[kdata.Count - 1].qty;
+                    klist[klist.Count - 1].tqty = klist[klist.Count - 1].qty;
                 return true;
             }
             return false;

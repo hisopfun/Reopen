@@ -68,6 +68,8 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.stopLimitControl1 = new 覆盤.StopLimitControl();
             this.groupBox1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -232,7 +234,7 @@
             // 
             this.btn_Buy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.btn_Buy.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Buy.Location = new System.Drawing.Point(12, 300);
+            this.btn_Buy.Location = new System.Drawing.Point(12, 333);
             this.btn_Buy.Name = "btn_Buy";
             this.btn_Buy.Size = new System.Drawing.Size(75, 25);
             this.btn_Buy.TabIndex = 87;
@@ -244,7 +246,7 @@
             // 
             this.btn_Sell.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
             this.btn_Sell.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Sell.Location = new System.Drawing.Point(209, 300);
+            this.btn_Sell.Location = new System.Drawing.Point(209, 333);
             this.btn_Sell.Name = "btn_Sell";
             this.btn_Sell.Size = new System.Drawing.Size(75, 25);
             this.btn_Sell.TabIndex = 88;
@@ -281,7 +283,7 @@
             this.groupBox1.Controls.Add(this.plotSurface2D1);
             this.groupBox1.Controls.Add(this.plotSurface2D2);
             this.groupBox1.Controls.Add(this.plotSurface2D5);
-            this.groupBox1.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Font = new System.Drawing.Font("新細明體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(293, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(1096, 924);
@@ -539,10 +541,10 @@
             // textBox2
             // 
             this.textBox2.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox2.Location = new System.Drawing.Point(93, 269);
+            this.textBox2.Location = new System.Drawing.Point(112, 269);
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(108, 25);
+            this.textBox2.Size = new System.Drawing.Size(75, 27);
             this.textBox2.TabIndex = 106;
             // 
             // button2
@@ -569,11 +571,32 @@
             this.button3.UseVisualStyleBackColor = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // button4
+            // 
+            this.button4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.button4.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button4.Location = new System.Drawing.Point(112, 302);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 25);
+            this.button4.TabIndex = 109;
+            this.button4.Text = "Cancel";
+            this.button4.UseVisualStyleBackColor = false;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // stopLimitControl1
+            // 
+            this.stopLimitControl1.Location = new System.Drawing.Point(1389, 28);
+            this.stopLimitControl1.Name = "stopLimitControl1";
+            this.stopLimitControl1.Size = new System.Drawing.Size(246, 908);
+            this.stopLimitControl1.TabIndex = 110;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1401, 942);
+            this.ClientSize = new System.Drawing.Size(1640, 937);
+            this.Controls.Add(this.stopLimitControl1);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.textBox2);
@@ -594,6 +617,8 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label1);
+            this.Font = new System.Drawing.Font("新細明體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ForeColor = System.Drawing.Color.Black;
             this.Name = "Form1";
             this.Text = "未來家教 Futures Tutor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -650,6 +675,8 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
+        private StopLimitControl stopLimitControl1;
     }
 }
 

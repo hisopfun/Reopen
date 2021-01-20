@@ -64,6 +64,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Simulation.cs" />
+    <Compile Include="StopLimitControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StopLimitControl.Designer.cs">
+      <DependentUpon>StopLimitControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Technical analysis.cs" />
     <Compile Include="TXF.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -78,6 +84,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="StopLimitControl.resx">
+      <DependentUpon>StopLimitControl.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

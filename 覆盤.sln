@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "覆盤", "覆盤\覆盤.csproj", "{0066DB97-33EC-4F37-BF72-0637CF570CFE}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "TXF", "TXF\TXF.vdproj", "{CDE8999F-82A6-4686-A395-EC616465EDEA}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "未來家教", "TXF\TXF.vdproj", "{CDE8999F-82A6-4686-A395-EC616465EDEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

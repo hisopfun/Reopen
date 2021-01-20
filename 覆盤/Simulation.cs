@@ -78,7 +78,7 @@ namespace 覆盤
 
                     OrdList.Add(new match(nMatTime, MITList[i].FutNo, MITList[i].BS, MITList[i].Qty, "M", ""));
                     Order.Add(nMatPri + "," + MITList[i].BS + "," + MITList[i].Price);
-                    DeleteNotMat(MITList, MITList[i].BS, MITList[i].Price, PS);
+                    DeleteNotMat(MITList, MITList[i].BS, MITList[i].Price);
                     //MITList.Remove(MITList[i]);
                     i--;
                 }
@@ -99,7 +99,7 @@ namespace 覆盤
                 {
                     MatList.Add(new match(nMatTime, OrdList[i].FutNo, OrdList[i].BS, OrdList[i].Qty, nAsk, ""));
                     deal.Add(nAsk + ",B," + OrdList[i].Price);
-                    DeleteNotMat(OrdList, OrdList[i].BS, OrdList[i].Price, PS);
+                    DeleteNotMat(OrdList, OrdList[i].BS, OrdList[i].Price);
                     //OrdList.Remove(OrdList[i]);
                 }
                 else if (OrdList[i].BS.Equals("S") && OrdList[i].Price.Equals("M") ||
@@ -107,13 +107,12 @@ namespace 覆盤
                 {
                     MatList.Add(new match(nMatTime, OrdList[i].FutNo, OrdList[i].BS, OrdList[i].Qty, nBid, ""));
                     deal.Add(nBid + ",S," + OrdList[i].Price);
-                    DeleteNotMat(OrdList, OrdList[i].BS, OrdList[i].Price, PS);
+                    DeleteNotMat(OrdList, OrdList[i].BS, OrdList[i].Price);
                     //OrdList.Remove(OrdList[i]);
                 }
             }
             return deal;
         }
-
 
         public string Profit(string nMatPri)
         {
@@ -208,7 +207,7 @@ namespace 覆盤
             return MatList[MatList.Count - 1].Price;
         }
 
-        public bool DeleteNotMat(List<match> NotMatList, string nBSCode, string nPrice, NPlot.Windows.PlotSurface2D PS)
+        public bool DeleteNotMat(List<match> NotMatList, string nBSCode, string nPrice)
         {
             bool change = false;
             int i;
@@ -224,6 +223,15 @@ namespace 覆盤
                 }
             }
             return change;
+        }
+
+
+        public void DeleteAllMIT()
+        {
+            while(MITList.Count > 0)
+            {
+                DeleteNotMat(MITList, MITList[0].BS, MITList[0].Price);
+            }
         }
 
         /*

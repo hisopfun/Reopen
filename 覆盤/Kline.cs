@@ -214,7 +214,7 @@ namespace 覆盤
             PS_volumn = nPS2;
             MK = nMK;
             KLine_num = nKLine_num;
-            KP= new linep(this);
+            KP = new linep(this);
             //InitKLinePS();
             KP.InitKLinePS();
         }
@@ -238,9 +238,9 @@ namespace 覆盤
             PlotSurface2D.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             PlotSurface2D.Clear();
 
-            Grid mygrid = new Grid(){
+            Grid mygrid = new Grid() {
                 HorizontalGridType = Grid.GridType.Fine,
-                VerticalGridType = Grid.GridType.Fine 
+                VerticalGridType = Grid.GridType.Fine
             };
             PlotSurface2D.Add(mygrid);
         }
@@ -249,7 +249,7 @@ namespace 覆盤
             int[] times = { 500 };
             lpp.DataSource = new int[] { 100 };
             lpp.AbscissaData = times;
-            lpp.Font = new Font("Arial",25);
+            lpp.Font = new Font("Arial", 25);
             lpp.Marker.Type = Marker.MarkerType.None;
             lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Right;
             lpp.Marker.Size = 5;
@@ -273,7 +273,7 @@ namespace 覆盤
             linePlot.DataSource = times;
         }
 
-        public void InitHp(){
+        public void InitHp() {
             int[] times = { 100, 200, 300, 400, 500, 600, 700 };
             hp.AbscissaData = times;
             hp.DataSource = times;
@@ -316,7 +316,7 @@ namespace 覆盤
             {
                 DataSource = new int[] { Price },
                 AbscissaData = new int[] { iTime },
-                TextData = new string[] { BS }
+
             };
 
 
@@ -325,30 +325,38 @@ namespace 覆盤
             {
                 lpp.Marker.Color = System.Drawing.Color.Red;
                 lpp.Marker.Type = Marker.MarkerType.TriangleUp;
+                lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Below;
+                lpp.TextData = new string[] { "\n" + Price.ToString() };
             }
             else
             {
                 lpp.Marker.Color = System.Drawing.Color.Green;
                 lpp.Marker.Type = Marker.MarkerType.TriangleDown;
+                lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Above;
+                lpp.TextData = new string[] { Price.ToString() + "\n\n" };
             }
             lpp.Marker.Filled = true;
             PS.Add(lpp);
         }
 
-        public void DrawAllLppHL(Simulation simu) {
+        public void DrawAllLpp(Simulation simu) {
 
             //Mat
             foreach (Simulation.match mat in simu.MatList) {
                 DrawLpp(mat.BS, int.Parse(mat.Price), mat.iTIME);
             }
 
+
+        }
+        public void DrawAllHL(Simulation simu)
+        {
             //MIT
             foreach (Simulation.match mat in simu.MITList)
             {
                 mat.horizontalLine = new HorizontalLine(int.Parse(mat.Price), (mat.BS == "B") ? System.Drawing.Color.Red : System.Drawing.Color.Green);
                 PS.Add(mat.horizontalLine);
             }
-        }
+        } 
 
         public void AdjustChart(List<TXF.K_data.K> mk, float Highest, float Lowest) {
             lpp.AbscissaData = new int[] { mk.Count };

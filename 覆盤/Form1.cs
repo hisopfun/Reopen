@@ -7,6 +7,9 @@ using System.Threading;
 using System.Reflection;
 using NPlot;
 using System.Net.Sockets;
+using System.Data;
+using System.Drawing;
+
 
 namespace 覆盤
 {
@@ -26,7 +29,7 @@ namespace 覆盤
         Simulation simu;
         TIMES times;
         SOCKET SK;
-        
+
         private void Form1_Load(object sender, EventArgs e)
         {
          
@@ -38,7 +41,12 @@ namespace 覆盤
 
             load_dayK();
             InitChart();
+
+            //閃電下單
+            stopLimitControl1.InitStopLimitDGV(15000);
         }
+
+      
 
         private void InitMACDChart() { 
             plotSurface2D5.Clear();
@@ -164,19 +172,23 @@ namespace 覆盤
                     if (int.Parse(word[1].Substring(0, 6)) > 134459 && istart)      break;
                     if (!istart)                                                    continue;
 
+                    //StopLimit
+                    stopLimitControl1.StopLimitDGV(word[4], word[2], word[3], word[5]);
+
                     //MK
-                    MKdata.Add(word[1], word[4], word[5]);
-                    DKdata.Add(date, word[4], word[5]);
-                    mACD.macd(MKdata.kdata);
+                    MKdata.Run(word[1], word[4], word[5]);
+                    DKdata.Run(date, word[4], word[5]);
+                    mACD.macd(MKdata.klist);
 
                     //MIT
-                    List<string> Order = simu.MITToOrder(word[1], word[2], word[3], word[4]);
-                    List<string> deal = simu.DealInfo(word[1], word[2], word[3], word[4]);
-                    if (deal != null && deal.Count > 0)
+                    List<string> Orders = simu.MITToOrder(word[1], word[2], word[3], word[4]);
+                    List<string> Deals = simu.DealInfo(word[1], word[2], word[3], word[4]);
+                    if (Deals != null && Deals.Count > 0)
                     {
                         //Draw MIT 
-                        simu.MatList[simu.MatList.Count - 1].iTIME = MKdata.kdata.Count;
-                        KL_1MK.DrawAllLppHL(simu);
+                        simu.MatList[simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
+                        KL_1MK.DrawAllLpp(simu);
+                        KL_1MK.DrawAllHL(simu);
 
                         //MatList
                         dataGridView1.InvokeIfRequired(() =>
@@ -184,6 +196,12 @@ namespace 覆盤
                             dataGridView1.DataSource = null;
                             dataGridView1.DataSource = simu.MatList;
                         });
+
+                        //Delete MIT DR
+                        stopLimitControl1.DeleteMIT(Orders);
+
+                        //Delete Ord DR
+                        stopLimitControl1.DeleteOrder(Deals);
                     }
 
                     //run
@@ -219,30 +237,33 @@ namespace 覆盤
                 
                 lock (Lock)
                 {
-                    if (MKdata.kdata.Count > 0)
+                    if (MKdata.klist.Count > 0)
                     {
 
+                        //StopLimit
+                        stopLimitControl1.gui(MKdata.klist, simu);
+
                         //time
-                        if (MKdata.kdata!= null)
+                        if (MKdata.klist!= null)
                             label4.InvokeIfRequired(() =>
                             {
-                                label4.Text = MKdata.kdata[MKdata.kdata.Count - 1].time.Substring(0, 2).ToString() + ":" +
-                                MKdata.kdata[MKdata.kdata.Count - 1].time.Substring(2, 2).ToString() + ":"+
-                                MKdata.kdata[MKdata.kdata.Count - 1].time.Substring(4, 2).ToString();
+                                label4.Text = MKdata.klist[MKdata.klist.Count - 1].time.Substring(0, 2).ToString() + ":" +
+                                MKdata.klist[MKdata.klist.Count - 1].time.Substring(2, 2).ToString() + ":"+
+                                MKdata.klist[MKdata.klist.Count - 1].time.Substring(4, 2).ToString();
                             });
 
 
                         //close
-                        if (MKdata.kdata != null)
+                        if (MKdata.klist != null)
                             label1.InvokeIfRequired(() =>
                             {
-                                label1.Text = MKdata.kdata[MKdata.kdata.Count - 1].close.ToString();
+                                label1.Text = MKdata.klist[MKdata.klist.Count - 1].close.ToString();
                             });
 
                         //high - low 
                         label13.InvokeIfRequired(() =>
                         {
-                            label13.Text = (DKdata.kdata[DKdata.kdata.Count - 1].high - DKdata.kdata[DKdata.kdata.Count - 1].low).ToString();
+                            label13.Text = (DKdata.klist[DKdata.klist.Count - 1].high - DKdata.klist[DKdata.klist.Count - 1].low).ToString();
                         });
 
                         //Qty
@@ -254,7 +275,7 @@ namespace 覆盤
                         //Profit
                         label9.InvokeIfRequired(() =>
                         {
-                            label9.Text = simu.Profit(MKdata.kdata[MKdata.kdata.Count - 1].close.ToString());
+                            label9.Text = simu.Profit(MKdata.klist[MKdata.klist.Count - 1].close.ToString());
                         });
 
                         //Entries
@@ -274,8 +295,8 @@ namespace 覆盤
                             plotSurface2D5.YAxis1.TickTextNextToAxis = false;
                             plotSurface2D5.Refresh();
                         });
-                        KL_1MK.KP.refreshK(MKdata.kdata);
-                        KL_1DK.KP.refreshK(DKdata.kdata);
+                        KL_1MK.KP.refreshK(MKdata.klist);
+                        KL_1DK.KP.refreshK(DKdata.klist);
                     }
                 }
 
@@ -312,13 +333,13 @@ namespace 覆盤
                 return;
             }
             simu.MatList.Add(new Simulation.match(label4.Text.Replace(":", string.Empty), "TXF", "B", "1", label1.Text, ""));
-            simu.MatList[simu.MatList.Count - 1].iTIME = MKdata.kdata.Count;
+            simu.MatList[simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = simu.MatList;
             dataGridView1.Refresh();
 
             //draw on chart
-            KL_1MK.DrawLpp("B", int.Parse(simu.MatList[simu.MatList.Count-1].Price), MKdata.kdata.Count);
+            KL_1MK.DrawLpp("B", int.Parse(simu.MatList[simu.MatList.Count-1].Price), MKdata.klist.Count);
         }
 
 
@@ -333,13 +354,13 @@ namespace 覆盤
                 return;
             }
             simu.MatList.Add(new Simulation.match(label4.Text.Replace(":", string.Empty), "TXF", "S", "1", label1.Text, ""));
-            simu.MatList[simu.MatList.Count - 1].iTIME = MKdata.kdata.Count;
+            simu.MatList[simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = simu.MatList;
             dataGridView1.Refresh();
 
             //draw on chart
-            KL_1MK.DrawLpp("S", int.Parse(simu.MatList[simu.MatList.Count - 1].Price), MKdata.kdata.Count);
+            KL_1MK.DrawLpp("S", int.Parse(simu.MatList[simu.MatList.Count - 1].Price), MKdata.klist.Count);
         }
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
@@ -356,7 +377,8 @@ namespace 覆盤
             lock (Lock)
             {
                 InitChart();
-                KL_1MK.DrawAllLppHL(simu);
+                KL_1MK.DrawAllLpp(simu);
+                KL_1MK.DrawAllHL(simu);
             }
             if (!T_GUI.IsAlive)
             {
@@ -371,7 +393,8 @@ namespace 覆盤
             lock (Lock)
             {
                 InitChart();
-                KL_1MK.DrawAllLppHL(simu);
+                KL_1MK.DrawAllLpp(simu);
+                KL_1MK.DrawAllHL(simu);
             }
             if (!T_GUI.IsAlive)
             {
@@ -404,6 +427,16 @@ namespace 覆盤
             simu.MIT(label4.Text, "TXF", "S", "1", textBox2.Text, label1.Text);
         }
 
+
+
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            simu.DeleteAllMIT();
+        }
+
+ 
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (T_Quote != null)
@@ -417,34 +450,34 @@ namespace 覆盤
 
         private void load_dayK() {
             return;
-            DKdata.kdata = new List<TXF.K_data.K>();
+            DKdata.klist = new List<TXF.K_data.K>();
             using (StreamReader sr = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\日K.TXT")) {
                 string words = sr.ReadLine();
                 while ((words = sr.ReadLine()) != null) {
                     string[] word = words.Split(',');
                     if (Convert.ToDateTime(word[0]).Date >= dateTimePicker1.Value.Date)
                     {
-                        if (DKdata.kdata.Count < 1) return;
+                        if (DKdata.klist.Count < 1) return;
                         float avgDay5 = 0;
                         int i;
                         for (i = 1; i < 6; i++)
                         {
-                            avgDay5 += DKdata.kdata[DKdata.kdata.Count - i].high - DKdata.kdata[DKdata.kdata.Count - i].low;
+                            avgDay5 += DKdata.klist[DKdata.klist.Count - i].high - DKdata.klist[DKdata.klist.Count - i].low;
                         }
                         avgDay5 /= 5;
                         label12.Text = avgDay5.ToString();
                         break;
                     }
-                    DKdata.kdata.Add(new TXF.K_data.K("", 0));
-                    DKdata.kdata[DKdata.kdata.Count - 1].ktime = word[0];
-                    DKdata.kdata[DKdata.kdata.Count - 1].open = float.Parse(word[1]);
-                    DKdata.kdata[DKdata.kdata.Count - 1].high = float.Parse(word[2]);
-                    DKdata.kdata[DKdata.kdata.Count - 1].low = float.Parse(word[3]);
-                    DKdata.kdata[DKdata.kdata.Count - 1].close = float.Parse(word[4]);
-                    DKdata.kdata[DKdata.kdata.Count - 1].qty = uint.Parse(word[12]);
+                    DKdata.klist.Add(new TXF.K_data.K("", 0));
+                    DKdata.klist[DKdata.klist.Count - 1].ktime = word[0];
+                    DKdata.klist[DKdata.klist.Count - 1].open = float.Parse(word[1]);
+                    DKdata.klist[DKdata.klist.Count - 1].high = float.Parse(word[2]);
+                    DKdata.klist[DKdata.klist.Count - 1].low = float.Parse(word[3]);
+                    DKdata.klist[DKdata.klist.Count - 1].close = float.Parse(word[4]);
+                    DKdata.klist[DKdata.klist.Count - 1].qty = uint.Parse(word[12]);
                 }
             }
-            KL_1DK.KP.refreshK(DKdata.kdata);
+            KL_1DK.KP.refreshK(DKdata.klist);
         }
     }
     //擴充方法
