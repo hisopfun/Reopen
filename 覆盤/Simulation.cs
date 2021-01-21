@@ -216,10 +216,12 @@ namespace 覆盤
                 if (NotMatList[i].BS.Equals(nBSCode) && NotMatList[i].Price.Equals(nPrice))
                 {
                     PS.Remove(NotMatList[i].horizontalLine, false);
+
                     //PS.Remove(NotMatList[i].LineChart, false);
                     NotMatList.Remove(NotMatList[i]);
                     i--;
                     change = true;
+                    break;
                 }
             }
             return change;

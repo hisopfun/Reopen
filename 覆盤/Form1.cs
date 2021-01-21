@@ -26,7 +26,7 @@ namespace 覆盤
         TXF.K_data DKdata;
         Kline KL_1MK, KL_1DK;
         Technical_analysis.MACD mACD;
-        Simulation simu;
+        
         TIMES times;
         SOCKET SK;
 
@@ -43,7 +43,7 @@ namespace 覆盤
             InitChart();
 
             //閃電下單
-            stopLimitControl1.InitStopLimitDGV(15000);
+            //stopLimitControl1.InitStopLimitDGV(12500);
         }
 
       
@@ -73,15 +73,16 @@ namespace 覆盤
             button1.Enabled = false;
             dateTimePicker1.Enabled = false;
             Lock = new object();
-
             dataGridView1.DataSource = null;
+            stopLimitControl1.Init();
 
             lock (Lock)
             {
                 MKdata = new TXF.K_data();
                 DKdata = new TXF.K_data();
                 times = new TIMES(int.Parse(comboBox1.Text));
-                simu = new Simulation(plotSurface2D1);
+                stopLimitControl1.simu = new Simulation(plotSurface2D1);
+                //stopLimitControl1.AddPrice(15000);
                 mACD = new Technical_analysis.MACD();
                 InitChart();
                 InitMACDChart();
@@ -166,6 +167,10 @@ namespace 覆盤
                     if (words == "") break;
                     string[] word = words.Split(',');
 
+
+                    //DGV
+                    stopLimitControl1.AddPrice(int.Parse(word[4]));
+
                     //search start
                     if (word[1].Length < 6)                                         return;
                     if (word[1].Substring(0, 6) == "084500")                        istart = true;
@@ -181,20 +186,20 @@ namespace 覆盤
                     mACD.macd(MKdata.klist);
 
                     //MIT
-                    List<string> Orders = simu.MITToOrder(word[1], word[2], word[3], word[4]);
-                    List<string> Deals = simu.DealInfo(word[1], word[2], word[3], word[4]);
+                    List<string> Orders = stopLimitControl1.simu.MITToOrder(word[1], word[2], word[3], word[4]);
+                    List<string> Deals = stopLimitControl1.simu.DealInfo(word[1], word[2], word[3], word[4]);
                     if (Deals != null && Deals.Count > 0)
                     {
                         //Draw MIT 
-                        simu.MatList[simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
-                        KL_1MK.DrawAllLpp(simu);
-                        KL_1MK.DrawAllHL(simu);
+                        stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
+                        KL_1MK.DrawAllLpp(stopLimitControl1.simu);
+                        KL_1MK.DrawAllHL(stopLimitControl1.simu);
 
                         //MatList
                         dataGridView1.InvokeIfRequired(() =>
                         {
                             dataGridView1.DataSource = null;
-                            dataGridView1.DataSource = simu.MatList;
+                            dataGridView1.DataSource = stopLimitControl1.simu.MatList;
                         });
 
                         //Delete MIT DR
@@ -241,7 +246,7 @@ namespace 覆盤
                     {
 
                         //StopLimit
-                        stopLimitControl1.gui(MKdata.klist, simu);
+                        stopLimitControl1.gui(MKdata.klist);
 
                         //time
                         if (MKdata.klist!= null)
@@ -269,19 +274,19 @@ namespace 覆盤
                         //Qty
                         label3.InvokeIfRequired(() =>
                         {
-                            label3.Text = simu.Qty("", "").ToString();
+                            label3.Text = stopLimitControl1.simu.Qty("", "").ToString();
                         });
 
                         //Profit
                         label9.InvokeIfRequired(() =>
                         {
-                            label9.Text = simu.Profit(MKdata.klist[MKdata.klist.Count - 1].close.ToString());
+                            label9.Text = stopLimitControl1.simu.Profit(MKdata.klist[MKdata.klist.Count - 1].close.ToString());
                         });
 
                         //Entries
                         label11.InvokeIfRequired(() =>
                         {
-                            label11.Text = simu.Entries().ToString();
+                            label11.Text = stopLimitControl1.simu.Entries().ToString();
                         });
 
                         //chart
@@ -332,14 +337,14 @@ namespace 覆盤
                 textBox1.Text = "Warning : Order Failed!!\n Please place your order after 9:15";
                 return;
             }
-            simu.MatList.Add(new Simulation.match(label4.Text.Replace(":", string.Empty), "TXF", "B", "1", label1.Text, ""));
-            simu.MatList[simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
+            stopLimitControl1.simu.MatList.Add(new Simulation.match(label4.Text.Replace(":", string.Empty), "TXF", "B", "1", label1.Text, ""));
+            stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
             dataGridView1.DataSource = null;
-            dataGridView1.DataSource = simu.MatList;
+            dataGridView1.DataSource = stopLimitControl1.simu.MatList;
             dataGridView1.Refresh();
 
             //draw on chart
-            KL_1MK.DrawLpp("B", int.Parse(simu.MatList[simu.MatList.Count-1].Price), MKdata.klist.Count);
+            KL_1MK.DrawLpp("B", int.Parse(stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count-1].Price), MKdata.klist.Count);
         }
 
 
@@ -353,14 +358,14 @@ namespace 覆盤
                 textBox1.Text = "Warning : Order Failed!!\n Please place your order after 9:15";
                 return;
             }
-            simu.MatList.Add(new Simulation.match(label4.Text.Replace(":", string.Empty), "TXF", "S", "1", label1.Text, ""));
-            simu.MatList[simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
+            stopLimitControl1.simu.MatList.Add(new Simulation.match(label4.Text.Replace(":", string.Empty), "TXF", "S", "1", label1.Text, ""));
+            stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
             dataGridView1.DataSource = null;
-            dataGridView1.DataSource = simu.MatList;
+            dataGridView1.DataSource = stopLimitControl1.simu.MatList;
             dataGridView1.Refresh();
 
             //draw on chart
-            KL_1MK.DrawLpp("S", int.Parse(simu.MatList[simu.MatList.Count - 1].Price), MKdata.klist.Count);
+            KL_1MK.DrawLpp("S", int.Parse(stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].Price), MKdata.klist.Count);
         }
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
@@ -377,10 +382,13 @@ namespace 覆盤
             lock (Lock)
             {
                 InitChart();
-                KL_1MK.DrawAllLpp(simu);
-                KL_1MK.DrawAllHL(simu);
+                if (stopLimitControl1.simu != null)
+                {
+                    KL_1MK.DrawAllLpp(stopLimitControl1.simu);
+                    KL_1MK.DrawAllHL(stopLimitControl1.simu);
+                }
             }
-            if (!T_GUI.IsAlive)
+            if (T_GUI != null && !T_GUI.IsAlive)
             {
                 T_GUI = new Thread(gui);
                 T_GUI.Start();
@@ -393,10 +401,13 @@ namespace 覆盤
             lock (Lock)
             {
                 InitChart();
-                KL_1MK.DrawAllLpp(simu);
-                KL_1MK.DrawAllHL(simu);
+                if (stopLimitControl1.simu != null)
+                {
+                    KL_1MK.DrawAllLpp(stopLimitControl1.simu);
+                    KL_1MK.DrawAllHL(stopLimitControl1.simu);
+                }
             }
-            if (!T_GUI.IsAlive)
+            if (T_GUI != null && !T_GUI.IsAlive)
             {
                 T_GUI = new Thread(gui);
                 T_GUI.Start();
@@ -412,7 +423,7 @@ namespace 覆盤
                 return;
             }
 
-            simu.MIT(label4.Text, "TXF", "B", "1", textBox2.Text, label1.Text);
+            stopLimitControl1.simu.MIT(label4.Text, "TXF", "B", "1", textBox2.Text, label1.Text);
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -424,7 +435,7 @@ namespace 覆盤
                 return;
             }
 
-            simu.MIT(label4.Text, "TXF", "S", "1", textBox2.Text, label1.Text);
+            stopLimitControl1.simu.MIT(label4.Text, "TXF", "S", "1", textBox2.Text, label1.Text);
         }
 
 
@@ -432,7 +443,7 @@ namespace 覆盤
 
         private void button4_Click(object sender, EventArgs e)
         {
-            simu.DeleteAllMIT();
+            stopLimitControl1.simu.DeleteAllMIT();
         }
 
  

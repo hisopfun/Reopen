@@ -102,6 +102,7 @@
             this.DGV_StopLimit.TabIndex = 111;
             this.DGV_StopLimit.TabStop = false;
             this.DGV_StopLimit.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DGV_StopLimit_CellMouseClick);
+            this.DGV_StopLimit.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DGV_StopLimit_CellMouseDoubleClick);
             // 
             // StopLimitControl
             // 
@@ -117,6 +118,6 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView DGV_StopLimit;
+        protected System.Windows.Forms.DataGridView DGV_StopLimit;
     }
 }
