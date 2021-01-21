@@ -257,14 +257,6 @@ namespace 覆盤
                                 MKdata.klist[MKdata.klist.Count - 1].time.Substring(4, 2).ToString();
                             });
 
-
-                        //close
-                        if (MKdata.klist != null)
-                            label1.InvokeIfRequired(() =>
-                            {
-                                label1.Text = MKdata.klist[MKdata.klist.Count - 1].close.ToString();
-                            });
-
                         //high - low 
                         label13.InvokeIfRequired(() =>
                         {
@@ -316,7 +308,7 @@ namespace 覆盤
                 else if (time.Substring(0, 4) == "1100") {
                     textBox1.InvokeIfRequired(() =>
                     {
-                        textBox1.Text = "After 11:00, it can rise, without large volume.";
+                        textBox1.Text = "After 11:00, it can rise without large volume.";
                     });
                     
                 }
@@ -327,54 +319,11 @@ namespace 覆盤
             }
         }
 
-
-
-        //buy
-        private void btn_Buy_Click(object sender, EventArgs e)
-        {
-            if (label1.Text == "price") return;
-            if (int.Parse(label4.Text.Replace(":", string.Empty)) <= 91500) {
-                textBox1.Text = "Warning : Order Failed!!\n Please place your order after 9:15";
-                return;
-            }
-            stopLimitControl1.simu.MatList.Add(new Simulation.match(label4.Text.Replace(":", string.Empty), "TXF", "B", "1", label1.Text, ""));
-            stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
-            dataGridView1.DataSource = null;
-            dataGridView1.DataSource = stopLimitControl1.simu.MatList;
-            dataGridView1.Refresh();
-
-            //draw on chart
-            KL_1MK.DrawLpp("B", int.Parse(stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count-1].Price), MKdata.klist.Count);
-        }
-
-
-
-        //sell
-        private void btn_Sell_Click(object sender, EventArgs e)
-        {
-            if (label1.Text == "price") return;
-            if (int.Parse(label4.Text.Replace(":", string.Empty)) <= 91500)
-            {
-                textBox1.Text = "Warning : Order Failed!!\n Please place your order after 9:15";
-                return;
-            }
-            stopLimitControl1.simu.MatList.Add(new Simulation.match(label4.Text.Replace(":", string.Empty), "TXF", "S", "1", label1.Text, ""));
-            stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
-            dataGridView1.DataSource = null;
-            dataGridView1.DataSource = stopLimitControl1.simu.MatList;
-            dataGridView1.Refresh();
-
-            //draw on chart
-            KL_1MK.DrawLpp("S", int.Parse(stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].Price), MKdata.klist.Count);
-        }
-
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
             label12.Text = "5AVG";
             load_dayK();
         }
-
-
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
@@ -414,39 +363,16 @@ namespace 覆盤
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            if (label1.Text == "price") return;
-            if (int.Parse(label4.Text.Replace(":", string.Empty)) <= 91500)
-            {
-                textBox1.Text = "Warning : Order Failed!!\n Please place your order after 9:15";
-                return;
-            }
-
-            stopLimitControl1.simu.MIT(label4.Text, "TXF", "B", "1", textBox2.Text, label1.Text);
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            if (label1.Text == "price") return;
-            if (int.Parse(label4.Text.Replace(":", string.Empty)) <= 91500)
-            {
-                textBox1.Text = "Warning : Order Failed!!\n Please place your order after 9:15";
-                return;
-            }
-
-            stopLimitControl1.simu.MIT(label4.Text, "TXF", "S", "1", textBox2.Text, label1.Text);
-        }
-
-
-
 
         private void button4_Click(object sender, EventArgs e)
         {
             stopLimitControl1.simu.DeleteAllMIT();
         }
 
- 
+        private void button2_Click(object sender, EventArgs e)
+        {
+                tabControl1.Visible = !tabControl1.Visible;
+        }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {

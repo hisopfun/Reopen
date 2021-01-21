@@ -63,6 +63,8 @@ namespace 覆盤
             this.dt.Columns.Add(Col7);
             this.dt.PrimaryKey = new DataColumn[] { this.dt.Columns["nPrice"] };
             DGV_StopLimit.DataSource = this.dt;
+            DGV_StopLimit.DefaultCellStyle.Font = new Font("Consolas", 12, FontStyle.Bold);
+            DGV_StopLimit.ColumnHeadersDefaultCellStyle.Font = new Font("Consolas", 12, FontStyle.Bold);
 
             //visible
             DGV_StopLimit.Columns[0].Visible = false;
@@ -84,13 +86,13 @@ namespace 覆盤
             DGV_StopLimit.Columns[4].HeaderCell.Style.BackColor = Color.FromArgb(255, 255, 192);
 
             //Adjust width
-            DGV_StopLimit.Columns[1].Width = 35;
-            DGV_StopLimit.Columns[2].Width = 35;
-            DGV_StopLimit.Columns[3].Width = 35;
-            DGV_StopLimit.Columns[4].Width = 80;
-            DGV_StopLimit.Columns[5].Width = 35;
-            DGV_StopLimit.Columns[6].Width = 35;
-            DGV_StopLimit.Columns[7].Width = 35;
+            DGV_StopLimit.Columns[1].Width = 50;
+            DGV_StopLimit.Columns[2].Width = 50;
+            DGV_StopLimit.Columns[3].Width = 50;
+            DGV_StopLimit.Columns[4].Width = 100;
+            DGV_StopLimit.Columns[5].Width = 50;
+            DGV_StopLimit.Columns[6].Width = 50;
+            DGV_StopLimit.Columns[7].Width = 50;
         }
 
         public void AddPrice(int nRef)
@@ -117,6 +119,7 @@ namespace 覆盤
                         this.dt.Rows.Add(DR);
                     }
                 }
+
             });
 
 
@@ -290,15 +293,17 @@ namespace 覆盤
             //Display MatPri
             //DGV_StopLimit.InvokeIfRequired(() =>
             //{
-                if (upPri != 0 && dnPri != 0)
+            if (upPri != 0 && dnPri != 0)
+            {
+                if (lastPri != 0)
                 {
-                    if (lastPri != 0)
-                        DGV_StopLimit[4, upPri - lastPri].Style.BackColor = Color.White;
-                    lastPri = (int)mk[mk.Count - 1].close;
-                    lastTime = mk[mk.Count - 1].time;
-
-                    DGV_StopLimit[4, upPri - lastPri].Style.BackColor = Color.Pink;
+                    DGV_StopLimit[4, upPri - lastPri].Style.BackColor = Color.White;
                 }
+                lastPri = (int)mk[mk.Count - 1].close;
+                lastTime = mk[mk.Count - 1].time;
+
+                DGV_StopLimit[4, upPri - lastPri].Style.BackColor = Color.Pink;
+            }
 
             //});
 
