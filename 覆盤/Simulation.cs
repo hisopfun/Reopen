@@ -13,7 +13,8 @@ namespace 覆盤
         public List<match> MatList { get; set; } = new List<match>();
         public List<match> OrdList { get; set; } = new List<match>();
         public List<match> MITList { get; set; } = new List<match>();
-        public NPlot.Windows.PlotSurface2D PS = null;
+        public NPlot.Windows.PlotSurface2D PS = null; 
+        public object Lock = new object();
         public class match
         {
             public string Time { get; }
@@ -26,6 +27,7 @@ namespace 覆盤
 
             //public NPlot.LinePlot LineChart = new NPlot.LinePlot();
             public NPlot.HorizontalLine horizontalLine;
+
  
             public match(string nMatTime, string nFutNo, string nBSCode, string nQty, string nPrice, string nMITLabel)
             {
@@ -45,7 +47,8 @@ namespace 覆盤
 
         public bool Order(string nMatTime, string nFutNo, string nBSCode, string nQty, string nOrdPri)
         {
-            OrdList.Add(new match(nMatTime, nFutNo, nBSCode, nQty, nOrdPri, ""));
+            lock (Lock)
+                OrdList.Add(new match(nMatTime, nFutNo, nBSCode, nQty, nOrdPri, ""));
             return true;
         }
 
@@ -60,7 +63,8 @@ namespace 覆盤
             {
                 Label = ">=";
             }
-            MITList.Add(new match(nMatTime, nFutNo, nBSCode, nQty, nMITPri, Label));
+            lock(Lock)
+                MITList.Add(new match(nMatTime, nFutNo, nBSCode, nQty, nMITPri, Label));
             MITList[MITList.Count - 1].horizontalLine = new HorizontalLine(int.Parse(nMITPri), (nBSCode == "B") ? System.Drawing.Color.Red : System.Drawing.Color.Green);
             PS.Add(MITList[MITList.Count - 1].horizontalLine);
             return true;
@@ -75,8 +79,8 @@ namespace 覆盤
                 if (int.Parse(nMatPri) >= int.Parse(MITList[i].Price) && MITList[i].MITLabel.Equals(">=") ||
                     int.Parse(nMatPri) <= int.Parse(MITList[i].Price) && MITList[i].MITLabel.Equals("<="))
                 {
-
-                    OrdList.Add(new match(nMatTime, MITList[i].FutNo, MITList[i].BS, MITList[i].Qty, "M", ""));
+                    lock (Lock)
+                        OrdList.Add(new match(nMatTime, MITList[i].FutNo, MITList[i].BS, MITList[i].Qty, "M", ""));
                     Order.Add(nMatPri + "," + MITList[i].BS + "," + MITList[i].Price);
                     DeleteNotMat(MITList, MITList[i].BS, MITList[i].Price);
                     //MITList.Remove(MITList[i]);
@@ -97,7 +101,8 @@ namespace 覆盤
                 if (OrdList[i].BS.Equals("B") && OrdList[i].Price.Equals("M") ||
                     OrdList[i].BS.Equals("B") && int.Parse(nAsk) <= int.Parse(OrdList[i].Price))
                 {
-                    MatList.Add(new match(nMatTime, OrdList[i].FutNo, OrdList[i].BS, OrdList[i].Qty, nAsk, ""));
+                    lock (Lock)
+                        MatList.Add(new match(nMatTime, OrdList[i].FutNo, OrdList[i].BS, OrdList[i].Qty, nAsk, ""));
                     deal.Add(nAsk + ",B," + OrdList[i].Price);
                     DeleteNotMat(OrdList, OrdList[i].BS, OrdList[i].Price);
                     //OrdList.Remove(OrdList[i]);
@@ -105,7 +110,8 @@ namespace 覆盤
                 else if (OrdList[i].BS.Equals("S") && OrdList[i].Price.Equals("M") ||
                          OrdList[i].BS.Equals("S") && int.Parse(nBid) >= int.Parse(OrdList[i].Price))
                 {
-                    MatList.Add(new match(nMatTime, OrdList[i].FutNo, OrdList[i].BS, OrdList[i].Qty, nBid, ""));
+                    lock (Lock)
+                        MatList.Add(new match(nMatTime, OrdList[i].FutNo, OrdList[i].BS, OrdList[i].Qty, nBid, ""));
                     deal.Add(nBid + ",S," + OrdList[i].Price);
                     DeleteNotMat(OrdList, OrdList[i].BS, OrdList[i].Price);
                     //OrdList.Remove(OrdList[i]);
@@ -216,9 +222,8 @@ namespace 覆盤
                 if (NotMatList[i].BS.Equals(nBSCode) && NotMatList[i].Price.Equals(nPrice))
                 {
                     PS.Remove(NotMatList[i].horizontalLine, false);
-
-                    //PS.Remove(NotMatList[i].LineChart, false);
-                    NotMatList.Remove(NotMatList[i]);
+                    lock (Lock)
+                        NotMatList.Remove(NotMatList[i]);
                     i--;
                     change = true;
                     break;

@@ -88,7 +88,7 @@ namespace 覆盤
                 InitMACDChart();
             }
 
-            SK = new SOCKET(dateTimePicker1.Value.ToString("MM-dd-yyyy"));
+            SK = new SOCKET(dateTimePicker1.Value.ToString("MM-dd-yyyy"), "122.99.4.117", 12002, false);
             SK._Load();
 
             if (T_Quote != null)
@@ -104,21 +104,22 @@ namespace 覆盤
         }
 
 
-        public void quote() {
+        public void WaitReopenData() {
             string contents = "";
 
             //socket
             textBox1.InvokeIfRequired(() =>
             {
                 textBox1.Text = "請稍後 約5秒";
-            });      
-            
-            while (SK.ticks.Count <= 0 && SK.t1.IsAlive) {
+            });
+
+            while (SK.ticks.Count <= 0 && SK.t1.IsAlive)
+            {
                 textBox1.InvokeIfRequired(() =>
                 {
                     textBox1.Text += ".";
                 });
-                
+
                 Thread.Sleep(1000);
             }
 
@@ -129,7 +130,8 @@ namespace 覆盤
             });
 
             contents = SK.datas.Replace("DONE", "");
-            if (contents.Contains("NO DATA") || contents.Contains("無法連線，因為目標電腦拒絕連線")) {
+            if (contents.Contains("NO DATA") || contents.Contains("無法連線，因為目標電腦拒絕連線"))
+            {
                 MessageBox.Show("NO DATA");
                 comboBox1.InvokeIfRequired(() => {
                     comboBox1.Enabled = true;
@@ -146,16 +148,19 @@ namespace 覆盤
                 });
                 return;
             }
+        }
 
+        public void quote() {
 
-            //string[] wordss = contents.Split('\n');
-            bool istart = false;
+            //wait data
+            WaitReopenData();
 
             string date = "";
             dateTimePicker1.InvokeIfRequired(() => {
                 date = dateTimePicker1.Value.ToString("yyyy/M/d");
             });
 
+            bool istart = false;
             //foreach (string words in wordss) {
             while (SK.t1.IsAlive || SK.ticks.Count > 0) {
                 if (SK.ticks.Count > 0)
@@ -166,48 +171,16 @@ namespace 覆盤
                     if (words == null) continue;
                     if (words == "") break;
                     string[] word = words.Split(',');
+                    if (word.Length == 1) 
+                        continue;
+                    if (word[1].Length < 6) return;
+                    if (word[1].Substring(0, 6) == "084500") 
+                        istart = true;
+                    if (int.Parse(word[1].Substring(0, 6)) > 134459 && istart) break;
+                    if (!istart) continue;
 
-
-                    //DGV
-                    stopLimitControl1.AddPrice(int.Parse(word[4]));
-
-                    //search start
-                    if (word[1].Length < 6)                                         return;
-                    if (word[1].Substring(0, 6) == "084500")                        istart = true;
-                    if (int.Parse(word[1].Substring(0, 6)) > 134459 && istart)      break;
-                    if (!istart)                                                    continue;
-
-                    //StopLimit
-                    stopLimitControl1.StopLimitDGV(word[4], word[2], word[3], word[5]);
-
-                    //MK
-                    MKdata.Run(word[1], word[4], word[5]);
-                    DKdata.Run(date, word[4], word[5]);
-                    mACD.macd(MKdata.klist);
-
-                    //MIT
-                    List<string> Orders = stopLimitControl1.simu.MITToOrder(word[1], word[2], word[3], word[4]);
-                    List<string> Deals = stopLimitControl1.simu.DealInfo(word[1], word[2], word[3], word[4]);
-                    if (Deals != null && Deals.Count > 0)
-                    {
-                        //Draw MIT 
-                        stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
-                        KL_1MK.DrawAllLpp(stopLimitControl1.simu);
-                        KL_1MK.DrawAllHL(stopLimitControl1.simu);
-
-                        //MatList
-                        dataGridView1.InvokeIfRequired(() =>
-                        {
-                            dataGridView1.DataSource = null;
-                            dataGridView1.DataSource = stopLimitControl1.simu.MatList;
-                        });
-
-                        //Delete MIT DR
-                        stopLimitControl1.DeleteMIT(Orders);
-
-                        //Delete Ord DR
-                        stopLimitControl1.DeleteOrder(Deals);
-                    }
+                    //Run All Ticks
+                    RunTicks(word, istart, date);
 
                     //run
                     int ss = times.tDiff(word[1]);
@@ -215,9 +188,6 @@ namespace 覆盤
                         Thread.Sleep(ss);
                 }
             }
-            
-
-
            
             comboBox1.InvokeIfRequired(() => {
                 comboBox1.Enabled = true;
@@ -234,6 +204,48 @@ namespace 覆盤
             });
             T_Quote.Abort();
         }
+
+        private void RunTicks(string[] word, bool istart, string date) {
+
+            //start
+            if (!istart) return;
+
+            //StopLimit
+            stopLimitControl1.StopLimitDGV(word[4], word[2], word[3], word[5]);
+
+            //MK
+            MKdata.Run(word[1], word[4], word[5]);
+            DKdata.Run(date, word[4], word[5]);
+            mACD.macd(MKdata.klist);
+
+            //MIT
+            List<string> Orders = stopLimitControl1.simu.MITToOrder(word[1], word[2], word[3], word[4]);
+            List<string> Deals = stopLimitControl1.simu.DealInfo(word[1], word[2], word[3], word[4]);
+            if (Deals != null && Deals.Count > 0)
+            {
+                //Draw MIT 
+                stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
+                KL_1MK.DrawAllLpp(stopLimitControl1.simu);
+                KL_1MK.DrawAllHL(stopLimitControl1.simu);
+
+                //MatList
+                dataGridView1.InvokeIfRequired(() =>
+                {
+                    dataGridView1.DataSource = null;
+                    dataGridView1.DataSource = stopLimitControl1.simu.MatList;
+                });
+
+                //Delete MIT DR
+                stopLimitControl1.DeleteMIT(Orders);
+
+                //Delete Ord DR
+                stopLimitControl1.DeleteOrder(Deals);
+            }
+
+        }
+
+
+
         public void gui() {
             bool close = false;
             while (true)
@@ -242,20 +254,27 @@ namespace 覆盤
                 
                 lock (Lock)
                 {
+
+
                     if (MKdata.klist.Count > 0)
                     {
+
+                        //DGV
+                        stopLimitControl1.AddPrice((int)MKdata.klist[MKdata.klist.Count - 1].close);
 
                         //StopLimit
                         stopLimitControl1.gui(MKdata.klist);
 
                         //time
-                        if (MKdata.klist!= null)
+                        if (MKdata.klist != null)
+                        {
                             label4.InvokeIfRequired(() =>
                             {
                                 label4.Text = MKdata.klist[MKdata.klist.Count - 1].time.Substring(0, 2).ToString() + ":" +
-                                MKdata.klist[MKdata.klist.Count - 1].time.Substring(2, 2).ToString() + ":"+
+                                MKdata.klist[MKdata.klist.Count - 1].time.Substring(2, 2).ToString() + ":" +
                                 MKdata.klist[MKdata.klist.Count - 1].time.Substring(4, 2).ToString();
                             });
+                        }
 
                         //high - low 
                         label13.InvokeIfRequired(() =>

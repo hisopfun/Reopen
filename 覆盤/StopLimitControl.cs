@@ -99,7 +99,6 @@ namespace 覆盤
         {
 
             //Add Price DataRow
-
             DGV_StopLimit.InvokeIfRequired(() =>
             {
                 if (start == false)
@@ -137,11 +136,6 @@ namespace 覆盤
             {
                 if (e.ColumnIndex != 4)
                 {
-                    //if (DGV_StopLimit[e.ColumnIndex, e.RowIndex].Value.ToString() != "")
-                    //    DGV_StopLimit[e.ColumnIndex, e.RowIndex].Value =
-                    //        (float.Parse(DGV_StopLimit[e.ColumnIndex, e.RowIndex].Value.ToString()) + 1).ToString();
-                    //else
-                    //    DGV_StopLimit[e.ColumnIndex, e.RowIndex].Value = "1";
 
                     //Stop Buy
                     if (e.ColumnIndex == 1)
@@ -217,11 +211,6 @@ namespace 覆盤
             {
                 if (e.ColumnIndex != 4)
                 {
-                    //if (DGV_StopLimit[e.ColumnIndex, e.RowIndex].Value.ToString() != "")
-                    //    DGV_StopLimit[e.ColumnIndex, e.RowIndex].Value =
-                    //        (float.Parse(DGV_StopLimit[e.ColumnIndex, e.RowIndex].Value.ToString()) + 1).ToString();
-                    //else
-                    //    DGV_StopLimit[e.ColumnIndex, e.RowIndex].Value = "1";
 
                     //Stop Buy
                     if (e.ColumnIndex == 1)
@@ -291,8 +280,6 @@ namespace 覆盤
         public void gui(List<TXF.K_data.K> mk) {
 
             //Display MatPri
-            //DGV_StopLimit.InvokeIfRequired(() =>
-            //{
             if (upPri != 0 && dnPri != 0)
             {
                 if (lastPri != 0)
@@ -302,10 +289,8 @@ namespace 覆盤
                 lastPri = (int)mk[mk.Count - 1].close;
                 lastTime = mk[mk.Count - 1].time;
 
-                DGV_StopLimit[4, upPri - lastPri].Style.BackColor = Color.Pink;
+                DGV_StopLimit[4, upPri - lastPri].Style.BackColor = Color.Yellow;
             }
-
-            //});
 
             //Run MIT and Order
             RUN_MIT_Limit();
@@ -336,47 +321,33 @@ namespace 覆盤
         }
 
         public void RUN_MIT_Limit() {
+            int i;
             DataRow DR;
             List<string> seen = new List<string>();
-            foreach (Simulation.match ord in simu.OrdList) {
-                string Pri = ord.Price;
+            for(i = 0; i < simu.OrdList.Count; i++) {
+                string Pri = simu.OrdList[i].Price;
                 if (Pri == "M") continue;
-                string BS = (ord.BS == "B") ? "LBid" : "LAsk";
-                DR = this.dt.Rows.Find(ord.Price);
+                string BS = (simu.OrdList[i].BS == "B") ? "LBid" : "LAsk";
+                DR = this.dt.Rows.Find(simu.OrdList[i].Price);
 
                 //check price whether seen or not
-                string str = seen.Find(x => x.Contains(ord.Price));
-                if (str == ord.Price)
-                {
-                    lock(Lock)
-                        DR[BS] = (int.Parse(DR[BS].ToString()) + 1).ToString();
-                }
-                else
-                {
-                    lock (Lock)
-                        DR[BS] = "1";
-                    seen.Add(ord.Price);
+                lock (Lock) {
+                    DR[BS] = (seen.FindAll(x => x.Contains(simu.OrdList[i].Price)).Count + 1).ToString();
+                    seen.Add(simu.OrdList[i].Price);
                 }
             }
 
             seen = new List<string>();
-            foreach (Simulation.match mit in simu.MITList)
+            for (i = 0; i < simu.MITList.Count; i++)
             {
-                string BS = (mit.BS == "B") ? "SBid" : "SAsk";
-                DR = this.dt.Rows.Find(mit.Price);
-                
+                string BS = (simu.MITList[i].BS == "B") ? "SBid" : "SAsk";
+                DR = this.dt.Rows.Find(simu.MITList[i].Price);
+
                 //check price whether seen or not
-                string str = seen.Find(x => x.Contains(mit.Price));
-                if (str == mit.Price)
+                lock (Lock)
                 {
-                    lock (Lock)
-                        DR[BS] = (int.Parse(DR[BS].ToString()) + 1).ToString();
-                }
-                else
-                {
-                    lock (Lock)
-                        DR[BS] = "1";
-                    seen.Add(mit.Price);
+                    DR[BS] = (seen.FindAll(x => x.Contains(simu.MITList[i].Price)).Count + 1).ToString();
+                    seen.Add(simu.MITList[i].Price);
                 }
             }
         }
@@ -389,9 +360,11 @@ namespace 覆盤
             {
                 lock (Lock)
                     DR["Price"] = $"{nMatPri} ({nQty})";
-
-                DR.EndEdit();
-                DR.AcceptChanges();
+                if (start)
+                {
+                    DR.EndEdit();
+                    DR.AcceptChanges();
+                }
             }
         }
 

@@ -24,18 +24,25 @@ namespace 覆盤
         public string date = "";
         //DateTime connect_time = new DateTime();
         public string datas = "";
-        public string ip = "";
-        public string privateIP = "";
+        public string localIp = "";
+        public string loaclPrivateIP = "";
+        public string serverIP = "";
+        public int serverPort = 0;
         public Queue<string> ticks = new Queue<string>();
         public object Lock = new object();
+        public bool realTime = false;
 
-        public SOCKET(string nDate) {
+        public SOCKET(string nDate, string sIP, int sPort, bool sRealTime) {
             string TIP = IP();
             if (TIP.Contains(",")) {
-                ip = TIP.Split(',')[0];
-                privateIP = TIP.Split(',')[1];
+                localIp = TIP.Split(',')[0];
+                loaclPrivateIP = TIP.Split(',')[1];
             }
             date = nDate;
+
+            serverIP = sIP;
+            serverPort = sPort;
+            realTime = sRealTime;
         }
         public void _Load()
         {
@@ -75,11 +82,11 @@ namespace 覆盤
         public string IP() {
             string externalip = new WebClient().DownloadString("http://icanhazip.com");
             System.Net.IPAddress SvrIP = new System.Net.IPAddress(Dns.GetHostByName(Dns.GetHostName()).AddressList[0].Address);
-            
+
             return externalip.Replace("\n", "") + "," + SvrIP;
-           /* Environment.MachineName + ',' + System.Security.Principal.WindowsIdentity.GetCurrent().Name
-                            + ',' + SvrIP + ',' + externalip + ",64bit:" + Environment.Is64BitOperatingSystem;
-           */
+            /* Environment.MachineName + ',' + System.Security.Principal.WindowsIdentity.GetCurrent().Name
+                             + ',' + SvrIP + ',' + externalip + ",64bit:" + Environment.Is64BitOperatingSystem;
+            */
         }
 
         private void StartClient()
@@ -93,9 +100,9 @@ namespace 覆盤
                 // Establish the remote endpoint for the socket.  
                 // The name of the
                 // remote device is "host.contoso.com".  
-                //IPHostEntry ipHostInfo = Dns.GetHostEntry("host.contoso.com");
-                IPAddress ipAddress = IPAddress.Parse("122.99.4.117");
-                IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
+                IPHostEntry ipHostInfo = Dns.GetHostEntry(serverIP);
+                IPAddress ipAddress = ipHostInfo.AddressList[0];
+                IPEndPoint remoteEP = new IPEndPoint(ipAddress, serverPort);
 
                 // Create a TCP/IP socket.  
                 Sclient = new Socket(ipAddress.AddressFamily,
@@ -107,8 +114,8 @@ namespace 覆盤
                 connectDone.WaitOne();
 
                 // Send test data to the remote device.  
-                Send(Sclient, "client," + date + "," + ip + ","+Environment.MachineName + ',' + System.Security.Principal.WindowsIdentity.GetCurrent().Name
-                            + ',' + privateIP + ',' + ip + ",64bit:" + Environment.Is64BitOperatingSystem);
+                Send(Sclient, "client," + date + "," + localIp + "," + Environment.MachineName + ',' + System.Security.Principal.WindowsIdentity.GetCurrent().Name
+                            + ',' + loaclPrivateIP + ',' + localIp + ",64bit:" + Environment.Is64BitOperatingSystem);
                 sendDone.WaitOne();
 
                 // Receive the response from the remote device.  
@@ -151,7 +158,7 @@ namespace 覆盤
             catch (Exception ex)
             {
                 MethodBase m = MethodBase.GetCurrentMethod();
-                if (ex.Message.Contains("無法連線，因為目標電腦拒絕連線")) { 
+                if (ex.Message.Contains("無法連線，因為目標電腦拒絕連線")) {
                     datas = "無法連線，因為目標電腦拒絕連線";
                     MessageBox.Show("無法連線，因為目標電腦拒絕連線");
                 }
@@ -176,7 +183,46 @@ namespace 覆盤
                 MethodBase m = MethodBase.GetCurrentMethod();
             }
         }
+        private void ReciveReOpenData(string msg){
+            if (msg.Contains("NO DATA"))
+            {
+                datas = "NO DATA";
+                Sclient.Shutdown(SocketShutdown.Both);
+                Sclient.Close();
+                t1.Abort();
+            }
+            if (msg.Contains("DONE"))
+            {
+                Sclient.Shutdown(SocketShutdown.Both);
+                Sclient.Close();
+                t1.Abort();
+            }
+            datas += msg;
+            if (datas.Contains('\n'))
+            {
+                string[] words = datas.Split('\n');
+                int i;
+                for (i = 0; i < words.Length; i++)
+                {
+                    if (i < words.Length - 1)
+                        lock (Lock)
+                            ticks.Enqueue(words[i]);
+                    else
+                        datas = words[i];
+                }
+            }
+        }
 
+        private void FirstMsg(string msg) {
+            if (firstMsg == "")
+            {
+                if (msg.Contains("\n"))
+                {
+                    firstMsg = msg.Split('\n')[0];
+                    datas += msg.Split('\n')[1];
+                }
+            }
+        }
 
         private void ReceiveCallback(IAsyncResult ar)
         {
@@ -194,58 +240,19 @@ namespace 覆盤
                 {
                     // There might be more data, so store the data received so far.  
                     //state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
-
-
                     msg = Encoding.UTF8.GetString(state.buffer, 0, bytesRead);
 
-                    if (firstMsg == "")
+                    if (!realTime)
                     {
-                        if (msg.Contains("\n"))
-                        {
-                            firstMsg = msg.Split('\n')[0];
-                            datas += msg.Split('\n')[1];
-                        }
+                        //First Msg
+                        FirstMsg(msg);
+
+                        //history ticks data
+                        ReciveReOpenData(msg);
                     }
-                    else
-                    {
-                        if (msg.Contains("NO DATA"))
-                        {
-                            datas = "NO DATA";
-                            Sclient.Shutdown(SocketShutdown.Both);
-                            Sclient.Close();
-                            t1.Abort();
-                        }
-                        if (msg.Contains("DONE"))
-                        {
-                            Sclient.Shutdown(SocketShutdown.Both);
-                            Sclient.Close();
-                            t1.Abort();
-                        }
-                        datas += msg;
-                        if (datas.Contains('\n'))
-                        {
-                            string[] words = datas.Split('\n');
-                            int i;
-                            for (i = 0; i < words.Length; i++)
-                            {
-                                if (i < words.Length - 1)
-                                    lock(Lock)
-                                        ticks.Enqueue(words[i]);
-                                else
-                                    datas = words[i];
-                            }
-                        }
+                    else {
+                        ticks.Enqueue(msg);
                     }
-
-                    //using (FileStream fs = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)
-                    //    + "//" + DateTime.Now.ToString("MM-dd-yyyy") + ".TXT", FileMode.Append)){
-                    //    using (StreamWriter sw = new StreamWriter(fs)) {
-                    //        sw.Write(msg);
-                    //    } 
-                    //}
-
-
-
 
                     // Get the rest of the data.  
                     client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
