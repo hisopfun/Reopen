@@ -31,8 +31,18 @@ namespace 覆盤
             KL.InitHp();
             KL.InitLPP();
 
-            KL.PS.Add(KL.CP);
-            KL.PS_volumn.Add(KL.hp);
+            //TradingDateTimeAxis tdt = new TradingDateTimeAxis(KL.PS.XAxis1);
+            //tdt.StartTradingTime = new TimeSpan(8, 45,0);
+            //tdt.EndTradingTime = new TimeSpan(13,45,0);
+            //tdt.
+
+            //KL.PS.XAxis1 = tdt;
+            //KL.PS.XAxis1.Label = "Date";
+            //KL.PS.XAxis1.NumberFormat = "yyyy-MM-dd";
+
+
+            
+            
             KL.PS.Refresh();
         }
 
@@ -112,9 +122,10 @@ namespace 覆盤
             KL.InitLp();
             KL.InitHp();
             KL.InitLPP();
+            
 
-            KL.PS.Add(KL.linePlot);
-            KL.PS_volumn.Add(KL.hp);
+            //KL.PS.YAxis1.WorldMin = 0;
+            //KL.PS.YAxis1.WorldMax = 300;
             KL.PS.Refresh();
         }
         public linep(Kline kl)
@@ -199,6 +210,7 @@ namespace 覆盤
         //public TXF.MK_data TXF_1MK;
         public VerticalLine lineCrossX = null;// = new VerticalLine(10);
         public HorizontalLine lineCrossY = null;// = new HorizontalLine(10);
+        public VerticalLine Volume_lineCrossX = null;
 
         public NPlot.PointPlot pointPlot = new NPlot.PointPlot();
         public NPlot.LinePlot linePlot = new NPlot.LinePlot();
@@ -249,6 +261,7 @@ namespace 覆盤
             int[] times = { 500 };
             lpp.DataSource = new int[] { 100 };
             lpp.AbscissaData = times;
+            lpp.TextData = new string[] { "" };
             lpp.Font = new Font("Arial", 25);
             lpp.Marker.Type = Marker.MarkerType.None;
             lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Right;
@@ -269,8 +282,15 @@ namespace 覆盤
 
         public void InitLp() {
             int[] times = { 100, 200, 300, 400, 500, 600, 700 };
+            //DateTime[] times = new DateTime[7];
+            //for (int i = 0; i < 7; i++)
+            //{
+            //    times[i] = DateTime.Now.Date.AddMinutes(i * 15);
+            //}
             linePlot.AbscissaData = times;
             linePlot.DataSource = times;
+            PS.Add(linePlot);
+            PS.YAxis1.TickTextNextToAxis = false;
         }
 
         public void InitHp() {
@@ -281,6 +301,8 @@ namespace 覆盤
             hp.Filled = true;
             hp.RectangleBrush = RectangleBrushes.Horizontal.FaintGreenFade;
             hp.Center = false;
+            PS_volumn.Add(hp);
+            PS_volumn.YAxis1.TickTextNextToAxis = false;
         }
         public void InitCandle()
         {
@@ -294,7 +316,11 @@ namespace 覆盤
             int[] lows = { 1, 1, 1, 1, 1, 1, 40 };
             int[] highs = { 3, 2, 3, 3, 3, 4, 110 };
             int[] times = { 100, 200, 300, 400, 500, 600, 700 };
-
+            //DateTime[] times = new DateTime[7];
+            //for (int i = 0; i < 7; i++)
+            //{
+            //    times[i] = DateTime.Now.Date.AddDays(i);
+            //}
             CP.CloseData = closes;
             CP.OpenData = opens;
             CP.LowData = lows;
@@ -302,11 +328,11 @@ namespace 覆盤
             CP.AbscissaData = times;
             CP.Color = Color.Gray;
             CP.Centered = false;
-            //PS.Add(linePlot);
-            //PS.Add(pointPlot);
-            PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.HorizontalDrag());
-            PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.VerticalDrag());
-            PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.AxisDrag(true));
+            PS.Add(CP);
+            PS.YAxis1.TickTextNextToAxis = false;
+            //PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.HorizontalDrag());
+            //PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.VerticalDrag());
+            //PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.AxisDrag(true));
         }
 
         public void DrawLpp(string BS, int Price, int iTime)
@@ -368,6 +394,58 @@ namespace 覆盤
             PS.YAxis1.WorldMin = Lowest;
             PS.YAxis1.WorldMax = Highest;
             PS.YAxis1.TickTextNextToAxis = false;
+        }
+
+        public void AddLineCrossXY(int xx, int yy) {
+            this.PS.Remove(lineCrossX, false);
+            this.PS.Remove(lineCrossY, false);
+            this.PS_volumn.Remove(Volume_lineCrossX, false);
+            System.Drawing.Point here = new System.Drawing.Point(xx , yy);
+            //螢幕座標轉化為業務座標
+            double x = this.PS.PhysicalXAxis1Cache.PhysicalToWorld(here, true);
+            double y = this.PS.PhysicalYAxis1Cache.PhysicalToWorld(here, true);
+            DateTime dateTime = new DateTime((long)x);
+            //水平線建立
+            lineCrossY = new NPlot.HorizontalLine(y);
+            lineCrossY.LengthScale = 1;
+            lineCrossY.OrdinateValue = y;
+            lineCrossY.Pen = Pens.Green;
+            //line.OrdinateValue = 2;
+            this.PS.Add(lineCrossY);
+            ////  ///////垂直線///////////
+            lineCrossX = new NPlot.VerticalLine(x);
+            lineCrossX.LengthScale = 1;
+            lineCrossX.Pen = Pens.Red;
+            lineCrossX.AbscissaValue = x;
+
+            ////  ///////垂直線///////////
+            Volume_lineCrossX = new NPlot.VerticalLine(x);
+            Volume_lineCrossX.LengthScale = 1;
+            Volume_lineCrossX.Pen = Pens.Red;
+            Volume_lineCrossX.AbscissaValue = x;
+
+            this.PS.Add(lineCrossX);
+            this.PS.Refresh();
+
+            this.PS_volumn.Add(Volume_lineCrossX);
+            this.PS_volumn.Refresh();
+        }
+
+        public void move(int xx, int yy) {
+            if (this.PS.PhysicalXAxis1Cache == null || this.PS.PhysicalYAxis1Cache == null)
+                return;
+            System.Drawing.Point here = new System.Drawing.Point(xx, yy);
+            int x = Convert.ToInt32(this.PS.PhysicalXAxis1Cache.PhysicalToWorld(here, true));
+            int y = Convert.ToInt32(this.PS.PhysicalYAxis1Cache.PhysicalToWorld(here, true));
+
+            if (lineCrossY != null && lineCrossX != null)
+            {
+                lineCrossY.OrdinateValue = y;
+                lineCrossX.AbscissaValue = x;
+                Volume_lineCrossX.AbscissaValue = x;
+            }
+            this.PS.Refresh();
+            this.PS_volumn.Refresh();
         }
 
         //public void refreshK(List<TXF.K_data.K> mk)

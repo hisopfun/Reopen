@@ -47,6 +47,7 @@
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
             this.DGV_StopLimit.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.DGV_StopLimit.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.DGV_StopLimit.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
             this.DGV_StopLimit.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
@@ -99,6 +100,9 @@
             this.DGV_StopLimit.TabStop = false;
             this.DGV_StopLimit.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DGV_StopLimit_CellMouseClick);
             this.DGV_StopLimit.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DGV_StopLimit_CellMouseDoubleClick);
+            this.DGV_StopLimit.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.DGV_StopLimit_CellMouseEnter);
+            this.DGV_StopLimit.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.DGV_StopLimit_CellMouseLeave);
+            this.DGV_StopLimit.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.DGV_StopLimit_DataError);
             // 
             // StopLimitControl
             // 

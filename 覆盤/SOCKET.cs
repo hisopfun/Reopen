@@ -31,13 +31,45 @@ namespace 覆盤
         public Queue<string> ticks = new Queue<string>();
         public object Lock = new object();
         public bool realTime = false;
+        public TickEncoder TE;
+        private string GetPublicIpAddress()
+        {
+            var request = (HttpWebRequest)WebRequest.Create("http://ifconfig.me");
 
-        public SOCKET(string nDate, string sIP, int sPort, bool sRealTime) {
-            string TIP = IP();
-            if (TIP.Contains(",")) {
-                localIp = TIP.Split(',')[0];
-                loaclPrivateIP = TIP.Split(',')[1];
+            request.UserAgent = "curl"; // this will tell the server to return the information as if the request was made by the linux "curl" command
+
+            string publicIPAddress;
+
+            request.Method = "GET";
+            using (WebResponse response = request.GetResponse())
+            {
+                using (var reader = new StreamReader(response.GetResponseStream()))
+                {
+                    publicIPAddress = reader.ReadToEnd();
+                }
             }
+
+            return publicIPAddress.Replace("\n", "");
+        }
+        static string GetIPAddress()
+        {
+            String address = "";
+            WebRequest request = WebRequest.Create("http://checkip.dyndns.org/");
+            using (WebResponse response = request.GetResponse())
+            using (StreamReader stream = new StreamReader(response.GetResponseStream()))
+            {
+                address = stream.ReadToEnd();
+            }
+
+            int first = address.IndexOf("Address: ") + 9;
+            int last = address.LastIndexOf("</body>");
+            address = address.Substring(first, last - first);
+
+            return address;
+        }
+        public SOCKET(string nDate, string sIP, int sPort, bool sRealTime) {
+            localIp = GetPublicIpAddress();
+            loaclPrivateIP = new System.Net.IPAddress(Dns.GetHostByName(Dns.GetHostName()).AddressList[0].Address).ToString();
             date = nDate;
 
             serverIP = sIP;
@@ -81,9 +113,9 @@ namespace 覆盤
 
         public string IP() {
             string externalip = new WebClient().DownloadString("http://icanhazip.com");
-            System.Net.IPAddress SvrIP = new System.Net.IPAddress(Dns.GetHostByName(Dns.GetHostName()).AddressList[0].Address);
 
-            return externalip.Replace("\n", "") + "," + SvrIP;
+
+            return externalip.Replace("\n", "");// + "," + SvrIP;
             /* Environment.MachineName + ',' + System.Security.Principal.WindowsIdentity.GetCurrent().Name
                              + ',' + SvrIP + ',' + externalip + ",64bit:" + Environment.Is64BitOperatingSystem;
             */
@@ -251,7 +283,8 @@ namespace 覆盤
                         ReciveReOpenData(msg);
                     }
                     else {
-                        ticks.Enqueue(msg);
+                        //ticks.Enqueue(msg);
+                        TE.Encode(msg);
                     }
 
                     // Get the rest of the data.  

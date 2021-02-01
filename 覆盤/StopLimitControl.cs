@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+
 
 namespace 覆盤
 {
@@ -16,18 +18,32 @@ namespace 覆盤
         {
             InitializeComponent();
         }
+
+        public static class BidAsk
+        {
+            public static String StopBid { get { return "SBid"; } }
+            public static String StopAsk { get { return "SAsk"; } }
+            public static String LimitBid { get { return "LBid"; } }
+            public static String LimitAsk { get { return "LAsk"; } }
+        }
+
+        enum ScrollPosition { 
+            Top, Mid, Down
+        }
+
         public DataTable dt;
         private int Ref, upPri, dnPri, lastPri;
         public string lastTime;
         public object Lock;
         public Simulation simu;
         public bool start = false;
+        public bool autoScroll = true;
 
         public void Init() {
             InitVar();
             InitStopLimitDGV();
         }
-        public void InitVar()
+        private void InitVar()
         {
             Ref = 0;
             upPri = 0;
@@ -37,7 +53,7 @@ namespace 覆盤
             start = false;
             Lock = new object();
         }
-        public void InitStopLimitDGV()
+        private void InitStopLimitDGV()
         {
             DGV_StopLimit.DataSource = null;
             ExtensionMethods.DoubleBuffered(DGV_StopLimit, true);
@@ -65,6 +81,7 @@ namespace 覆盤
             DGV_StopLimit.DataSource = this.dt;
             DGV_StopLimit.DefaultCellStyle.Font = new Font("Consolas", 12, FontStyle.Bold);
             DGV_StopLimit.ColumnHeadersDefaultCellStyle.Font = new Font("Consolas", 12, FontStyle.Bold);
+           
 
             //visible
             DGV_StopLimit.Columns[0].Visible = false;
@@ -103,9 +120,18 @@ namespace 覆盤
             {
                 if (start == false)
                 {
-                    DataRow DR;
+                    //blank row
+                    DataRow DR = this.dt.NewRow();
+                    lock (Lock)
+                    {
+                        DR["nPrice"] = "0";
+                    }
+                    this.dt.Rows.Add(DR);
+
+
                     upPri = Convert.ToInt32(Math.Floor(nRef * 1.1));
                     dnPri = Convert.ToInt32(Math.Ceiling(nRef * 0.9));
+                    
                     int i;
                     for (i = upPri; i >= dnPri; i--)
                     {
@@ -117,6 +143,7 @@ namespace 覆盤
                         }
                         this.dt.Rows.Add(DR);
                     }
+                    DGV_StopLimit.Rows[0].Frozen = true;
                 }
 
             });
@@ -129,11 +156,13 @@ namespace 覆盤
         {
             string Pri = "";
             Pri = DGV_StopLimit[0, e.RowIndex].Value.ToString();
+            DeleteMIT();
+            DeleteLimit();
 
-            
 
             if (e.Button == MouseButtons.Left)
             {
+                if (e.RowIndex == 0) return;
                 if (e.ColumnIndex != 4)
                 {
 
@@ -151,51 +180,75 @@ namespace 覆盤
 
                     //Limit Buy 
                     if (e.ColumnIndex == 2) {
-                        simu.Order(lastTime, "TXF", "B", "1", Pri);
+                        simu.Limit(lastTime, "TXF", "B", "1", Pri);
                     }
 
                     //Limit Buy 
                     if (e.ColumnIndex == 6)
                     {
-                        simu.Order(lastTime, "TXF", "S", "1", Pri);
+                        simu.Limit(lastTime, "TXF", "S", "1", Pri);
                     }
                 }
             }
             if (e.Button == MouseButtons.Right)
             {
+
+                //Scrolling to Mid
                 if (e.ColumnIndex == 4)
                 {
                     if (lastPri != 0)
                     {
-                        ScrollingTo(DGV_StopLimit, upPri - lastPri);
+                        ScrollingTo(DGV_StopLimit, upPri - lastPri + 1, true);
                         return;
                     }
                 }
 
+
                 //Clear Cell Centent
-                DGV_StopLimit[e.ColumnIndex, e.RowIndex].Value = "";
+                lock (Lock)
+                    DGV_StopLimit[e.ColumnIndex, e.RowIndex].Value = "";
+
+                //Delete All B or S Order
+                if (e.RowIndex == 0) {
+
+                    //Delete All Buy Limit
+                    if (e.ColumnIndex == 2)
+                        simu.DeleteAllOrder(simu.LimList, "B");
+
+                    //Delete All Sell Limit
+                    if (e.ColumnIndex == 6)
+                        simu.DeleteAllOrder(simu.LimList, "S");
+
+                    //Delete All Buy MIT
+                    if (e.ColumnIndex == 1)
+                        simu.DeleteAllOrder(simu.MITList, "B");
+
+                    //Delete All Sell MIT
+                    if (e.ColumnIndex == 7)
+                        simu.DeleteAllOrder(simu.MITList, "S");
+                }
 
                 //Delete Limit Buy
                 if (e.ColumnIndex == 2) {
-                    simu.DeleteNotMat(simu.OrdList, "B", Pri);
+                    simu.DeleteOrder(simu.LimList, "B", Pri);
                 }
 
                 //Delete Limit Sell
                 if (e.ColumnIndex == 6)
                 {
-                    simu.DeleteNotMat(simu.OrdList, "S", Pri);
+                    simu.DeleteOrder(simu.LimList, "S", Pri);
                 }
 
                 //Delete Stop Buy
                 if (e.ColumnIndex == 1)
                 {
-                    simu.DeleteNotMat(simu.MITList, "B", Pri);
+                    simu.DeleteOrder(simu.MITList, "B", Pri);
                 }
 
                 //Delete Stop Sell
                 if (e.ColumnIndex == 7)
                 {
-                    simu.DeleteNotMat(simu.MITList, "S", Pri);
+                    simu.DeleteOrder(simu.MITList, "S", Pri);
                 }
             }
         }
@@ -204,11 +257,12 @@ namespace 覆盤
         {
             string Pri = "";
             Pri = DGV_StopLimit[0, e.RowIndex].Value.ToString();
-
-
+            DeleteMIT();
+            DeleteLimit();
 
             if (e.Button == MouseButtons.Left)
             {
+                if (e.RowIndex == 0) return;
                 if (e.ColumnIndex != 4)
                 {
 
@@ -227,13 +281,13 @@ namespace 覆盤
                     //Limit Buy 
                     if (e.ColumnIndex == 2)
                     {
-                        simu.Order(lastTime, "TXF", "B", "1", Pri);
+                        simu.Limit(lastTime, "TXF", "B", "1", Pri);
                     }
 
                     //Limit Buy 
                     if (e.ColumnIndex == 6)
                     {
-                        simu.Order(lastTime, "TXF", "S", "1", Pri);
+                        simu.Limit(lastTime, "TXF", "S", "1", Pri);
                     }
                 }
             }
@@ -243,140 +297,359 @@ namespace 覆盤
                 {
                     if (lastPri != 0)
                     {
-                        ScrollingTo(DGV_StopLimit, upPri - lastPri);
+                        ScrollingTo(DGV_StopLimit, upPri - lastPri + 1, true);
                         return;
                     }
                 }
 
+
                 //Clear Cell Centent
-                DGV_StopLimit[e.ColumnIndex, e.RowIndex].Value = "";
+                lock (Lock)
+                    DGV_StopLimit[e.ColumnIndex, e.RowIndex].Value = "";
+
+                //Delete All B or S Order
+                if (e.RowIndex == 0)
+                {
+
+                    //Delete All Buy Limit
+                    if (e.ColumnIndex == 2)
+                        simu.DeleteAllOrder(simu.LimList, "B");
+
+                    //Delete All Sell Limit
+                    if (e.ColumnIndex == 6)
+                        simu.DeleteAllOrder(simu.LimList, "S");
+
+                    //Delete All Buy MIT
+                    if (e.ColumnIndex == 1)
+                        simu.DeleteAllOrder(simu.MITList, "B");
+
+                    //Delete All Sell MIT
+                    if (e.ColumnIndex == 7)
+                        simu.DeleteAllOrder(simu.MITList, "S");
+
+                }
 
                 //Delete Limit Buy
                 if (e.ColumnIndex == 2)
                 {
-                    simu.DeleteNotMat(simu.OrdList, "B", Pri);
+                    simu.DeleteOrder(simu.LimList, "B", Pri);
                 }
 
                 //Delete Limit Sell
                 if (e.ColumnIndex == 6)
                 {
-                    simu.DeleteNotMat(simu.OrdList, "S", Pri);
+                    simu.DeleteOrder(simu.LimList, "S", Pri);
                 }
 
                 //Delete Stop Buy
                 if (e.ColumnIndex == 1)
                 {
-                    simu.DeleteNotMat(simu.MITList, "B", Pri);
+                    simu.DeleteOrder(simu.MITList, "B", Pri);
                 }
 
                 //Delete Stop Sell
                 if (e.ColumnIndex == 7)
                 {
-                    simu.DeleteNotMat(simu.MITList, "S", Pri);
+                    simu.DeleteOrder(simu.MITList, "S", Pri);
                 }
             }
         }
 
         public void gui(List<TXF.K_data.K> mk) {
-
-            //Display MatPri
-            if (upPri != 0 && dnPri != 0)
+            if (start)
             {
-                if (lastPri != 0)
+
+                //Display MatPri
+                if (upPri != 0 && dnPri != 0)
                 {
-                    DGV_StopLimit[4, upPri - lastPri].Style.BackColor = Color.White;
+                    if (lastPri != 0)
+                    {
+                        DGV_StopLimit[4, upPri - lastPri + 1].Style.BackColor = Color.White;
+                    }
+                    lastPri = (int)mk[mk.Count - 1].close;
+                    lastTime = mk[mk.Count - 1].time;
+
+                    DGV_StopLimit[4, upPri - lastPri + 1].Style.BackColor = Color.Yellow;
                 }
-                lastPri = (int)mk[mk.Count - 1].close;
-                lastTime = mk[mk.Count - 1].time;
 
-                DGV_StopLimit[4, upPri - lastPri].Style.BackColor = Color.Yellow;
-            }
+                //Run MIT and Limit
+                RUN_MIT_Limit();
 
-            //Run MIT and Order
-            RUN_MIT_Limit();
-        }
-
-        public void DeleteMIT(List<string> Orders) {
-            foreach (string ord in Orders) {
-                string price = ord.Split(',')[2];
-                string BS = (ord.Split(',')[1] == "B") ? "SBid" : "SAsk";
-                DataRow DR = this.dt.Rows.Find(price);
-                lock (Lock)
-                    DR[BS] = "";
+                if (autoScroll)
+                    ScrollingTo(DGV_StopLimit, upPri - lastPri + 1, false);
             }
         }
 
-        public void DeleteOrder(List<string> Deals)
+        public void DeleteMIT() 
+        {
+            for(int i = 0; i < simu.MITList.Count; i++) 
+            {
+                //string BS = (simu.MITList[i].BS == "B") ? BidAsk.StopBid : BidAsk.StopAsk;
+                //DataRow DR = this.dt.Rows.Find(simu.MITList[i].Price);
+                //lock (Lock)
+                //    DR[BS] = "";
+                setMITValue(simu.MITList[i].Price, simu.MITList[i].BS, "");
+            }
+            setMITValue("0", "B", "");
+            setMITValue("0", "S", "");
+        }
+
+        public void DeleteLimit()
+        {
+            for (int i = 0; i < simu.LimList.Count; i++)
+            {
+                if (simu.LimList[i].Price == "M") continue;
+                //string BS = (simu.LimList[i].BS == "B") ? BidAsk.LimitBid : BidAsk.LimitAsk;
+                //DataRow DR = this.dt.Rows.Find(simu.LimList[i].Price);
+                //lock (Lock)
+                //    DR[BS] = "";
+                setLimitValue(simu.LimList[i].Price, simu.LimList[i].BS, "");
+            }
+
+            setLimitValue("0", "B", "");
+            setLimitValue("0", "S", "");
+
+
+        }
+        public void DeleteMIT(List<string> Limits)
+        {
+            foreach (string lim in Limits)
+            {
+                string price = lim.Split(',')[2];
+                //string BS = (ord.Split(',')[1] == "B") ? BidAsk.StopBid : BidAsk.StopAsk;
+                //DataRow DR = this.dt.Rows.Find(price);
+                //lock (Lock)
+                //    DR[BS] = "";
+                setMITValue(lim.Split(',')[2], lim.Split(',')[1], "");
+            }
+            setMITValue("0", "B", "");
+            setMITValue("0", "S", "");
+        }
+
+        public void DeleteLimit(List<string> Deals)
         {
             foreach (string mat in Deals)
             {
-                string Pri = mat.Split(',')[2];
-                if (Pri == "M") continue;
                 string price = mat.Split(',')[2];
-                string BS = (mat.Split(',')[1] == "B") ? "LBid" : "LAsk";
-                DataRow DR = this.dt.Rows.Find(price);
-                lock(Lock)
-                    DR[BS] = "";
+                if (price == "M") continue;
+                //string BS = (mat.Split(',')[1] == "B") ? BidAsk.LimitBid : BidAsk.LimitAsk;
+                //DataRow DR = this.dt.Rows.Find(price);
+                //lock (Lock)
+                //    DR[BS] = "";
+                setLimitValue(mat.Split(',')[2], mat.Split(',')[1], "");
+            }
+            setLimitValue("0", "B", "");
+            setLimitValue("0", "S", "");
+
+            //if OI is not equall 0, change color
+            int OI = simu.Qty("", "");
+            if (OI > 0)
+            {
+                DGV_StopLimit.DefaultCellStyle.BackColor = Color.FromArgb(255, 192, 192);
+                DGV_StopLimit.Columns[4].DefaultCellStyle.BackColor = Color.White;
+            }
+            else if (OI < 0)
+            {
+                DGV_StopLimit.DefaultCellStyle.BackColor = Color.FromArgb(192, 255, 192);
+                DGV_StopLimit.Columns[4].DefaultCellStyle.BackColor = Color.White;
+            }
+            else
+            {
+                DGV_StopLimit.DefaultCellStyle.BackColor = Color.White;
+            }
+        }
+        private void setLimitValue(string Price, string BS, string Qty) {
+            DataRow DR = this.dt.Rows.Find(Price);
+            if (DR == null) return;
+            BS = (BS == "B") ? BidAsk.LimitBid : BidAsk.LimitAsk;
+            Qty = Qty == "0" ? "" : Qty;
+            lock (Lock)
+            {
+                DR[BS] = Qty;
+
+                DR.EndEdit();
+                DR.AcceptChanges();
             }
         }
 
-        public void RUN_MIT_Limit() {
-            int i;
-            DataRow DR;
-            List<string> seen = new List<string>();
-            for(i = 0; i < simu.OrdList.Count; i++) {
-                string Pri = simu.OrdList[i].Price;
-                if (Pri == "M") continue;
-                string BS = (simu.OrdList[i].BS == "B") ? "LBid" : "LAsk";
-                DR = this.dt.Rows.Find(simu.OrdList[i].Price);
+        private void setMITValue(string Price, string BS, string Qty)
+        {
+            DataRow DR = this.dt.Rows.Find(Price);
+            if (DR == null) return;
+            BS = (BS == "B") ? BidAsk.StopBid : BidAsk.StopAsk;
+            Qty = Qty == "0" ? "" : Qty;
+            lock (Lock)
+            {
+                DR[BS] = Qty;
 
-                //check price whether seen or not
-                lock (Lock) {
-                    DR[BS] = (seen.FindAll(x => x.Contains(simu.OrdList[i].Price)).Count + 1).ToString();
-                    seen.Add(simu.OrdList[i].Price);
+                DR.EndEdit();
+                DR.AcceptChanges();
+            }
+        }
+
+        private void DGV_StopLimit_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            autoScroll = false;
+        }
+
+        private void DGV_StopLimit_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            autoScroll = true;
+        }
+
+        private void RUN_MIT_Limit() {
+
+            //int? xxx = null; //TEST
+            List<Simulation.match> seen = new List<Simulation.match>();
+            int BCount = 0, ACount = 0;
+            lock (simu.Lock)
+            {
+                for (int i = 0; i < simu.LimList.Count; i++)
+                {
+
+                    //Avoid
+                    string Pri = simu.LimList[i].Price;
+                    if (simu.LimList[i].Price == "M") continue;
+
+                    //Total Bid Ask Count
+                    if (simu.LimList[i].BS == "B")
+                        BCount++;
+                    else
+                        ACount++;
+
+                    //Calculate seen Count
+                    int find = (from data in seen
+                                where data.Price == simu.LimList[i].Price && data.BS == simu.LimList[i].BS
+                                select data).Count();
+
+                    //Set Value
+                    setLimitValue(simu.LimList[i].Price, simu.LimList[i].BS, (find + 1).ToString());
+
+                    //Add to seen list
+                    seen.Add(simu.LimList[i]);
+                }
+                if (seen.Count > 0)
+                {
+                    setLimitValue("0", "B", BCount.ToString());
+                    setLimitValue("0", "S", ACount.ToString());
+                }
+
+                BCount = 0; ACount = 0;
+                seen = new List<Simulation.match>();
+                for (int i = 0; i < simu.MITList.Count; i++)
+                {
+
+                    //Total Bid Ask Count
+                    if (simu.MITList[i].BS == "B")
+                        BCount++;
+                    else
+                        ACount++;
+
+                    //Calculate seen Count
+                    int find = (from data in seen
+                                where data.Price == simu.MITList[i].Price && data.BS == simu.MITList[i].BS
+                                select data).Count();
+
+                    //Set Value
+                    setMITValue(simu.MITList[i].Price, simu.MITList[i].BS, (find + 1).ToString());
+
+                    //Add to seen list
+                    seen.Add(simu.MITList[i]);
+                }
+                if (seen.Count > 0)
+                {
+                    setMITValue("0", "B", BCount.ToString());
+                    setMITValue("0", "S", ACount.ToString());
                 }
             }
+        }
 
-            seen = new List<string>();
-            for (i = 0; i < simu.MITList.Count; i++)
-            {
-                string BS = (simu.MITList[i].BS == "B") ? "SBid" : "SAsk";
-                DR = this.dt.Rows.Find(simu.MITList[i].Price);
 
-                //check price whether seen or not
-                lock (Lock)
-                {
-                    DR[BS] = (seen.FindAll(x => x.Contains(simu.MITList[i].Price)).Count + 1).ToString();
-                    seen.Add(simu.MITList[i].Price);
+        
+        public void DGV_StopLimit_DataError(object sender, DataGridViewDataErrorEventArgs anError) {
+            using (FileStream fs = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "//DataErr.TXT", FileMode.Append)) {
+                using (StreamWriter sw = new StreamWriter(fs)) {
+                    sw.WriteLine(anError.ToString());
                 }
             }
         }
 
         public void StopLimitDGV(string nMatPri, string nBid, string nAsk, string nQty)
         {
-            DataRow DR = this.dt.Rows.Find(nMatPri);
-            DGV_StopLimit.Enabled = true;
-            if (DR != null)
+            if (start)
             {
-                lock (Lock)
-                    DR["Price"] = $"{nMatPri} ({nQty})";
-                if (start)
+                DataRow DR = this.dt.Rows.Find(nMatPri);
+                DGV_StopLimit.Enabled = true;
+                if (DR != null)
                 {
-                    DR.EndEdit();
-                    DR.AcceptChanges();
+                    lock (Lock)
+                        DR["Price"] = $"{nMatPri} ({nQty})";
+
+                        DR.EndEdit();
+                        DR.AcceptChanges();
                 }
             }
         }
 
-        private static void ScrollingTo(DataGridView view, int rowToShow)
+        private void ScrollingTo(DataGridView view, int rowToShow, bool Mid)
         {
-            if (rowToShow >= 0 && rowToShow < view.RowCount)
+ 
+            view.InvokeIfRequired(() =>
             {
-                var countVisible = view.DisplayedRowCount(false);
-                var firstVisible = view.FirstDisplayedScrollingRowIndex;
-                int mid = Math.Max(0, rowToShow - countVisible / 2);
-                view.FirstDisplayedScrollingRowIndex = mid;
-            }
+                if (Mid)
+                {
+                    if (rowToShow >= 0 && rowToShow < view.RowCount)
+                    {
+                        var countVisible = view.DisplayedRowCount(false);
+                        var firstVisible = view.FirstDisplayedScrollingRowIndex;
+                        int mid = Math.Max(0, rowToShow - countVisible / 2);
+                        lock(Lock)
+                            view.FirstDisplayedScrollingRowIndex = mid;
+                        return;
+                    }
+                }
+
+                if (!Mid)
+                {
+                    if (rowToShow >= 0 && rowToShow < view.RowCount)
+                    {
+                        int countVisible = view.DisplayedRowCount(false);
+                        int firstVisible = view.FirstDisplayedScrollingRowIndex;
+
+                        if (rowToShow < view.FirstDisplayedScrollingRowIndex)
+                        {
+                            using (FileStream fs = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "//test.TXT", FileMode.Append))
+                            {
+                                using (StreamWriter sw = new StreamWriter(fs))
+                                {
+                                    sw.WriteLine(lastPri + "," + rowToShow + "," + firstVisible + "," + (firstVisible + countVisible) + "," + "TOP");
+                                }
+                            }
+                            lock(Lock)
+                                view.FirstDisplayedScrollingRowIndex = Math.Max(0, rowToShow);
+
+                        }
+                        else if (rowToShow >= firstVisible + countVisible)
+                        {
+                            using (FileStream fs = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "//test.TXT", FileMode.Append))
+                            {
+                                using (StreamWriter sw = new StreamWriter(fs))
+                                {
+                                    sw.WriteLine(lastPri + "," + rowToShow + "," + firstVisible + "," + (firstVisible + countVisible) + "," + "Down");
+                                }
+                            }
+                            lock(Lock)
+                                view.FirstDisplayedScrollingRowIndex = Math.Max(0, rowToShow - countVisible + 1);
+
+                        }
+
+
+                        return;
+                    }
+
+                }
+            });
+
         }
     }
 }

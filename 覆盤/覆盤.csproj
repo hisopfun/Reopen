@@ -52,6 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChartControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ChartControl.Designer.cs">
+      <DependentUpon>ChartControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="SOCKET.cs" />
     <Compile Include="RandomDate.cs" />
     <Compile Include="Kline.cs" />
@@ -71,7 +77,11 @@
       <DependentUpon>StopLimitControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Technical analysis.cs" />
+    <Compile Include="TickEvent.cs" />
     <Compile Include="TXF.cs" />
+    <EmbeddedResource Include="ChartControl.resx">
+      <DependentUpon>ChartControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

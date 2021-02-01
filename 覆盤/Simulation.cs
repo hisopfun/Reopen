@@ -11,7 +11,7 @@ namespace 覆盤
     public class Simulation
     {
         public List<match> MatList { get; set; } = new List<match>();
-        public List<match> OrdList { get; set; } = new List<match>();
+        public List<match> LimList { get; set; } = new List<match>();
         public List<match> MITList { get; set; } = new List<match>();
         public NPlot.Windows.PlotSurface2D PS = null; 
         public object Lock = new object();
@@ -45,15 +45,17 @@ namespace 覆盤
             PS = nPS;
         }
 
-        public bool Order(string nMatTime, string nFutNo, string nBSCode, string nQty, string nOrdPri)
+        public bool Limit(string nMatTime, string nFutNo, string nBSCode, string nQty, string nLimPri)
         {
+            nMatTime = nMatTime.Substring(0, 6);
             lock (Lock)
-                OrdList.Add(new match(nMatTime, nFutNo, nBSCode, nQty, nOrdPri, ""));
+                LimList.Add(new match(nMatTime, nFutNo, nBSCode, nQty, nLimPri, ""));
             return true;
         }
 
         public bool MIT(string nMatTime, string nFutNo, string nBSCode, string nQty, string nMITPri, string nMatPri)
         {
+            nMatTime = nMatTime.Substring(0, 6);
             string Label = "";
             if (int.Parse(nMITPri) < int.Parse(nMatPri))
             {
@@ -69,10 +71,11 @@ namespace 覆盤
             PS.Add(MITList[MITList.Count - 1].horizontalLine);
             return true;
         }
-        public List<string> MITToOrder(string nMatTime, string nBid, string nAsk, string nMatPri)
+        public List<string> MITToLimit(string nMatTime, string nBid, string nAsk, string nMatPri)
         {
-            List<string> Order = new List<string>();
-            //MIT -> order
+            nMatTime = nMatTime.Substring(0, 6);
+            List<string> Limit = new List<string>();
+            //MIT -> Limit
             int i;
             for (i = 0; i < MITList.Count; i++)
             {
@@ -80,41 +83,42 @@ namespace 覆盤
                     int.Parse(nMatPri) <= int.Parse(MITList[i].Price) && MITList[i].MITLabel.Equals("<="))
                 {
                     lock (Lock)
-                        OrdList.Add(new match(nMatTime, MITList[i].FutNo, MITList[i].BS, MITList[i].Qty, "M", ""));
-                    Order.Add(nMatPri + "," + MITList[i].BS + "," + MITList[i].Price);
-                    DeleteNotMat(MITList, MITList[i].BS, MITList[i].Price);
+                        LimList.Add(new match(nMatTime, MITList[i].FutNo, MITList[i].BS, MITList[i].Qty, "M", ""));
+                    Limit.Add(nMatPri + "," + MITList[i].BS + "," + MITList[i].Price);
+                    DeleteOrder(MITList, MITList[i].BS, MITList[i].Price);
                     //MITList.Remove(MITList[i]);
                     i--;
                 }
             }
-            return Order;
+            return Limit;
         }
 
         public List<string> DealInfo(string nMatTime, string nBid, string nAsk, string nMatPri)
         {
+            nMatTime = nMatTime.Substring(0, 6);
             List<string> deal = new List<string>();
 
             int i;
-            //order -> deal
-            for (i = 0; i < OrdList.Count; i++)
+            //Limit -> deal
+            for (i = 0; i < LimList.Count; i++)
             {
-                if (OrdList[i].BS.Equals("B") && OrdList[i].Price.Equals("M") ||
-                    OrdList[i].BS.Equals("B") && int.Parse(nAsk) <= int.Parse(OrdList[i].Price))
+                if (LimList[i].BS.Equals("B") && LimList[i].Price.Equals("M") ||
+                    LimList[i].BS.Equals("B") && int.Parse(nAsk) <= int.Parse(LimList[i].Price))
                 {
                     lock (Lock)
-                        MatList.Add(new match(nMatTime, OrdList[i].FutNo, OrdList[i].BS, OrdList[i].Qty, nAsk, ""));
-                    deal.Add(nAsk + ",B," + OrdList[i].Price);
-                    DeleteNotMat(OrdList, OrdList[i].BS, OrdList[i].Price);
-                    //OrdList.Remove(OrdList[i]);
+                        MatList.Add(new match(nMatTime, LimList[i].FutNo, LimList[i].BS, LimList[i].Qty, nAsk, ""));
+                    deal.Add(nAsk + ",B," + LimList[i].Price);
+                    DeleteOrder(LimList, LimList[i].BS, LimList[i].Price);
+                    //LimList.Remove(LimList[i]);
                 }
-                else if (OrdList[i].BS.Equals("S") && OrdList[i].Price.Equals("M") ||
-                         OrdList[i].BS.Equals("S") && int.Parse(nBid) >= int.Parse(OrdList[i].Price))
+                else if (LimList[i].BS.Equals("S") && LimList[i].Price.Equals("M") ||
+                         LimList[i].BS.Equals("S") && int.Parse(nBid) >= int.Parse(LimList[i].Price))
                 {
                     lock (Lock)
-                        MatList.Add(new match(nMatTime, OrdList[i].FutNo, OrdList[i].BS, OrdList[i].Qty, nBid, ""));
-                    deal.Add(nBid + ",S," + OrdList[i].Price);
-                    DeleteNotMat(OrdList, OrdList[i].BS, OrdList[i].Price);
-                    //OrdList.Remove(OrdList[i]);
+                        MatList.Add(new match(nMatTime, LimList[i].FutNo, LimList[i].BS, LimList[i].Qty, nBid, ""));
+                    deal.Add(nBid + ",S," + LimList[i].Price);
+                    DeleteOrder(LimList, LimList[i].BS, LimList[i].Price);
+                    //LimList.Remove(LimList[i]);
                 }
             }
             return deal;
@@ -194,36 +198,22 @@ namespace 覆盤
             return MatL;
         }
 
-        public int OrderQty(string nBS, string nPrice)
-        {
-
-            int Qty = 0;
-            //Price OI Qty
-            foreach (match mat in OrdList)
-            {
-                if (mat.BS.Equals(nBS) && mat.Price.Equals(nPrice))
-                {
-                    Qty += int.Parse(mat.Qty);
-                }
-            }
-            return Qty;
-        }
         public string Price()
         {
             return MatList[MatList.Count - 1].Price;
         }
 
-        public bool DeleteNotMat(List<match> NotMatList, string nBSCode, string nPrice)
+        public bool DeleteOrder(List<match> list, string nBSCode, string nPrice)
         {
             bool change = false;
             int i;
-            for (i = 0; i < NotMatList.Count; i++)
+            for (i = 0; i < list.Count; i++)
             {
-                if (NotMatList[i].BS.Equals(nBSCode) && NotMatList[i].Price.Equals(nPrice))
+                if (list[i].BS.Equals(nBSCode) && list[i].Price.Equals(nPrice))
                 {
-                    PS.Remove(NotMatList[i].horizontalLine, false);
+                    PS.Remove(list[i].horizontalLine, false);
                     lock (Lock)
-                        NotMatList.Remove(NotMatList[i]);
+                        list.Remove(list[i]);
                     i--;
                     change = true;
                     break;
@@ -233,11 +223,19 @@ namespace 覆盤
         }
 
 
-        public void DeleteAllMIT()
+        public void DeleteAllOrder(List<match> list, string BS)
         {
-            while(MITList.Count > 0)
+            //while(MITList.Count > 0)
+            //{
+            //    DeleteNotMat(MITList, MITList[0].BS, MITList[0].Price);
+            //}
+            for(int i = 0; i < list.Count; i++)
             {
-                DeleteNotMat(MITList, MITList[0].BS, MITList[0].Price);
+                if (list[i].BS == BS)
+                {
+                    DeleteOrder(list, list[i].BS, list[i].Price);
+                    i--;
+                }
             }
         }
 
