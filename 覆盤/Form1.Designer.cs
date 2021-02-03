@@ -52,6 +52,7 @@
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.stopLimitControl1 = new 覆盤.StopLimitControl();
             this.chartControl1 = new 覆盤.ChartControl();
             this.groupBox1.SuspendLayout();
@@ -67,7 +68,7 @@
             this.label4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label4.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.Black;
-            this.label4.Location = new System.Drawing.Point(625, 13);
+            this.label4.Location = new System.Drawing.Point(727, 13);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(110, 28);
             this.label4.TabIndex = 3;
@@ -77,7 +78,7 @@
             // 
             this.button1.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.Color.Black;
-            this.button1.Location = new System.Drawing.Point(177, 13);
+            this.button1.Location = new System.Drawing.Point(279, 13);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(87, 28);
             this.button1.TabIndex = 8;
@@ -96,7 +97,7 @@
             "4",
             "5",
             "10"});
-            this.comboBox1.Location = new System.Drawing.Point(458, 14);
+            this.comboBox1.Location = new System.Drawing.Point(560, 14);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(90, 27);
             this.comboBox1.TabIndex = 11;
@@ -106,7 +107,7 @@
             // 
             this.dateTimePicker1.CalendarFont = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateTimePicker1.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dateTimePicker1.Location = new System.Drawing.Point(270, 15);
+            this.dateTimePicker1.Location = new System.Drawing.Point(372, 15);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(182, 26);
             this.dateTimePicker1.TabIndex = 80;
@@ -118,7 +119,7 @@
             this.label12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label12.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label12.ForeColor = System.Drawing.Color.Black;
-            this.label12.Location = new System.Drawing.Point(741, 13);
+            this.label12.Location = new System.Drawing.Point(843, 13);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(106, 28);
             this.label12.TabIndex = 98;
@@ -130,7 +131,7 @@
             this.label13.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label13.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label13.ForeColor = System.Drawing.Color.Black;
-            this.label13.Location = new System.Drawing.Point(853, 13);
+            this.label13.Location = new System.Drawing.Point(955, 13);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(90, 28);
             this.label13.TabIndex = 99;
@@ -138,6 +139,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.radioButton3);
             this.groupBox1.Controls.Add(this.checkBox1);
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.tabControl1);
@@ -160,7 +162,7 @@
             // checkBox1
             // 
             this.checkBox1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox1.Location = new System.Drawing.Point(555, 13);
+            this.checkBox1.Location = new System.Drawing.Point(657, 13);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(64, 28);
             this.checkBox1.TabIndex = 105;
@@ -172,7 +174,7 @@
             // 
             this.button2.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.ForeColor = System.Drawing.Color.Black;
-            this.button2.Location = new System.Drawing.Point(949, 13);
+            this.button2.Location = new System.Drawing.Point(1051, 13);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(82, 28);
             this.button2.TabIndex = 104;
@@ -388,6 +390,18 @@
             this.textBox1.Size = new System.Drawing.Size(330, 109);
             this.textBox1.TabIndex = 101;
             // 
+            // radioButton3
+            // 
+            this.radioButton3.AutoSize = true;
+            this.radioButton3.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.radioButton3.Location = new System.Drawing.Point(157, 16);
+            this.radioButton3.Name = "radioButton3";
+            this.radioButton3.Size = new System.Drawing.Size(50, 22);
+            this.radioButton3.TabIndex = 111;
+            this.radioButton3.Text = "All";
+            this.radioButton3.UseVisualStyleBackColor = true;
+            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
+            // 
             // stopLimitControl1
             // 
             this.stopLimitControl1.Location = new System.Drawing.Point(1248, 19);
@@ -455,6 +469,7 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.CheckBox checkBox1;
         private ChartControl chartControl1;
+        private System.Windows.Forms.RadioButton radioButton3;
     }
 }
 

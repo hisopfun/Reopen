@@ -8,16 +8,23 @@ using System.Drawing;
 
 namespace 覆盤
 {
+    public enum Kind { 
+        Line, Candle, All
+    }
+
+
     public interface klineplot
     {
         void InitKLinePS();
         void refreshK(List<TXF.K_data.K> mk);
     }
 
-    public class candlep : klineplot
+
+
+    public class CandleP : klineplot
     {
         Kline KL;
-        public candlep(Kline kl) {
+        public CandleP(Kline kl) {
             KL = kl;
             InitKLinePS();
         }
@@ -39,10 +46,6 @@ namespace 覆盤
             //KL.PS.XAxis1 = tdt;
             //KL.PS.XAxis1.Label = "Date";
             //KL.PS.XAxis1.NumberFormat = "yyyy-MM-dd";
-
-
-            
-            
             KL.PS.Refresh();
         }
 
@@ -50,10 +53,9 @@ namespace 覆盤
         {
             if (KL.autoRefresh == false)
                 return;
+            int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
 
             List<int[]> TX = new List<int[]>();
-
-            int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
             for (i = 0; i < 6; i++)
                 TX.Add(new int[KL.KLine_num]);
 
@@ -111,7 +113,7 @@ namespace 覆盤
         }
     }
 
-    public class linep : klineplot
+    public class LineP : klineplot
     {
         Kline KL;
         public void InitKLinePS()
@@ -128,7 +130,7 @@ namespace 覆盤
             //KL.PS.YAxis1.WorldMax = 300;
             KL.PS.Refresh();
         }
-        public linep(Kline kl)
+        public LineP(Kline kl)
         {
             KL = kl;
             InitKLinePS();
@@ -137,20 +139,16 @@ namespace 覆盤
         {
             if (KL.autoRefresh == false)
                 return;
-
-            List<int[]> TX = new List<int[]>();
-
             int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
+
+            List<List<int>> TX = new List<List<int>>();
             for (i = 0; i < 6; i++)
-                TX.Add(new int[KL.KLine_num]);
-            List<float> close = new List<float>();
+                TX.Add(new List<int>(new int[KL.KLine_num]));
 
             for (i = 0; i < KL.KLine_num; i++)
             {
                 if (mk.Count >= i + 1)
                 {
-                    if (mk.Count > close.Count) 
-                        close.Add(new float());
                     int istart = mk.Count - KL.KLine_num;
                     istart = Math.Max(0, istart);
                     Highest_Qty = Math.Max(Highest_Qty, Convert.ToInt32(mk[i + istart].qty));
@@ -159,13 +157,9 @@ namespace 覆盤
                     //TX[0][i] = Convert.ToInt32(mk[i + istart].open);
                     //TX[1][i] = Convert.ToInt32(mk[i + istart].high);
                     //TX[2][i] = Convert.ToInt32(mk[i + istart].low);
-                    //TX[3][i] = Convert.ToInt32(mk[i + istart].close);
-                    close[i] = Convert.ToInt32(mk[i + istart].close);
+                    TX[3][i] = Convert.ToInt32(mk[i + istart].close);
+                    //close[i] = Convert.ToInt32(mk[i + istart].close);
                     TX[4][i] = Convert.ToInt32(mk[i + istart].qty);
-                }
-                else {
-                    if (mk.Count > 0)
-                        TX[3][i] = TX[3][i-1];
                 }
                 TX[5][i] = i + 1;
             }
@@ -173,7 +167,7 @@ namespace 覆盤
             KL.PS.InvokeIfRequired(() =>
             {
 
-                KL.linePlot.DataSource = close;//closes;
+                KL.linePlot.DataSource = TX[3].GetRange(0, mk.Count);//closes;
                 KL.linePlot.AbscissaData = TX[5];// times;
 
                 KL.AdjustChart(mk, Highest + 10, Lowest - 10);
@@ -194,6 +188,102 @@ namespace 覆盤
             });
         }
     }
+
+    public class CandleLineP : klineplot
+    {
+        Kline KL;
+        public CandleLineP(Kline kl)
+        {
+            KL = kl;
+            InitKLinePS();
+        }
+
+        public void InitKLinePS()
+        {
+            KL.InitPS(KL.PS);
+            KL.InitPS(KL.PS_volumn);
+
+            
+            KL.InitCandle();
+            KL.InitLp();
+            KL.InitHp();
+            KL.InitLPP();
+
+            KL.CP.BullishColor = Color.FromArgb(255,192,192);
+            KL.CP.BearishColor = Color.FromArgb(192, 255, 192);
+            KL.CP.Style = CandlePlot.Styles.Filled;
+
+            KL.PS.Refresh();
+        }
+
+        void klineplot.refreshK(List<TXF.K_data.K> mk)
+        {
+            if (KL.autoRefresh == false)
+                return;
+
+            List<int[]> TX = new List<int[]>();
+
+            int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
+            for (i = 0; i < 6; i++)
+                TX.Add(new int[KL.KLine_num]);
+
+            for (i = 0; i < KL.KLine_num; i++)
+            {
+                if (mk.Count >= i + 1)
+                {
+                    int istart = mk.Count - KL.KLine_num;
+                    istart = Math.Max(0, istart);
+                    Highest_Qty = Math.Max(Highest_Qty, Convert.ToInt32(mk[i + istart].qty));
+                    Highest = Math.Max(Highest, Convert.ToInt32(mk[i + istart].high));
+                    Lowest = Math.Min(Lowest, Convert.ToInt32(mk[i + istart].low));
+                    TX[0][i] = Convert.ToInt32(mk[i + istart].open);
+                    TX[1][i] = Convert.ToInt32(mk[i + istart].high);
+                    TX[2][i] = Convert.ToInt32(mk[i + istart].low);
+                    TX[3][i] = Convert.ToInt32(mk[i + istart].close);
+                    TX[4][i] = Convert.ToInt32(mk[i + istart].qty);
+                }
+                TX[5][i] = i + 1;
+            }
+
+            KL.PS.InvokeIfRequired(() =>
+            {
+                KL.CP.OpenData = TX[0];// opens;
+                KL.CP.HighData = TX[1];//highs;
+                KL.CP.LowData = TX[2];//lows;
+                KL.CP.CloseData = TX[3];//closes;
+                KL.CP.AbscissaData = TX[5];// times;
+
+                KL.linePlot.DataSource = TX[3].Take(mk.Count).ToArray();
+                KL.linePlot.AbscissaData = TX[5];
+                //KL.lpp.AbscissaData = new int[] { mk.Count };
+                //KL.lpp.DataSource = new float[] { mk[mk.Count-1].close };
+                //KL.lpp.TextData = new string[] { "⮜" };//⬅⮜←⟵
+
+                //KL.PS.XAxis1.WorldMin = 0;
+                //KL.PS.XAxis1.WorldMax = KL.KLine_num + 1;
+                //KL.PS.YAxis1.WorldMin = Lowest;
+                //KL.PS.YAxis1.WorldMax = Highest;
+                //KL.PS.YAxis1.TickTextNextToAxis = false;
+                KL.AdjustChart(mk, Highest + 10, Lowest - 10);
+                KL.PS.Refresh();
+            });
+
+            KL.PS_volumn.InvokeIfRequired(() =>
+            {
+                KL.hp.AbscissaData = TX[5];
+                KL.hp.DataSource = TX[4];
+                KL.PS_volumn.XAxis1.WorldMin = 0;
+                KL.PS_volumn.XAxis1.WorldMax = KL.KLine_num + 1;
+                KL.PS_volumn.YAxis1.WorldMin = 1;
+                KL.PS_volumn.YAxis1.WorldMax = Convert.ToInt32(Highest_Qty * 1.1);
+                //PS_volumn.Location = new System.Drawing.Point(PS.Location.X, PS_volumn.Location.Y);
+                KL.PS_volumn.YAxis1.TickTextNextToAxis = false;
+                KL.PS_volumn.Refresh();
+            });
+        }
+    }
+
+
 
     public class Kline
     {
@@ -226,7 +316,7 @@ namespace 覆盤
             PS_volumn = nPS2;
             MK = nMK;
             KLine_num = nKLine_num;
-            KP = new linep(this);
+            KP = new LineP(this);
             //InitKLinePS();
             KP.InitKLinePS();
         }
@@ -287,6 +377,7 @@ namespace 覆盤
             //{
             //    times[i] = DateTime.Now.Date.AddMinutes(i * 15);
             //}
+
             linePlot.AbscissaData = times;
             linePlot.DataSource = times;
             PS.Add(linePlot);
@@ -300,7 +391,7 @@ namespace 覆盤
             hp.Color = Color.Blue;
             hp.Filled = true;
             hp.RectangleBrush = RectangleBrushes.Horizontal.FaintGreenFade;
-            hp.Center = false;
+            hp.Center = true;
             PS_volumn.Add(hp);
             PS_volumn.YAxis1.TickTextNextToAxis = false;
         }
@@ -397,9 +488,22 @@ namespace 覆盤
         }
 
         public void AddLineCrossXY(int xx, int yy) {
-            this.PS.Remove(lineCrossX, false);
-            this.PS.Remove(lineCrossY, false);
-            this.PS_volumn.Remove(Volume_lineCrossX, false);
+
+
+
+
+            if (lineCrossX != null)
+            {
+                this.PS.Remove(lineCrossX, false);
+                this.PS.Remove(lineCrossY, false);
+                this.PS_volumn.Remove(Volume_lineCrossX, false);
+
+                lineCrossX = null;
+                lineCrossY = null;
+                Volume_lineCrossX = null;
+                return;
+            }
+
             System.Drawing.Point here = new System.Drawing.Point(xx , yy);
             //螢幕座標轉化為業務座標
             double x = this.PS.PhysicalXAxis1Cache.PhysicalToWorld(here, true);
@@ -409,19 +513,19 @@ namespace 覆盤
             lineCrossY = new NPlot.HorizontalLine(y);
             lineCrossY.LengthScale = 1;
             lineCrossY.OrdinateValue = y;
-            lineCrossY.Pen = Pens.Green;
+            lineCrossY.Pen = Pens.Blue;
             //line.OrdinateValue = 2;
             this.PS.Add(lineCrossY);
             ////  ///////垂直線///////////
             lineCrossX = new NPlot.VerticalLine(x);
             lineCrossX.LengthScale = 1;
-            lineCrossX.Pen = Pens.Red;
+            lineCrossX.Pen = Pens.Blue;
             lineCrossX.AbscissaValue = x;
 
             ////  ///////垂直線///////////
             Volume_lineCrossX = new NPlot.VerticalLine(x);
             Volume_lineCrossX.LengthScale = 1;
-            Volume_lineCrossX.Pen = Pens.Red;
+            Volume_lineCrossX.Pen = Pens.Blue;
             Volume_lineCrossX.AbscissaValue = x;
 
             this.PS.Add(lineCrossX);
@@ -431,7 +535,7 @@ namespace 覆盤
             this.PS_volumn.Refresh();
         }
 
-        public void move(int xx, int yy) {
+        public void lineCrossMove(int xx, int yy) {
             if (this.PS.PhysicalXAxis1Cache == null || this.PS.PhysicalYAxis1Cache == null)
                 return;
             System.Drawing.Point here = new System.Drawing.Point(xx, yy);

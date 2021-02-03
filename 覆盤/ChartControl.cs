@@ -19,12 +19,14 @@ namespace 覆盤
             InitializeComponent();
             KL_1MK = new Kline(plotSurface2D1, plotSurface2D2, 1, 300);
         }
-        public void InitChart(bool isLine)
+        public void InitChart(Kind kd)
         {
-            if (!isLine)
-                KL_1MK.KP = new linep(KL_1MK);
-            if (isLine)
-                KL_1MK.KP = new candlep(KL_1MK);
+            if (kd == Kind.Line)
+                KL_1MK.KP = new LineP(KL_1MK);
+            if (kd == Kind.Candle)
+                KL_1MK.KP = new CandleP(KL_1MK);
+            if (kd == Kind.All)
+                KL_1MK.KP = new CandleLineP(KL_1MK);
         }
         public void InitMACDChart(Technical_analysis.MACD mACD)
         {
@@ -64,7 +66,7 @@ namespace 覆盤
 
         private void plotSurface2D1_MouseMove(object sender, MouseEventArgs e)
         {
-            KL_1MK.move(e.X, e.Y);
+            KL_1MK.lineCrossMove(e.X, e.Y);
         }
     }
 }

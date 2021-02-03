@@ -79,11 +79,11 @@ namespace 覆盤
         private void Form1_Load(object sender, EventArgs e)
         {
             KL_1DK = new Kline(plotSurface2D3, plotSurface2D4, 1, 40);
-            KL_1DK.KP = new candlep(KL_1DK);
-            radioButton1.Checked = true;
+            KL_1DK.KP = new CandleP(KL_1DK);
 
             load_dayK();
-            chartControl1.InitChart(radioButton1.Checked);
+            radioButton1.Checked = true;
+            chartControl1.InitChart(Kind.Line);
             chartControl1.InitMACDChart(mACD = new Technical_analysis.MACD());
 
             textBox1.Text = "最大問題:盤勢為最重要 1.型態看15-30根K棒 \n\n2.忽略(1)價格(2)波動(3)損益數字作交易 \n3.趨勢線出場OR移動出場";
@@ -111,8 +111,9 @@ namespace 覆盤
                 DKdata = new TXF.K_data();
                 times = new TIMES(int.Parse(comboBox1.Text));
                 stopLimitControl1.simu = new Simulation(chartControl1.plotSurface2D1);
-                
-                chartControl1.InitChart(radioButton1.Checked);
+
+                radioButton1.Checked = true;
+                chartControl1.InitChart(Kind.Line);
                 chartControl1.InitMACDChart(mACD = new Technical_analysis.MACD());
 
                 TE = new TickEncoder();
@@ -305,7 +306,7 @@ namespace 覆盤
             bool close = false;
             while (true)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(10);
                 
                 lock (Lock)
                 {
@@ -397,7 +398,7 @@ namespace 覆盤
             Lock = new object();
             lock (Lock)
             {
-                chartControl1.InitChart(radioButton1.Checked);
+                chartControl1.InitChart(Kind.Line);
                 if (stopLimitControl1.simu != null)
                 {
                     chartControl1.KL_1MK.DrawAllLpp(stopLimitControl1.simu);
@@ -416,7 +417,7 @@ namespace 覆盤
             Lock = new object();
             lock (Lock)
             {
-                chartControl1.InitChart(radioButton1.Checked);
+                chartControl1.InitChart(Kind.Candle);
                 if (stopLimitControl1.simu != null)
                 {
                     chartControl1.KL_1MK.DrawAllLpp(stopLimitControl1.simu);
@@ -430,7 +431,24 @@ namespace 覆盤
             }
         }
 
-
+        private void radioButton3_CheckedChanged(object sender, EventArgs e)
+        {
+            Lock = new object();
+            lock (Lock)
+            {
+                chartControl1.InitChart(Kind.All);
+                if (stopLimitControl1.simu != null)
+                {
+                    chartControl1.KL_1MK.DrawAllLpp(stopLimitControl1.simu);
+                    chartControl1.KL_1MK.DrawAllHL(stopLimitControl1.simu);
+                }
+            }
+            if (T_GUI != null && !T_GUI.IsAlive)
+            {
+                T_GUI = new Thread(gui);
+                T_GUI.Start();
+            }
+        }
 
 
         private void button2_Click(object sender, EventArgs e)
@@ -458,6 +476,8 @@ namespace 覆盤
             if (SK != null)
                 SK.t1.Abort();
         }
+
+
 
         private void load_dayK() {
             return;
