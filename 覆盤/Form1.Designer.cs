@@ -35,10 +35,13 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button2 = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.plotSurface2D1 = new NPlot.Windows.PlotSurface2D();
             this.plotSurface2D4 = new NPlot.Windows.PlotSurface2D();
             this.plotSurface2D3 = new NPlot.Windows.PlotSurface2D();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -49,17 +52,19 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.listBox1 = new System.Windows.Forms.ListBox();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.stopLimitControl1 = new 覆盤.StopLimitControl();
             this.chartControl1 = new 覆盤.ChartControl();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.stopLimitControl1 = new 覆盤.StopLimitControl();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // label4
@@ -101,7 +106,7 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(90, 27);
             this.comboBox1.TabIndex = 11;
-            this.comboBox1.Text = "10";
+            this.comboBox1.Text = "5000";
             // 
             // dateTimePicker1
             // 
@@ -139,6 +144,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.radioButton3);
             this.groupBox1.Controls.Add(this.checkBox1);
             this.groupBox1.Controls.Add(this.button2);
@@ -159,6 +165,30 @@
             this.groupBox1.TabIndex = 100;
             this.groupBox1.TabStop = false;
             // 
+            // label1
+            // 
+            this.label1.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Black;
+            this.label1.Location = new System.Drawing.Point(1051, 13);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(90, 28);
+            this.label1.TabIndex = 112;
+            this.label1.Text = "HalfRise";
+            // 
+            // radioButton3
+            // 
+            this.radioButton3.AutoSize = true;
+            this.radioButton3.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.radioButton3.Location = new System.Drawing.Point(157, 16);
+            this.radioButton3.Name = "radioButton3";
+            this.radioButton3.Size = new System.Drawing.Size(58, 22);
+            this.radioButton3.TabIndex = 111;
+            this.radioButton3.Text = "Both";
+            this.radioButton3.UseVisualStyleBackColor = true;
+            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
+            // 
             // checkBox1
             // 
             this.checkBox1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -174,7 +204,7 @@
             // 
             this.button2.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.ForeColor = System.Drawing.Color.Black;
-            this.button2.Location = new System.Drawing.Point(1051, 13);
+            this.button2.Location = new System.Drawing.Point(1152, 15);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(82, 28);
             this.button2.TabIndex = 104;
@@ -187,17 +217,19 @@
             this.tabControl1.AllowDrop = true;
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(879, 46);
+            this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Location = new System.Drawing.Point(959, 48);
             this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(276, 371);
+            this.tabControl1.Size = new System.Drawing.Size(276, 472);
             this.tabControl1.TabIndex = 97;
             this.tabControl1.Visible = false;
             // 
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.tabPage1.Controls.Add(this.plotSurface2D1);
             this.tabPage1.Controls.Add(this.plotSurface2D4);
             this.tabPage1.Controls.Add(this.plotSurface2D3);
             this.tabPage1.ForeColor = System.Drawing.Color.Black;
@@ -205,9 +237,32 @@
             this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage1.Size = new System.Drawing.Size(268, 345);
+            this.tabPage1.Size = new System.Drawing.Size(268, 446);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Day";
+            // 
+            // plotSurface2D1
+            // 
+            this.plotSurface2D1.AutoScaleAutoGeneratedAxes = false;
+            this.plotSurface2D1.AutoScaleTitle = false;
+            this.plotSurface2D1.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.plotSurface2D1.DateTimeToolTip = false;
+            this.plotSurface2D1.Legend = null;
+            this.plotSurface2D1.LegendZOrder = -1;
+            this.plotSurface2D1.Location = new System.Drawing.Point(3, 360);
+            this.plotSurface2D1.Name = "plotSurface2D1";
+            this.plotSurface2D1.RightMenu = null;
+            this.plotSurface2D1.ShowCoordinates = true;
+            this.plotSurface2D1.Size = new System.Drawing.Size(260, 81);
+            this.plotSurface2D1.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+            this.plotSurface2D1.TabIndex = 98;
+            this.plotSurface2D1.Text = "plotSurface2D1";
+            this.plotSurface2D1.Title = "";
+            this.plotSurface2D1.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.plotSurface2D1.XAxis1 = null;
+            this.plotSurface2D1.XAxis2 = null;
+            this.plotSurface2D1.YAxis1 = null;
+            this.plotSurface2D1.YAxis2 = null;
             // 
             // plotSurface2D4
             // 
@@ -217,11 +272,11 @@
             this.plotSurface2D4.DateTimeToolTip = false;
             this.plotSurface2D4.Legend = null;
             this.plotSurface2D4.LegendZOrder = -1;
-            this.plotSurface2D4.Location = new System.Drawing.Point(3, 189);
+            this.plotSurface2D4.Location = new System.Drawing.Point(3, 190);
             this.plotSurface2D4.Name = "plotSurface2D4";
             this.plotSurface2D4.RightMenu = null;
             this.plotSurface2D4.ShowCoordinates = true;
-            this.plotSurface2D4.Size = new System.Drawing.Size(260, 153);
+            this.plotSurface2D4.Size = new System.Drawing.Size(260, 164);
             this.plotSurface2D4.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
             this.plotSurface2D4.TabIndex = 97;
             this.plotSurface2D4.Text = "plotSurface2D4";
@@ -244,7 +299,7 @@
             this.plotSurface2D3.Name = "plotSurface2D3";
             this.plotSurface2D3.RightMenu = null;
             this.plotSurface2D3.ShowCoordinates = true;
-            this.plotSurface2D3.Size = new System.Drawing.Size(260, 177);
+            this.plotSurface2D3.Size = new System.Drawing.Size(260, 181);
             this.plotSurface2D3.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
             this.plotSurface2D3.TabIndex = 96;
             this.plotSurface2D3.Text = "plotSurface2D3";
@@ -270,7 +325,7 @@
             this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage2.Size = new System.Drawing.Size(268, 345);
+            this.tabPage2.Size = new System.Drawing.Size(268, 446);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Statement";
             // 
@@ -355,6 +410,37 @@
             this.dataGridView1.Size = new System.Drawing.Size(268, 182);
             this.dataGridView1.TabIndex = 89;
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.listBox1);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(268, 446);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Hint";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // listBox1
+            // 
+            this.listBox1.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.HorizontalScrollbar = true;
+            this.listBox1.ItemHeight = 20;
+            this.listBox1.Items.AddRange(new object[] {
+            "最大問題:盤勢為最重要",
+            "1.型態看15-30根K棒",
+            "2.忽略(1)價格(2)波動(3)損益數字作交易",
+            "3.趨勢線出場OR移動出場",
+            "4.第一次創高是表態  第二次創高是盤型",
+            "5.日K開在昨日紅K之上  -> 一下測後回升",
+            "6.首1分K量  -> 預測早盤是否震盪",
+            "7.緩盤轉強攻盤作結束   可採用趨勢線出場"});
+            this.listBox1.Location = new System.Drawing.Point(6, 6);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(255, 324);
+            this.listBox1.TabIndex = 0;
+            // 
             // radioButton2
             // 
             this.radioButton2.AutoSize = true;
@@ -381,47 +467,35 @@
             this.radioButton1.UseVisualStyleBackColor = true;
             this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
-            // textBox1
-            // 
-            this.textBox1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(1248, 826);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(330, 109);
-            this.textBox1.TabIndex = 101;
-            // 
-            // radioButton3
-            // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.radioButton3.Location = new System.Drawing.Point(157, 16);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(50, 22);
-            this.radioButton3.TabIndex = 111;
-            this.radioButton3.Text = "All";
-            this.radioButton3.UseVisualStyleBackColor = true;
-            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
-            // 
-            // stopLimitControl1
-            // 
-            this.stopLimitControl1.Location = new System.Drawing.Point(1248, 19);
-            this.stopLimitControl1.Name = "stopLimitControl1";
-            this.stopLimitControl1.Size = new System.Drawing.Size(330, 801);
-            this.stopLimitControl1.TabIndex = 110;
-            // 
             // chartControl1
             // 
             this.chartControl1.Location = new System.Drawing.Point(3, 47);
             this.chartControl1.Name = "chartControl1";
-            this.chartControl1.Size = new System.Drawing.Size(1231, 878);
+            this.chartControl1.Size = new System.Drawing.Size(1231, 870);
             this.chartControl1.TabIndex = 110;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox1.Location = new System.Drawing.Point(1290, 840);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(330, 95);
+            this.textBox1.TabIndex = 101;
+            // 
+            // stopLimitControl1
+            // 
+            this.stopLimitControl1.Location = new System.Drawing.Point(1290, 19);
+            this.stopLimitControl1.Name = "stopLimitControl1";
+            this.stopLimitControl1.Size = new System.Drawing.Size(330, 815);
+            this.stopLimitControl1.TabIndex = 110;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(1580, 937);
+            this.ClientSize = new System.Drawing.Size(1622, 937);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.stopLimitControl1);
             this.Controls.Add(this.groupBox1);
@@ -437,6 +511,7 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -470,6 +545,10 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private ChartControl chartControl1;
         private System.Windows.Forms.RadioButton radioButton3;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.ListBox listBox1;
+        private NPlot.Windows.PlotSurface2D plotSurface2D1;
+        private System.Windows.Forms.Label label1;
     }
 }
 

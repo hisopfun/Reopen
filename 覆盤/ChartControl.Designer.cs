@@ -112,7 +112,8 @@
             this.Controls.Add(this.plotSurface2D2);
             this.Controls.Add(this.plotSurface2D5);
             this.Name = "ChartControl";
-            this.Size = new System.Drawing.Size(1231, 878);
+            this.Size = new System.Drawing.Size(1235, 878);
+            this.MouseLeave += new System.EventHandler(this.ChartControl_MouseLeave);
             this.ResumeLayout(false);
 
         }

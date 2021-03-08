@@ -20,13 +20,15 @@ namespace 覆盤
     {
         public Thread t1;
         public Socket Sclient;
-        public string firstMsg = "";
+       
         public string date = "";
-        //DateTime connect_time = new DateTime();
+        public string firstMsg = "";
         public string datas = "";
-        public string localIp = "";
+
+        public string PublicIP = "";
         public string loaclPrivateIP = "";
         public string serverIP = "";
+
         public int serverPort = 0;
         public Queue<string> ticks = new Queue<string>();
         public object Lock = new object();
@@ -68,20 +70,20 @@ namespace 覆盤
             return address;
         }
         public SOCKET(string nDate, string sIP, int sPort, bool sRealTime) {
-            localIp = GetPublicIpAddress();
+            PublicIP = GetPublicIpAddress();
             loaclPrivateIP = new System.Net.IPAddress(Dns.GetHostByName(Dns.GetHostName()).AddressList[0].Address).ToString();
             date = nDate;
 
             serverIP = sIP;
             serverPort = sPort;
             realTime = sRealTime;
-        }
-        public void _Load()
-        {
+
             t1 = new Thread(StartClient);
             t1.Start();
-            //StartClient();
+            TE = new TickEncoder();
+
         }
+
 
         // State object for receiving data from remote device.  
         public class StateObject
@@ -113,8 +115,6 @@ namespace 覆盤
 
         public string IP() {
             string externalip = new WebClient().DownloadString("http://icanhazip.com");
-
-
             return externalip.Replace("\n", "");// + "," + SvrIP;
             /* Environment.MachineName + ',' + System.Security.Principal.WindowsIdentity.GetCurrent().Name
                              + ',' + SvrIP + ',' + externalip + ",64bit:" + Environment.Is64BitOperatingSystem;
@@ -136,6 +136,9 @@ namespace 覆盤
                 IPAddress ipAddress = ipHostInfo.AddressList[0];
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, serverPort);
 
+                //IPAddress ipAddress = IPAddress.Parse(serverIP);//用IPAddress.Parse() 比較不會出錯(無法識別這台主機)
+                //IPEndPoint remoteEP = new IPEndPoint(IPAddress.Parse(serverIP), serverPort);
+
                 // Create a TCP/IP socket.  
                 Sclient = new Socket(ipAddress.AddressFamily,
                     SocketType.Stream, ProtocolType.Tcp);
@@ -146,8 +149,8 @@ namespace 覆盤
                 connectDone.WaitOne();
 
                 // Send test data to the remote device.  
-                Send(Sclient, "client," + date + "," + localIp + "," + Environment.MachineName + ',' + System.Security.Principal.WindowsIdentity.GetCurrent().Name
-                            + ',' + loaclPrivateIP + ',' + localIp + ",64bit:" + Environment.Is64BitOperatingSystem);
+                Send(Sclient, "client," + date + "," + PublicIP + "," + Environment.MachineName + ',' + System.Security.Principal.WindowsIdentity.GetCurrent().Name
+                            + ',' + loaclPrivateIP + ',' + PublicIP + ",64bit:" + Environment.Is64BitOperatingSystem);
                 sendDone.WaitOne();
 
                 // Receive the response from the remote device.  
@@ -216,13 +219,7 @@ namespace 覆盤
             }
         }
         private void ReciveReOpenData(string msg){
-            if (msg.Contains("NO DATA"))
-            {
-                datas = "NO DATA";
-                Sclient.Shutdown(SocketShutdown.Both);
-                Sclient.Close();
-                t1.Abort();
-            }
+
             if (msg.Contains("DONE"))
             {
                 Sclient.Shutdown(SocketShutdown.Both);
@@ -248,11 +245,11 @@ namespace 覆盤
         private void FirstMsg(string msg) {
             if (firstMsg == "")
             {
-                if (msg.Contains("\n"))
-                {
-                    firstMsg = msg.Split('\n')[0];
-                    datas += msg.Split('\n')[1];
-                }
+                //if (msg.Contains("\n"))
+                //{
+                firstMsg = msg.Split('\n')[0];
+                //    datas += msg.Split('\n')[1];
+                //}
             }
         }
 
@@ -274,13 +271,26 @@ namespace 覆盤
                     //state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
                     msg = Encoding.UTF8.GetString(state.buffer, 0, bytesRead);
 
+
                     if (!realTime)
                     {
+                        //Stop Socket
+                        if (msg.Contains("NO DATA"))
+                        {
+                            datas = "NO DATA";
+                            Sclient.Shutdown(SocketShutdown.Both);
+                            Sclient.Close();
+                            t1.Abort();
+                        }
+
                         //First Msg
                         FirstMsg(msg);
 
                         //history ticks data
                         ReciveReOpenData(msg);
+
+                        //history Day K data
+
                     }
                     else {
                         //ticks.Enqueue(msg);

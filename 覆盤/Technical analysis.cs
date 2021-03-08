@@ -12,22 +12,26 @@ public class Technical_analysis
         public EMA EMA2 = new EMA(26, System.Drawing.Color.Blue);
         private List<float> DIF { get; } = new List<float>();
         public EMA DEM { get; } = new EMA(9, System.Drawing.Color.Yellow);
+        public List<float> OSC { get; } = new List<float>();
         public NPlot.LinePlot LP_DIF = new NPlot.LinePlot();
         public NPlot.LinePlot LP_DEM = new NPlot.LinePlot();
+        public NPlot.BarPlot Bar_OSC = new NPlot.BarPlot();
+
         public NPlot.HorizontalLine horizontalLine = new NPlot.HorizontalLine(0);
         public float highest = int.MinValue, lowest = int.MaxValue;
         public MACD() {
             InitLp();
+            InitBar();
             times_DIF = new float[300 - 26];
             times_DEM = new float[300 - 26 - 9 + 1];
             int i;
             for (i = 0; i < times_DIF.Length; i++) {
-                times_DIF[i] = i + 26;
+                times_DIF[i] = i + 26 + 1;
             }
 
             for (i = 0; i < times_DEM.Length; i++)
             {
-                times_DEM[i] = i + 26 + 9 - 1;
+                times_DEM[i] = i + 26 + 9 - 1 + 1;
             }
         }
         public void InitLp()
@@ -39,21 +43,45 @@ public class Technical_analysis
             LP_DEM.AbscissaData = new int[]{ 400, 500, 600, 700 }; 
             LP_DEM.DataSource = new int[] { 700, 600, 500, 400 };
         }
+
+        public void InitBar() {
+            Bar_OSC.BorderColor = System.Drawing.Color.Blue;
+            Bar_OSC.BarWidth = 1;
+        }
         public void macd(List<TXF.K_data.K> mk) {
             EMA1.ema(mk);
             EMA2.ema(mk);
-            dif(mk);
+            diff_EMA(mk);
             DEM.ema(DIF);
+            diff_OSC();
 
-                
+
 
             LP_DIF.DataSource = DIF;
             LP_DIF.AbscissaData = times_DIF;
             LP_DEM.DataSource = DEM.Chart_EMA;
             LP_DEM.AbscissaData = times_DEM;
+
+            List<float> Top = new List<float>(), Bottom = new List<float>();
+            foreach (float val in OSC) {
+                Top.Add(Math.Max(0, val));
+                Bottom.Add(Math.Min(0, val));
+            }
+
+            Bar_OSC.OrdinateDataTop = Top;
+            Bar_OSC.OrdinateDataBottom = Bottom;
+            Bar_OSC.AbscissaData = times_DEM;
         }
 
-        public void dif(List<TXF.K_data.K> mk) {
+        public void diff_OSC() {
+            while (OSC.Count < DEM.Chart_EMA.Count)
+                OSC.Add(new float());
+
+            if (OSC.Count > 0)
+                OSC[DEM.Chart_EMA.Count - 1] = DIF[DIF.Count - 1] - DEM.Chart_EMA[DEM.Chart_EMA.Count - 1];
+        }
+
+        public void diff_EMA(List<TXF.K_data.K> mk) {
             /*while (mk.Count > DIF.Count)
             {
                 DIF.Add(new float());
@@ -79,6 +107,7 @@ public class Technical_analysis
             if (EMA1.Chart_EMA.Count > 0 && EMA2.Chart_EMA.Count > 0 && DIF.Count > 0)
             {
                 DIF[DIF.Count - 1] = EMA1.Chart_EMA[EMA1.Chart_EMA.Count - 1] - EMA2.Chart_EMA[EMA2.Chart_EMA.Count - 1];
+
                 highest = Math.Max(highest, DIF[DIF.Count - 1]);
                 lowest = Math.Min(lowest, DIF[DIF.Count - 1]);
             }
@@ -102,8 +131,8 @@ public class Technical_analysis
     {
         public float[] times;
         //total ema
-        public List<float> EMA_ = new List<float>();
-        public int ema_count { get; set; } = 0;
+        private List<float> EMA_ = new List<float>();
+        public int ema_kind { get; set; } = 0;
 
         //chart
         public List<float> Chart_EMA = new List<float>();
@@ -111,7 +140,7 @@ public class Technical_analysis
 
         public EMA(int nMACount, System.Drawing.Color color)
         {
-            ema_count = nMACount;
+            ema_kind = nMACount;
             times = new float[300 - nMACount + 1];
             int i;
             for (i = 0; i < times.Length; i++)
@@ -132,7 +161,7 @@ public class Technical_analysis
             while (mk.Count > EMA_.Count )
                 EMA_.Add(new float());
 
-            while (mk.Count > ema_count + Chart_EMA.Count - 1)
+            while (mk.Count > ema_kind + Chart_EMA.Count - 1)
                 Chart_EMA.Add(new float());
 
             //ema = sum / ma_count
@@ -142,8 +171,8 @@ public class Technical_analysis
             {
                 if (EMA_[EMA_.Count - 2] == 0)
                     EMA_[EMA_.Count - 2] = mk[mk.Count - 2].close;
-                EMA_[EMA_.Count - 1] = (EMA_[EMA_.Count - 2] * (ema_count - 1) + mk[mk.Count - 1].close * 2) / (ema_count + 1);
-                if (EMA_.Count >= ema_count) 
+                EMA_[EMA_.Count - 1] = (EMA_[EMA_.Count - 2] * (ema_kind - 1) + mk[mk.Count - 1].close * 2) / (ema_kind + 1);
+                if (EMA_.Count >= ema_kind) 
                     Chart_EMA[Chart_EMA.Count - 1] = EMA_[EMA_.Count - 1];
                 return EMA_[EMA_.Count - 1];
             }
@@ -162,7 +191,7 @@ public class Technical_analysis
             while (mk.Count > EMA_.Count)
                 EMA_.Add(new float());
 
-            while (mk.Count > ema_count + Chart_EMA.Count - 1)
+            while (mk.Count > ema_kind + Chart_EMA.Count - 1)
                 Chart_EMA.Add(new float());
 
             //ema = sum / ma_count
@@ -172,8 +201,8 @@ public class Technical_analysis
             {
                 if (EMA_[EMA_.Count - 2] == 0)
                     EMA_[EMA_.Count - 2] = mk[mk.Count - 2];
-                EMA_[EMA_.Count - 1] = (EMA_[EMA_.Count - 2] * (ema_count - 1) + mk[mk.Count - 1] * 2) / (ema_count + 1);
-                if (EMA_.Count >= ema_count)
+                EMA_[EMA_.Count - 1] = (EMA_[EMA_.Count - 2] * (ema_kind - 1) + mk[mk.Count - 1] * 2) / (ema_kind + 1);
+                if (EMA_.Count >= ema_kind)
                     Chart_EMA[Chart_EMA.Count - 1] = EMA_[EMA_.Count - 1];
                 return EMA_[EMA_.Count - 1];
             }

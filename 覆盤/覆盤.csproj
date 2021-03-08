@@ -58,6 +58,9 @@
     <Compile Include="ChartControl.Designer.cs">
       <DependentUpon>ChartControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Strategy.cs" />
+    <Compile Include="Screenshot.cs" />
+    <Compile Include="Sharp.cs" />
     <Compile Include="SOCKET.cs" />
     <Compile Include="RandomDate.cs" />
     <Compile Include="Kline.cs" />

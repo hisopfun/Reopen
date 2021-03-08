@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 
-
 namespace 覆盤
 {
     public partial class StopLimitControl : UserControl
@@ -55,7 +54,10 @@ namespace 覆盤
         }
         private void InitStopLimitDGV()
         {
-            DGV_StopLimit.DataSource = null;
+            DGV_StopLimit.InvokeIfRequired(() =>
+            {
+                DGV_StopLimit.DataSource = null;
+            });
             ExtensionMethods.DoubleBuffered(DGV_StopLimit, true);
 
 
@@ -78,43 +80,65 @@ namespace 覆盤
             this.dt.Columns.Add(Col5);
             this.dt.Columns.Add(Col7);
             this.dt.PrimaryKey = new DataColumn[] { this.dt.Columns["nPrice"] };
-            DGV_StopLimit.DataSource = this.dt;
-            DGV_StopLimit.DefaultCellStyle.Font = new Font("Consolas", 12, FontStyle.Bold);
-            DGV_StopLimit.ColumnHeadersDefaultCellStyle.Font = new Font("Consolas", 12, FontStyle.Bold);
+
+            DGV_StopLimit.InvokeIfRequired(() => { 
+                DGV_StopLimit.DataSource = this.dt;
+                DGV_StopLimit.DefaultCellStyle.Font = new Font("Consolas", 12, FontStyle.Bold);
+                DGV_StopLimit.ColumnHeadersDefaultCellStyle.Font = new Font("Consolas", 12, FontStyle.Bold);
            
 
-            //visible
-            DGV_StopLimit.Columns[0].Visible = false;
-            DGV_StopLimit.Columns[3].Visible = false;
-            DGV_StopLimit.Columns[5].Visible = false;
+                //visible
+                DGV_StopLimit.Columns[0].Visible = false;
+                DGV_StopLimit.Columns[3].Visible = false;
+                DGV_StopLimit.Columns[5].Visible = false;
 
-            //Not Allow Sort
-            DGV_StopLimit.Columns[4].SortMode = DataGridViewColumnSortMode.NotSortable;
+                //Not Allow Sort
+                DGV_StopLimit.Columns[4].SortMode = DataGridViewColumnSortMode.NotSortable;
 
-            //Buy Limit
-            DGV_StopLimit.Columns[1].HeaderCell.Style.BackColor = Color.FromArgb(255, 192, 192);
-            DGV_StopLimit.Columns[2].HeaderCell.Style.BackColor = Color.FromArgb(255, 192, 192);
+                //Buy Limit
+                DGV_StopLimit.Columns[1].HeaderCell.Style.BackColor = Color.FromArgb(255, 192, 192);
+                DGV_StopLimit.Columns[2].HeaderCell.Style.BackColor = Color.FromArgb(255, 192, 192);
 
-            //Sell Limit
-            DGV_StopLimit.Columns[6].HeaderCell.Style.BackColor = Color.FromArgb(192, 255, 192);
-            DGV_StopLimit.Columns[7].HeaderCell.Style.BackColor = Color.FromArgb(192, 255, 192);
+                //Sell Limit
+                DGV_StopLimit.Columns[6].HeaderCell.Style.BackColor = Color.FromArgb(192, 255, 192);
+                DGV_StopLimit.Columns[7].HeaderCell.Style.BackColor = Color.FromArgb(192, 255, 192);
 
-            //Pri
-            DGV_StopLimit.Columns[4].HeaderCell.Style.BackColor = Color.FromArgb(255, 255, 192);
+                //Pri
+                DGV_StopLimit.Columns[4].HeaderCell.Style.BackColor = Color.FromArgb(255, 255, 192);
 
-            //Adjust width
-            DGV_StopLimit.Columns[1].Width = 50;
-            DGV_StopLimit.Columns[2].Width = 50;
-            DGV_StopLimit.Columns[3].Width = 50;
-            DGV_StopLimit.Columns[4].Width = 100;
-            DGV_StopLimit.Columns[5].Width = 50;
-            DGV_StopLimit.Columns[6].Width = 50;
-            DGV_StopLimit.Columns[7].Width = 50;
+                //Adjust width
+                DGV_StopLimit.Columns[1].Width = 50;
+                DGV_StopLimit.Columns[2].Width = 50;
+                DGV_StopLimit.Columns[3].Width = 50;
+                DGV_StopLimit.Columns[4].Width = 100;
+                DGV_StopLimit.Columns[5].Width = 50;
+                DGV_StopLimit.Columns[6].Width = 50;
+                DGV_StopLimit.Columns[7].Width = 50;
+            });
         }
 
-        public void AddPrice(int nRef)
+
+        public void StopLimitDGV(string nMatPri, string nBid, string nAsk, string nQty)
         {
 
+            //return;
+            if (start)
+            {
+                DataRow DR = this.dt.Rows.Find(nMatPri);
+                DGV_StopLimit.Enabled = true;
+                if (DR != null)
+                {
+                    lock (Lock)
+                        DR["Price"] = $"{nMatPri} ({nQty})";
+
+                    DR.EndEdit();
+                    DR.AcceptChanges();
+                }
+            }
+        }
+        public void AddPrice(int nRef)
+        {
+            //return;
             //Add Price DataRow
             DGV_StopLimit.InvokeIfRequired(() =>
             {
@@ -376,7 +400,11 @@ namespace 覆盤
                 RUN_MIT_Limit();
 
                 if (autoScroll)
+                {
                     ScrollingTo(DGV_StopLimit, upPri - lastPri + 1, false);
+                }
+
+                
             }
         }
 
@@ -442,7 +470,7 @@ namespace 覆盤
             setLimitValue("0", "S", "");
 
             //if OI is not equall 0, change color
-            int OI = simu.Qty("", "");
+            int OI = simu.Qty();
             if (OI > 0)
             {
                 DGV_StopLimit.DefaultCellStyle.BackColor = Color.FromArgb(255, 192, 192);
@@ -574,22 +602,7 @@ namespace 覆盤
             }
         }
 
-        public void StopLimitDGV(string nMatPri, string nBid, string nAsk, string nQty)
-        {
-            if (start)
-            {
-                DataRow DR = this.dt.Rows.Find(nMatPri);
-                DGV_StopLimit.Enabled = true;
-                if (DR != null)
-                {
-                    lock (Lock)
-                        DR["Price"] = $"{nMatPri} ({nQty})";
 
-                        DR.EndEdit();
-                        DR.AcceptChanges();
-                }
-            }
-        }
 
         private void ScrollingTo(DataGridView view, int rowToShow, bool Mid)
         {
@@ -618,26 +631,26 @@ namespace 覆盤
 
                         if (rowToShow < view.FirstDisplayedScrollingRowIndex)
                         {
-                            using (FileStream fs = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "//test.TXT", FileMode.Append))
-                            {
-                                using (StreamWriter sw = new StreamWriter(fs))
-                                {
-                                    sw.WriteLine(lastPri + "," + rowToShow + "," + firstVisible + "," + (firstVisible + countVisible) + "," + "TOP");
-                                }
-                            }
+                            //using (FileStream fs = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "//test.TXT", FileMode.Append))
+                            //{
+                            //    using (StreamWriter sw = new StreamWriter(fs))
+                            //    {
+                            //        sw.WriteLine(lastPri + "," + rowToShow + "," + firstVisible + "," + (firstVisible + countVisible) + "," + "TOP");
+                            //    }
+                            //}
                             lock(Lock)
                                 view.FirstDisplayedScrollingRowIndex = Math.Max(0, rowToShow);
 
                         }
                         else if (rowToShow >= firstVisible + countVisible)
                         {
-                            using (FileStream fs = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "//test.TXT", FileMode.Append))
-                            {
-                                using (StreamWriter sw = new StreamWriter(fs))
-                                {
-                                    sw.WriteLine(lastPri + "," + rowToShow + "," + firstVisible + "," + (firstVisible + countVisible) + "," + "Down");
-                                }
-                            }
+                            //using (FileStream fs = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "//test.TXT", FileMode.Append))
+                            //{
+                            //    using (StreamWriter sw = new StreamWriter(fs))
+                            //    {
+                            //        sw.WriteLine(lastPri + "," + rowToShow + "," + firstVisible + "," + (firstVisible + countVisible) + "," + "Down");
+                            //    }
+                            //}
                             lock(Lock)
                                 view.FirstDisplayedScrollingRowIndex = Math.Max(0, rowToShow - countVisible + 1);
 

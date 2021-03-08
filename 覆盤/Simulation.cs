@@ -47,6 +47,12 @@ namespace 覆盤
 
         public bool Limit(string nMatTime, string nFutNo, string nBSCode, string nQty, string nLimPri)
         {
+            //OI Qty cannot > 1
+            if (nBSCode != "B" && nBSCode != "S")   return false;
+            if (Qty() >= 1  && nBSCode == "B")      return false;
+            if (Qty() <= -1 && nBSCode == "S")      return false;
+
+
             nMatTime = nMatTime.Substring(0, 6);
             lock (Lock)
                 LimList.Add(new match(nMatTime, nFutNo, nBSCode, nQty, nLimPri, ""));
@@ -74,7 +80,7 @@ namespace 覆盤
         public List<string> MITToLimit(string nMatTime, string nBid, string nAsk, string nMatPri)
         {
             nMatTime = nMatTime.Substring(0, 6);
-            List<string> Limit = new List<string>();
+            List<string> limit = new List<string>();
             //MIT -> Limit
             int i;
             for (i = 0; i < MITList.Count; i++)
@@ -83,18 +89,19 @@ namespace 覆盤
                     int.Parse(nMatPri) <= int.Parse(MITList[i].Price) && MITList[i].MITLabel.Equals("<="))
                 {
                     lock (Lock)
-                        LimList.Add(new match(nMatTime, MITList[i].FutNo, MITList[i].BS, MITList[i].Qty, "M", ""));
-                    Limit.Add(nMatPri + "," + MITList[i].BS + "," + MITList[i].Price);
+                        Limit(nMatTime, MITList[i].FutNo, MITList[i].BS, MITList[i].Qty, "M");
+                    limit.Add(nMatPri + "," + MITList[i].BS + "," + MITList[i].Price);
                     DeleteOrder(MITList, MITList[i].BS, MITList[i].Price);
                     //MITList.Remove(MITList[i]);
                     i--;
                 }
             }
-            return Limit;
+            return limit;
         }
 
         public List<string> DealInfo(string nMatTime, string nBid, string nAsk, string nMatPri)
         {
+
             nMatTime = nMatTime.Substring(0, 6);
             List<string> deal = new List<string>();
 
@@ -150,18 +157,7 @@ namespace 覆盤
 
         public int Qty(string nBS, string nPrice)
         {
-
             int Qty = 0;
-
-            //All OI Qty
-            if (nBS == "" && nPrice == "")
-            {
-                foreach (match mat in MatList)
-                {
-                    Qty += (int.Parse(mat.Qty) * (mat.BS.Equals("B") ? 1 : -1));
-                }
-                return Qty;
-            }
 
             //Price OI Qty
             List<match> OIList = OI();
@@ -175,6 +171,32 @@ namespace 覆盤
             return Qty;
 
         }
+
+        public int Qty(List<Simulation.match> matList)
+        {
+            int Qty = 0;
+
+            //All OI Qty
+            foreach (match mat in matList)
+            {
+                Qty += (int.Parse(mat.Qty) * (mat.BS.Equals("B") ? 1 : -1));
+            }
+            return Qty;
+        }
+
+        public int Qty()
+        {
+            int Qty = 0;
+
+            //All OI Qty
+            foreach (match mat in this.MatList)
+            {
+                Qty += (int.Parse(mat.Qty) * (mat.BS.Equals("B") ? 1 : -1));
+            }
+            return Qty;
+        }
+
+
         public List<match> OI()
         {
             int index = 1;

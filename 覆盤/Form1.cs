@@ -26,11 +26,21 @@ namespace 覆盤
         TXF.K_data MKdata;
         TXF.K_data DKdata;
         Kline KL_1DK;
-        Technical_analysis.MACD mACD;
+        
         
         TIMES times;
         SOCKET SK;
-        TickEncoder TE;
+        //TickEncoder tickGUI;
+
+        strategy plan10M, planMACD, planOSC;
+
+        public void write(string path, string content) {
+            using (FileStream fs = new FileStream(path, FileMode.Append)) {
+                using (StreamWriter sw = new StreamWriter(fs)) {
+                    sw.Write(content);
+                }
+            }
+        }
 
         public void OnTickEncoded(object sender, TicksEventArgs e)
         {
@@ -47,10 +57,89 @@ namespace 覆盤
             //MK
             MKdata.Run(word[1], word[4], word[5]);
 
+            //DK
             DKdata.Run("000000", word[4], word[5]);
-            mACD.macd(MKdata.klist);
 
-            //MIT
+            //MACD
+            chartControl1.KL_1MK.mACD.macd(MKdata.klist);
+            KL_1DK.mACD.macd(DKdata.klist);
+
+            //plan10M
+/*            string BS = plan10M.plan10M_implement(int.Parse(word[4]) - Convert.ToInt32(MKdata.klist[0].close), int.Parse(word[4]), word[1]);
+            if (BS != "X")
+            {
+                if (plan10M.dealPrice == 0)
+                    plan10M.dealPrice = int.Parse(word[4]);
+                else
+                {
+                    if (plan10M.last_bs == 0)
+                        plan10M.dealPrice = plan10M.dealPrice + (int)plan10M.benefit;
+                    else
+                        plan10M.dealPrice = plan10M.dealPrice - (int)plan10M.benefit;
+                }
+                //if (plan10M.benefit != 0)
+                //    stopLimitControl1.simu.MatList.Add(new Simulation.match(word[1], "TXF", BS, "1", (int.Parse(word[4]) + plan10M.benefit).ToString(), ""));
+                //else
+                stopLimitControl1.simu.MatList.Add(new Simulation.match(word[1], "TXF", BS, "1",plan10M.dealPrice.ToString(), ""));
+                stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].iTIME = MKdata.klist.Count ;
+                chartControl1.KL_1MK.DrawAllLpp(stopLimitControl1.simu);
+            }
+            if (plan10M.bs != -1 && BS != "X")
+            {
+                
+                turn turn = new turn();
+                Point x = null;
+                if (BS == "B")
+                    x = turn.BuyTurn(MKdata.klist);
+                else if (BS == "S")
+                    x = turn.SellTurn(MKdata.klist);
+
+                plan10M.mitPrice = (int)x.price + ((plan10M.bs == 0)? -1 : 1 ) * 3;
+
+                if (x != null)
+                {
+                    NPlot.LabelPointPlot lpp = new NPlot.LabelPointPlot();
+                    lpp.DataSource = new float[] { x.price };
+                    lpp.AbscissaData = new int[] { x.iTime };
+                    lpp.TextData = new string[] { "".ToString() };
+                    lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Below;
+                    lpp.Marker.Size = 10;
+                    lpp.Marker.Filled = true;
+                    lpp.Marker.Color = System.Drawing.Color.Blue;
+                    lpp.Marker.Type = Marker.MarkerType.Cross1;
+
+                    chartControl1.KL_1MK.PS.Add(lpp);
+                    //chartControl1.KL_1MK.PS.Add(new NPlot.HorizontalLine(x.price));
+                    //chartControl1.KL_1MK.PS.Add(new NPlot.VerticalLine(x.iTime));
+                }
+            }*/
+            //stopLimitControl1.simu.Limit(word[1], "TXF", BS, "1", "M");
+
+            ////planMACD
+            //string BS = planMACD.planMACD(chartControl1.KL_1MK.mACD, int.Parse(word[4]), word[1]);
+
+            //stopLimitControl1.simu.Limit(word[1], "TXF", BS, "1", "M");
+
+            //planOSC
+            //string BS = planMACD.planOSC(chartControl1.KL_1MK.mACD, int.Parse(word[4]), word[1]);
+            //if (BS == "B")
+            //{
+            //    turn b_turn = new turn();
+            //    Point x = b_turn.Buy_turn(MKdata.klist);
+            //    chartControl1.KL_1MK.PS.Add( new NPlot.PointPlot() { 
+            //        DataSource = new float[] { x.price},
+            //        AbscissaData = new int[] { x.iTime}
+            //    });
+            //}
+            //stopLimitControl1.simu.Limit(word[1], "TXF", BS, "1", "M");
+
+            //draw
+            Draw(word);
+
+        }
+
+        public void Draw(string[] word) { 
+            //Order
             List<string> Limits = stopLimitControl1.simu.MITToLimit(word[1], word[2], word[3], word[4]);
             List<string> Deals = stopLimitControl1.simu.DealInfo(word[1], word[2], word[3], word[4]);
             if (Deals != null && Deals.Count > 0)
@@ -60,72 +149,91 @@ namespace 覆盤
                 chartControl1.KL_1MK.DrawAllLpp(stopLimitControl1.simu);
                 chartControl1.KL_1MK.DrawAllHL(stopLimitControl1.simu);
 
-                //MatList
-                dataGridView1.InvokeIfRequired(() =>
-                {
-                    dataGridView1.DataSource = null;
-                    dataGridView1.DataSource = stopLimitControl1.simu.MatList;
-                });
-
                 //Delete MIT DR
                 stopLimitControl1.DeleteMIT(Limits);
 
                 //Delete Lim DR
                 stopLimitControl1.DeleteLimit(Deals);
+
+                ////MatList
+                dataGridView1.InvokeIfRequired(() =>
+                {
+                    dataGridView1.DataSource = null;
+                    dataGridView1.DataSource = stopLimitControl1.simu.MatList;
+                });
             }
         }
 
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            KL_1DK = new Kline(plotSurface2D3, plotSurface2D4, 1, 40);
+            KL_1DK = new Kline(plotSurface2D3, plotSurface2D4, plotSurface2D1, 1, 40);
             KL_1DK.KP = new CandleP(KL_1DK);
 
             load_dayK();
             radioButton1.Checked = true;
             chartControl1.InitChart(Kind.Line);
-            chartControl1.InitMACDChart(mACD = new Technical_analysis.MACD());
 
-            textBox1.Text = "最大問題:盤勢為最重要 1.型態看15-30根K棒 \n\n2.忽略(1)價格(2)波動(3)損益數字作交易 \n3.趨勢線出場OR移動出場";
-            //閃電下單
-            //stopLimitControl1.InitStopLimitDGV(12500);
+            textBox1.Text = "";
         }
 
-      
 
-
-
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            comboBox1.Enabled = false;
-            button1.Enabled = false;
-            dateTimePicker1.Enabled = false;
+        public void start(string date) {
+            //comboBox1.Enabled = false;
+            //button1.Enabled = false;
+            //dateTimePicker1.Enabled = false;
             Lock = new object();
-            dataGridView1.DataSource = null;
+            dataGridView1.InvokeIfRequired(() =>
+            {
+                dataGridView1.DataSource = null;
+            });
+
             stopLimitControl1.Init();
 
             lock (Lock)
             {
                 MKdata = new TXF.K_data();
                 DKdata = new TXF.K_data();
-                times = new TIMES(int.Parse(comboBox1.Text));
+                comboBox1.InvokeIfRequired(() => { 
+                    times = new TIMES(int.Parse(comboBox1.Text));
+                });
                 stopLimitControl1.simu = new Simulation(chartControl1.plotSurface2D1);
 
-                radioButton1.Checked = true;
-                chartControl1.InitChart(Kind.Line);
-                chartControl1.InitMACDChart(mACD = new Technical_analysis.MACD());
+                Kind kind = Kind.Both;
+                radioButton1.InvokeIfRequired(() =>
+                {
+                    if (radioButton1.Checked)
+                        kind = Kind.Line;
+                });
+                radioButton2.InvokeIfRequired(() =>
+                {
+                    if (radioButton2.Checked)
+                        kind = Kind.Candle;
+                });
+                radioButton3.InvokeIfRequired(() =>
+                {
+                    if (radioButton3.Checked)
+                        kind = Kind.Both;
+                });
+                chartControl1.InitChart(kind);
+                chartControl1.KL_1MK.InitMACDChart(chartControl1.KL_1MK.mACD = new Technical_analysis.MACD());
 
-                TE = new TickEncoder();
-                TE.TickEncoded += OnTickEncoded;
+                plan10M = new strategy("plan10M", 0, 0, "100000", "134459", 20);
+                plan10M.date = date;
+                planMACD = new strategy("planMACD", 0, 0, "093000", "134459", 20);
+                planOSC = new strategy("planOSC", 0, 0, "093000", "134459", 0);
             }
-            if (checkBox1.Checked)
-                SK = new SOCKET(dateTimePicker1.Value.ToString("MM-dd-yyyy"), "127.0.0.1", 12002, checkBox1.Checked);
-            else
-                SK = new SOCKET(dateTimePicker1.Value.ToString("MM-dd-yyyy"), "122.99.4.117", 12002, checkBox1.Checked);
 
-            SK._Load();
-            SK.TE = TE;
+            checkBox1.InvokeIfRequired(() =>
+            {
+                if (checkBox1.Checked)
+                    SK = new SOCKET(date, "127.0.0.1", 12002, checkBox1.Checked);
+                else
+                    SK = new SOCKET(date, "122.99.4.117", 12002, checkBox1.Checked);
+            });
+
+            SK.TE.TickEncoded += OnTickEncoded;
+
 
             if (T_Quote != null)
                 T_Quote.Abort();
@@ -140,6 +248,34 @@ namespace 覆盤
 
             T_GUI = new Thread(gui);
             T_GUI.Start();
+        }
+
+        public void manyDay()
+        {
+            //int i = 2;
+            //while (i > 0)
+            //{
+
+            //    if (T_Quote == null || !T_Quote.IsAlive)
+            //    {
+            //        dateTimePicker1.InvokeIfRequired(() =>
+            //        {
+            //            dateTimePicker1.Value = dateTimePicker1.Value.AddDays(-1);
+            //        });
+            start(dateTimePicker1.Value.ToString("MM-dd-yyyy"));
+            //    }
+            //    else
+            //    {
+            //        Thread.Sleep(100);
+            //        continue;
+            //    }
+            //}
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Thread th = new Thread(manyDay);
+            th.Start();
         }
 
 
@@ -171,7 +307,11 @@ namespace 覆盤
             contents = SK.datas.Replace("DONE", "");
             if (contents.Contains("NO DATA") || contents.Contains("無法連線，因為目標電腦拒絕連線"))
             {
-                MessageBox.Show("NO DATA");
+                textBox1.InvokeIfRequired(() =>
+                {
+                    textBox1.Text = "NO DATA";
+                });
+                
                 comboBox1.InvokeIfRequired(() => {
                     comboBox1.Enabled = true;
                 });
@@ -230,7 +370,11 @@ namespace 覆盤
 
 
                     //Run All Ticks
-                    RunTicks(word, istart, date);
+                    //RunTicks(word, istart, date);
+                    SK.TE.Encode(words);
+
+                    //gui
+                    //tickGUI.Encode(words);
 
                     //run
                     int ss = times.tDiff(word[1]);
@@ -239,7 +383,9 @@ namespace 覆盤
                             Thread.Sleep(ss);
                 }
             }
-           
+
+            //Screenshot.CaptureMyScreen();
+
             comboBox1.InvokeIfRequired(() => {
                 comboBox1.Enabled = true;
             });
@@ -256,57 +402,57 @@ namespace 覆盤
             T_Quote.Abort();
         }
 
-        private void RunTicks(string[] word, bool istart, string date) {
+        //private void RunTicks(string[] word, bool istart, string date) {
 
-            //Avoid PreOpen
-            if (int.Parse(word[1].Substring(0, 4)) >= 0830 &&
-                int.Parse(word[1].Substring(0, 4)) < 0845)
-                return;
+        //    //Avoid PreOpen
+        //    if (int.Parse(word[1].Substring(0, 4)) >= 0830 &&
+        //        int.Parse(word[1].Substring(0, 4)) < 0845)
+        //        return;
 
 
-            //StopLimit
-            stopLimitControl1.StopLimitDGV(word[4], word[2], word[3], word[5]);
+        //    //StopLimit
+        //    stopLimitControl1.StopLimitDGV(word[4], word[2], word[3], word[5]);
 
-            //MK
-            MKdata.Run(word[1], word[4], word[5]);
+        //    //MK
+        //    MKdata.Run(word[1], word[4], word[5]);
        
-            DKdata.Run(date, word[4], word[5]);
-            mACD.macd(MKdata.klist);
+        //    DKdata.Run(date, word[4], word[5]);
+        //    chartControl1.KL_1MK.mACD.macd(MKdata.klist);
 
-            //MIT
-            List<string> Limits = stopLimitControl1.simu.MITToLimit(word[1], word[2], word[3], word[4]);
-            List<string> Deals = stopLimitControl1.simu.DealInfo(word[1], word[2], word[3], word[4]);
-            if (Deals != null && Deals.Count > 0)
-            {
-                //Draw MIT 
-                stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
-                chartControl1.KL_1MK.DrawAllLpp(stopLimitControl1.simu);
-                chartControl1.KL_1MK.DrawAllHL(stopLimitControl1.simu);
+        //    //MIT
+        //    List<string> Limits = stopLimitControl1.simu.MITToLimit(word[1], word[2], word[3], word[4]);
+        //    List<string> Deals = stopLimitControl1.simu.DealInfo(word[1], word[2], word[3], word[4]);
+        //    if (Deals != null && Deals.Count > 0)
+        //    {
+        //        //Draw MIT 
+        //        stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
+        //        chartControl1.KL_1MK.DrawAllLpp(stopLimitControl1.simu);
+        //        chartControl1.KL_1MK.DrawAllHL(stopLimitControl1.simu);
 
-                //MatList
-                dataGridView1.InvokeIfRequired(() =>
-                {
-                    dataGridView1.DataSource = null;
-                    dataGridView1.DataSource = stopLimitControl1.simu.MatList;
-                });
+        //        //MatList
+        //        dataGridView1.InvokeIfRequired(() =>
+        //        {
+        //            dataGridView1.DataSource = null;
+        //            dataGridView1.DataSource = stopLimitControl1.simu.MatList;
+        //        });
 
-                //Delete MIT DR
-                stopLimitControl1.DeleteMIT(Limits);
+        //        //Delete MIT DR
+        //        stopLimitControl1.DeleteMIT(Limits);
 
-                //Delete Lim DR
-                stopLimitControl1.DeleteLimit(Deals);
+        //        //Delete Lim DR
+        //        stopLimitControl1.DeleteLimit(Deals);
 
-            }
+        //    }
 
-        }
+        //}
 
-
+     
 
         public void gui() {
             bool close = false;
             while (true)
             {
-                Thread.Sleep(10);
+                Thread.Sleep(100);
                 
                 lock (Lock)
                 {
@@ -334,15 +480,26 @@ namespace 覆盤
 
                         //high - low 
                         if (DKdata.klist != null && DKdata.klist.Count > 0)
+                        {
                             label13.InvokeIfRequired(() =>
                             {
                                 label13.Text = (DKdata.klist[DKdata.klist.Count - 1].high - DKdata.klist[DKdata.klist.Count - 1].low).ToString();
                             });
+                        }
+
+                        //Half Rise
+                        if (DKdata.klist != null && DKdata.klist.Count > 0)
+                        {
+                            label1.InvokeIfRequired(() =>
+                            {
+                                label1.Text = ((DKdata.klist[DKdata.klist.Count - 1].high + DKdata.klist[DKdata.klist.Count - 1].low) / 2).ToString();
+                            });
+                        }
 
                         //Qty
                         label3.InvokeIfRequired(() =>
                         {
-                            label3.Text = stopLimitControl1.simu.Qty("", "").ToString();
+                            label3.Text = stopLimitControl1.simu.Qty().ToString();
                         });
 
                         //Profit
@@ -358,7 +515,15 @@ namespace 覆盤
                         });
 
                         //MACD
-                        chartControl1.Adjust_MACD(mACD);
+                        chartControl1.KL_1MK.Adjust_MACD(chartControl1.KL_1MK.mACD);
+
+                        ////MatList
+                        //dataGridView1.InvokeIfRequired(() =>
+                        //{
+                        //    dataGridView1.DataSource = null;
+                        //    dataGridView1.DataSource = stopLimitControl1.simu.MatList;
+                        //});
+
 
                         chartControl1.KL_1MK.KP.refreshK(MKdata.klist);
                         KL_1DK.KP.refreshK(DKdata.klist);
@@ -436,7 +601,7 @@ namespace 覆盤
             Lock = new object();
             lock (Lock)
             {
-                chartControl1.InitChart(Kind.All);
+                chartControl1.InitChart(Kind.Both);
                 if (stopLimitControl1.simu != null)
                 {
                     chartControl1.KL_1MK.DrawAllLpp(stopLimitControl1.simu);

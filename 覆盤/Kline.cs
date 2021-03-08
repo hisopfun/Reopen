@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using NPlot;
 using System.Drawing;
-
+using System.Windows.Forms;
 
 namespace 覆盤
 {
     public enum Kind { 
-        Line, Candle, All
+        Line, Candle, Both
     }
 
 
@@ -33,11 +33,13 @@ namespace 覆盤
         {
             KL.InitPS(KL.PS);
             KL.InitPS(KL.PS_volumn);
+            KL.InitPS(KL.PS_MACD);
 
             KL.InitCandle();
             KL.InitHp();
             KL.InitLPP();
-
+            KL.InitMACDChart(KL.mACD);
+            KL.InitDayHalf();
             //TradingDateTimeAxis tdt = new TradingDateTimeAxis(KL.PS.XAxis1);
             //tdt.StartTradingTime = new TimeSpan(8, 45,0);
             //tdt.EndTradingTime = new TimeSpan(13,45,0);
@@ -46,13 +48,16 @@ namespace 覆盤
             //KL.PS.XAxis1 = tdt;
             //KL.PS.XAxis1.Label = "Date";
             //KL.PS.XAxis1.NumberFormat = "yyyy-MM-dd";
-            KL.PS.Refresh();
+            KL.PS.InvokeIfRequired(() =>
+            {
+                KL.PS.Refresh();
+            });
         }
 
         void klineplot.refreshK(List<TXF.K_data.K> mk)
         {
-            if (KL.autoRefresh == false)
-                return;
+            if (KL.autoRefresh == false)                return;
+            if (KL.KLine_num < mk.Count) return;
             int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
 
             List<int[]> TX = new List<int[]>();
@@ -77,6 +82,10 @@ namespace 覆盤
                 TX[5][i] = i + 1;
             }
 
+            //Day Half
+            KL.RunDayHalf(Lowest + (Highest - Lowest) / 2);
+
+
             KL.PS.InvokeIfRequired(() =>
             {
                 KL.CP.OpenData = TX[0];// opens;
@@ -85,15 +94,6 @@ namespace 覆盤
                 KL.CP.CloseData = TX[3];//closes;
                 KL.CP.AbscissaData = TX[5];// times;
 
-                //KL.lpp.AbscissaData = new int[] { mk.Count };
-                //KL.lpp.DataSource = new float[] { mk[mk.Count-1].close };
-                //KL.lpp.TextData = new string[] { "⮜" };//⬅⮜←⟵
-
-                //KL.PS.XAxis1.WorldMin = 0;
-                //KL.PS.XAxis1.WorldMax = KL.KLine_num + 1;
-                //KL.PS.YAxis1.WorldMin = Lowest;
-                //KL.PS.YAxis1.WorldMax = Highest;
-                //KL.PS.YAxis1.TickTextNextToAxis = false;
                 KL.AdjustChart(mk, Highest + 10, Lowest - 10);
                 KL.PS.Refresh();
             });
@@ -110,6 +110,9 @@ namespace 覆盤
                 KL.PS_volumn.YAxis1.TickTextNextToAxis = false;
                 KL.PS_volumn.Refresh();
             });
+
+            //MACD
+            KL.Adjust_MACD(KL.mACD);
         }
     }
 
@@ -120,25 +123,32 @@ namespace 覆盤
         {
             KL.InitPS(KL.PS);
             KL.InitPS(KL.PS_volumn);
+            KL.InitPS(KL.PS_MACD);
 
             KL.InitLp();
             KL.InitHp();
             KL.InitLPP();
-            
-
+            KL.InitMACDChart(KL.mACD);
+            KL.InitDayHalf();
             //KL.PS.YAxis1.WorldMin = 0;
             //KL.PS.YAxis1.WorldMax = 300;
-            KL.PS.Refresh();
+
+            KL.PS.InvokeIfRequired(() =>
+            {
+                KL.PS.Refresh();
+            });
         }
         public LineP(Kline kl)
         {
             KL = kl;
             InitKLinePS();
+
+            
         }
         void klineplot.refreshK(List<TXF.K_data.K> mk)
         {
-            if (KL.autoRefresh == false)
-                return;
+            if (KL.autoRefresh == false)                return;
+            if (KL.KLine_num < mk.Count) return;
             int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
 
             List<List<int>> TX = new List<List<int>>();
@@ -164,6 +174,11 @@ namespace 覆盤
                 TX[5][i] = i + 1;
             }
 
+
+            //Day Half
+            KL.RunDayHalf(Lowest + (Highest - Lowest) / 2);
+
+
             KL.PS.InvokeIfRequired(() =>
             {
 
@@ -186,6 +201,9 @@ namespace 覆盤
                 KL.PS_volumn.YAxis1.TickTextNextToAxis = false;
                 KL.PS_volumn.Refresh();
             });
+
+            //MACD
+            KL.Adjust_MACD(KL.mACD);
         }
     }
 
@@ -202,24 +220,29 @@ namespace 覆盤
         {
             KL.InitPS(KL.PS);
             KL.InitPS(KL.PS_volumn);
+            KL.InitPS(KL.PS_MACD);
 
-            
             KL.InitCandle();
             KL.InitLp();
             KL.InitHp();
             KL.InitLPP();
+            KL.InitMACDChart(KL.mACD);
+            KL.InitDayHalf();
 
             KL.CP.BullishColor = Color.FromArgb(255,192,192);
             KL.CP.BearishColor = Color.FromArgb(192, 255, 192);
-            KL.CP.Style = CandlePlot.Styles.Filled;
 
-            KL.PS.Refresh();
+            KL.PS.InvokeIfRequired(() =>
+            {
+                KL.PS.Refresh();
+            });
         }
 
         void klineplot.refreshK(List<TXF.K_data.K> mk)
         {
-            if (KL.autoRefresh == false)
-                return;
+            if (KL.autoRefresh == false)                return;
+            if (KL.KLine_num < mk.Count) return;
+
 
             List<int[]> TX = new List<int[]>();
 
@@ -244,6 +267,10 @@ namespace 覆盤
                 }
                 TX[5][i] = i + 1;
             }
+
+
+            //Day Half
+            KL.RunDayHalf(Lowest + (Highest - Lowest) / 2);
 
             KL.PS.InvokeIfRequired(() =>
             {
@@ -280,6 +307,9 @@ namespace 覆盤
                 KL.PS_volumn.YAxis1.TickTextNextToAxis = false;
                 KL.PS_volumn.Refresh();
             });
+
+            //MACD
+            KL.Adjust_MACD(KL.mACD);
         }
     }
 
@@ -291,6 +321,8 @@ namespace 覆盤
         public List<int[]> TX_1mk = null;
         public NPlot.Windows.PlotSurface2D PS = null;
         public NPlot.Windows.PlotSurface2D PS_volumn = null;
+        public NPlot.Windows.PlotSurface2D PS_MACD = null;
+        public Technical_analysis.MACD mACD = new Technical_analysis.MACD();
         public NPlot.CandlePlot CP = new CandlePlot();
         public NPlot.HistogramPlot hp = new HistogramPlot();
         public NPlot.LabelPointPlot lpp = new LabelPointPlot();
@@ -301,24 +333,33 @@ namespace 覆盤
         public VerticalLine lineCrossX = null;// = new VerticalLine(10);
         public HorizontalLine lineCrossY = null;// = new HorizontalLine(10);
         public VerticalLine Volume_lineCrossX = null;
+        public VerticalLine MACD_lineCrossX = null;
+        public ToolTip tooltip = null;
 
+        public List<NPlot.IDrawable> dw = null; //plot List
+        public HorizontalLine HLDayHalf = null; //Day Half
+        public TextItem LPPDayHalf = null; //Day Half
         public NPlot.PointPlot pointPlot = new NPlot.PointPlot();
         public NPlot.LinePlot linePlot = new NPlot.LinePlot();
+        System.Drawing.Point? prevPosition = null;
+        
+
         public bool autoRefresh = true;
         public object Lock = new object();
 
         public klineplot KP;
 
         //public ref TXF_MK refTXF();
-        public Kline(NPlot.Windows.PlotSurface2D nPS, NPlot.Windows.PlotSurface2D nPS2, int nMK, int nKLine_num)
+        public Kline(NPlot.Windows.PlotSurface2D nPS, NPlot.Windows.PlotSurface2D nPS2, NPlot.Windows.PlotSurface2D nPS3, int nMK, int nKLine_num)
         {
-            PS = nPS;
-            PS_volumn = nPS2;
-            MK = nMK;
-            KLine_num = nKLine_num;
-            KP = new LineP(this);
-            //InitKLinePS();
-            KP.InitKLinePS();
+            this.PS = nPS;
+            this.PS_volumn = nPS2;
+            this.PS_MACD = nPS3;
+            this.MK = nMK;
+            this.KLine_num = nKLine_num;
+            this.KP = new LineP(this);
+            this.KP.InitKLinePS();
+     
         }
 
         public void InitPS(NPlot.Windows.PlotSurface2D PlotSurface2D) {
@@ -333,7 +374,8 @@ namespace 覆盤
             PlotSurface2D.Padding = 1;
 
             //滑鼠tooltips 時間+價格
-            PlotSurface2D.ShowCoordinates = true;
+            PlotSurface2D.DateTimeToolTip = false;
+            PlotSurface2D.ShowCoordinates = false;
             PlotSurface2D.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
             PlotSurface2D.TabIndex = 2;
             PlotSurface2D.Title = "123";
@@ -345,6 +387,40 @@ namespace 覆盤
                 VerticalGridType = Grid.GridType.Fine
             };
             PlotSurface2D.Add(mygrid);
+        }
+
+        public void InitDayHalf() {
+            this.LPPDayHalf = new NPlot.TextItem(new PointD(KLine_num * 0.95 ,200), "HLLLL");
+            this.PS.Add(this.LPPDayHalf);
+
+            this.HLDayHalf = new NPlot.HorizontalLine(200);
+            this.HLDayHalf.Pen.Color = System.Drawing.Color.Gray;
+            this.HLDayHalf.ShowInLegend = true;
+            this.PS.Add(this.HLDayHalf);
+        }
+
+        public void RunDayHalf(float nDayHalf) {
+            this.HLDayHalf.OrdinateValue = nDayHalf;
+            this.LPPDayHalf.Start = new PointD(KLine_num * 0.95, nDayHalf);
+            this.LPPDayHalf.Text = nDayHalf.ToString();
+        }
+
+        public void InitMACDChart(Technical_analysis.MACD mACD)
+        {
+            this.PS_MACD.DateTimeToolTip = false;
+            //mACD = new Technical_analysis.MACD();
+            this.PS_MACD.Clear();
+            this.PS_MACD.Add(new NPlot.Grid()
+            {
+                HorizontalGridType = NPlot.Grid.GridType.Fine,
+                VerticalGridType = NPlot.Grid.GridType.Fine
+            });
+
+            this.PS_MACD.Add(this.mACD.LP_DIF);
+            this.PS_MACD.Add(this.mACD.LP_DEM);
+            this.PS_MACD.Add(this.mACD.Bar_OSC);
+            this.PS_MACD.Add(this.mACD.horizontalLine);
+            this.PS_MACD.YAxis1.TickTextNextToAxis = false;
         }
 
         public void InitLPP() {
@@ -380,6 +456,10 @@ namespace 覆盤
 
             linePlot.AbscissaData = times;
             linePlot.DataSource = times;
+            //linePlot.Shadow = true;
+            //linePlot.ShadowColor = Color.Black;
+            linePlot.Pen.Width = 2;
+
             PS.Add(linePlot);
             PS.YAxis1.TickTextNextToAxis = false;
         }
@@ -421,12 +501,13 @@ namespace 覆盤
             CP.Centered = false;
             PS.Add(CP);
             PS.YAxis1.TickTextNextToAxis = false;
+            
             //PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.HorizontalDrag());
             //PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.VerticalDrag());
             //PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.AxisDrag(true));
         }
 
-        public void DrawLpp(string BS, int Price, int iTime)
+        public void DrawLpp(MatGraph graph, int Price, int iTime)
         {
 
             NPlot.LabelPointPlot lpp = new LabelPointPlot()
@@ -438,29 +519,73 @@ namespace 覆盤
 
 
             lpp.Marker.Size = 10;
-            if (BS == "B")
+            if (graph == MatGraph.redCircle)
             {
                 lpp.Marker.Color = System.Drawing.Color.Red;
-                lpp.Marker.Type = Marker.MarkerType.TriangleUp;
+                lpp.Marker.Type = Marker.MarkerType.Circle;
                 lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Below;
                 lpp.TextData = new string[] { "\n" + Price.ToString() };
             }
-            else
+            else if (graph == MatGraph.redSquare)
             {
-                lpp.Marker.Color = System.Drawing.Color.Green;
-                lpp.Marker.Type = Marker.MarkerType.TriangleDown;
+                lpp.Marker.Color = System.Drawing.Color.Red;
+                lpp.Marker.Type = Marker.MarkerType.Square;
                 lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Above;
                 lpp.TextData = new string[] { Price.ToString() + "\n\n" };
             }
+            else if (graph == MatGraph.greenCircle)
+            {
+                lpp.Marker.Color = System.Drawing.Color.Green;
+                lpp.Marker.Type = Marker.MarkerType.Circle;
+                lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Above;
+                lpp.TextData = new string[] { Price.ToString() + "\n\n" };
+            }
+            else if (graph == MatGraph.greenSquare)
+            {
+                lpp.Marker.Color = System.Drawing.Color.Green;
+                lpp.Marker.Type = Marker.MarkerType.Square;
+                lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Below;
+                lpp.TextData = new string[] { "\n" + Price.ToString() };
+            }
+
             lpp.Marker.Filled = true;
             PS.Add(lpp);
         }
 
-        public void DrawAllLpp(Simulation simu) {
+        public enum MatGraph { 
+            redCircle, redSquare, greenCircle, greenSquare
+        }
+
+        public void DrawAllLpp(Simulation simu) {//label point plot
 
             //Mat
-            foreach (Simulation.match mat in simu.MatList) {
-                DrawLpp(mat.BS, int.Parse(mat.Price), mat.iTIME);
+            for(int i = 0; i < simu.MatList.Count; i++) {
+                if (i == 0 || simu.Qty(simu.MatList.GetRange(0, i)) == 0)
+                {
+                    //Buy in
+                    if (simu.MatList[i].BS == "B")
+                    {
+                        DrawLpp(MatGraph.redCircle, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                    }
+
+                    //Sell in
+                    else 
+                    {
+                        DrawLpp(MatGraph.greenCircle, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                    }
+                }
+
+                //Buy out
+                else if (simu.Qty(simu.MatList.GetRange(0, i)) == 1 && simu.MatList[i].BS == "S") {
+                    DrawLpp(MatGraph.redSquare, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                }
+
+                //Sell out
+                else if (simu.Qty(simu.MatList.GetRange(0, i)) == -1 && simu.MatList[i].BS == "B")
+                {
+                    DrawLpp(MatGraph.greenSquare, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                }
+
             }
 
 
@@ -473,34 +598,96 @@ namespace 覆盤
                 mat.horizontalLine = new HorizontalLine(int.Parse(mat.Price), (mat.BS == "B") ? System.Drawing.Color.Red : System.Drawing.Color.Green);
                 PS.Add(mat.horizontalLine);
             }
-        } 
+        }
+
+        public void Adjust_MACD(Technical_analysis.MACD mACD)
+        {
+            if (mACD.DEM.Chart_EMA.Count > mACD.times_DEM.Length) return;
+            try
+            {
+                //chart
+                PS_MACD.InvokeIfRequired(() =>
+                {
+                    PS_MACD.XAxis1.WorldMax = KLine_num + 1;
+                    PS_MACD.XAxis1.WorldMin = 0;
+                    PS_MACD.YAxis1.WorldMax = mACD.highest;
+                    PS_MACD.YAxis1.WorldMin = mACD.lowest;
+
+                    PS_MACD.YAxis1.TickTextNextToAxis = false;
+                    PS_MACD.Refresh();
+                });
+            }
+            catch (NPlot.NPlotException NE) { 
+                
+            }
+        }
 
         public void AdjustChart(List<TXF.K_data.K> mk, float Highest, float Lowest) {
-            lpp.AbscissaData = new int[] { mk.Count };
-            lpp.DataSource = new float[] { mk[mk.Count - 1].close };
-            lpp.TextData = new string[] { "⟵" };//⬅⮜←⟵
+            if (mk.Count > 0)
+            {
+                lpp.AbscissaData = new int[] { mk.Count };
+                lpp.DataSource = new float[] { mk[mk.Count - 1].close };
+                lpp.TextData = new string[] { "⟵" };//⬅⮜←⟵
 
-            PS.XAxis1.WorldMin = 0;
-            PS.XAxis1.WorldMax = KLine_num + 1;
-            PS.YAxis1.WorldMin = Lowest;
-            PS.YAxis1.WorldMax = Highest;
-            PS.YAxis1.TickTextNextToAxis = false;
+                PS.XAxis1.WorldMin = 0;
+                PS.XAxis1.WorldMax = KLine_num + 1;
+                PS.YAxis1.WorldMin = Lowest;
+                PS.YAxis1.WorldMax = Highest;
+                PS.YAxis1.TickTextNextToAxis = false;
+            }
+        }
+
+        public void showTooltip(MouseEventArgs e)
+        {
+            if (this.PS.PhysicalXAxis1Cache == null || this.PS.PhysicalYAxis1Cache == null) return;
+            if (this.tooltip == null) {                 this.tooltip = new ToolTip();            }
+            if (!this.tooltip.Active) this.tooltip.Active = true;
+            //if (this.tooltip.)
+
+            var pos = e.Location;
+            if (prevPosition.HasValue && pos == prevPosition.Value)
+                return;
+            tooltip.RemoveAll();
+            prevPosition = pos;
+            //var results = chart1.HitTest(pos.X, pos.Y, false,
+            //                                ChartElementType.DataPoint);
+            //foreach (var result in results)
+            //{
+            //    if (result.ChartElementType == ChartElementType.DataPoint)
+            //    {
+            //        var prop = result.Object as DataPoint;
+            //        if (prop != null)
+            //        {
+            //            var pointXPixel = result.ChartArea.AxisX.ValueToPixelPosition(prop.XValue);
+            //            var pointYPixel = result.ChartArea.AxisY.ValueToPixelPosition(prop.YValues[0]);
+
+            //            check if the cursor is really close to the point(2 pixels around the point)
+            //            if (Math.Abs(pos.X - pointXPixel) < 2 &&
+            //                Math.Abs(pos.Y - pointYPixel) < 2)
+            //            {
+            System.Drawing.Point here = new System.Drawing.Point(e.X, e.Y);
+            double x = this.PS.PhysicalXAxis1Cache.PhysicalToWorld(here, true);
+            double y = this.PS.PhysicalYAxis1Cache.PhysicalToWorld(here, true);
+            tooltip.Show("X=" + (int)x + ", Y=" + (int)y, this.PS,
+                            pos.X + 10, pos.Y - 15);
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         public void AddLineCrossXY(int xx, int yy) {
-
-
-
-
-            if (lineCrossX != null)
+            if (this.lineCrossX != null)
             {
                 this.PS.Remove(lineCrossX, false);
                 this.PS.Remove(lineCrossY, false);
                 this.PS_volumn.Remove(Volume_lineCrossX, false);
+                this.PS_MACD.Remove(MACD_lineCrossX, false);
 
-                lineCrossX = null;
-                lineCrossY = null;
-                Volume_lineCrossX = null;
+                this.lineCrossX = null;
+                this.lineCrossY = null;
+                this.Volume_lineCrossX = null;
+                this.MACD_lineCrossX = null;
                 return;
             }
 
@@ -510,29 +697,38 @@ namespace 覆盤
             double y = this.PS.PhysicalYAxis1Cache.PhysicalToWorld(here, true);
             DateTime dateTime = new DateTime((long)x);
             //水平線建立
-            lineCrossY = new NPlot.HorizontalLine(y);
-            lineCrossY.LengthScale = 1;
-            lineCrossY.OrdinateValue = y;
-            lineCrossY.Pen = Pens.Blue;
+            this.lineCrossY = new NPlot.HorizontalLine(y);
+            this.lineCrossY.LengthScale = 1;
+            this.lineCrossY.OrdinateValue = y;
+            this.lineCrossY.Pen = Pens.Blue;
             //line.OrdinateValue = 2;
             this.PS.Add(lineCrossY);
             ////  ///////垂直線///////////
-            lineCrossX = new NPlot.VerticalLine(x);
-            lineCrossX.LengthScale = 1;
-            lineCrossX.Pen = Pens.Blue;
-            lineCrossX.AbscissaValue = x;
+            this.lineCrossX = new NPlot.VerticalLine(x);
+            this.lineCrossX.LengthScale = 1;
+            this.lineCrossX.Pen = Pens.Blue;
+            this.lineCrossX.AbscissaValue = x;
 
             ////  ///////垂直線///////////
-            Volume_lineCrossX = new NPlot.VerticalLine(x);
-            Volume_lineCrossX.LengthScale = 1;
-            Volume_lineCrossX.Pen = Pens.Blue;
-            Volume_lineCrossX.AbscissaValue = x;
+            this.Volume_lineCrossX = new NPlot.VerticalLine(x);
+            this.Volume_lineCrossX.LengthScale = 1;
+            this.Volume_lineCrossX.Pen = Pens.Blue;
+            this.Volume_lineCrossX.AbscissaValue = x;
+
+            ////  ///////垂直線///////////
+            this.MACD_lineCrossX = new NPlot.VerticalLine(x);
+            this.MACD_lineCrossX.LengthScale = 1;
+            this.MACD_lineCrossX.Pen = Pens.Blue;
+            this.MACD_lineCrossX.AbscissaValue = x;
 
             this.PS.Add(lineCrossX);
             this.PS.Refresh();
 
             this.PS_volumn.Add(Volume_lineCrossX);
             this.PS_volumn.Refresh();
+
+            this.PS_MACD.Add(MACD_lineCrossX);
+            this.PS_MACD.Refresh();
         }
 
         public void lineCrossMove(int xx, int yy) {
@@ -542,14 +738,16 @@ namespace 覆盤
             int x = Convert.ToInt32(this.PS.PhysicalXAxis1Cache.PhysicalToWorld(here, true));
             int y = Convert.ToInt32(this.PS.PhysicalYAxis1Cache.PhysicalToWorld(here, true));
 
-            if (lineCrossY != null && lineCrossX != null)
+            if (this.lineCrossY != null && this.lineCrossX != null)
             {
-                lineCrossY.OrdinateValue = y;
-                lineCrossX.AbscissaValue = x;
-                Volume_lineCrossX.AbscissaValue = x;
+                this.lineCrossY.OrdinateValue = y;
+                this.lineCrossX.AbscissaValue = x;
+                this.Volume_lineCrossX.AbscissaValue = x;
+                this.MACD_lineCrossX.AbscissaValue = x;
             }
             this.PS.Refresh();
             this.PS_volumn.Refresh();
+            this.PS_MACD.Refresh();
         }
 
         //public void refreshK(List<TXF.K_data.K> mk)

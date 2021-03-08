@@ -28,6 +28,8 @@ public class TXF
             if (nQty == "") return false;
             float Pri = float.Parse(nPri);
             uint Qty = uint.Parse(nQty);
+
+
             if (klist.Count > 0 && nTime.Substring(0, 4) == klist[klist.Count - 1].ktime) {
                 klist[klist.Count - 1].ktime = nTime.Substring(0, 4);
                 klist[klist.Count - 1].time = nTime;
@@ -39,9 +41,11 @@ public class TXF
                     klist[klist.Count - 1].tqty = klist[klist.Count - 2].tqty + klist[klist.Count - 1].qty;
                 else
                     klist[klist.Count - 1].tqty = klist[klist.Count - 1].qty;
-                return false;
+                //return false;
             }
-            if (nTime != "")
+
+
+            else if (nTime != "")
             {
                 klist.Add(new K(nTime.Substring(0, 4), Pri));
                 klist[klist.Count - 1].ktime = nTime.Substring(0, 4);
@@ -54,8 +58,10 @@ public class TXF
                     klist[klist.Count - 1].tqty = klist[klist.Count - 2].tqty + klist[klist.Count - 1].qty;
                 else
                     klist[klist.Count - 1].tqty = klist[klist.Count - 1].qty;
-                return true;
+                //return true;
             }
+
+            
             return false;
         }
     }
