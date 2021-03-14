@@ -45,8 +45,8 @@ C:\Users\Lix\Desktop\Reopen\覆盤\obj\Debug\覆盤.StopLimitControl.resources
 C:\Users\Lix\Desktop\Reopen\覆盤\obj\Debug\覆盤.csproj.GenerateResource.cache
 C:\Users\Lix\Desktop\Reopen\覆盤\obj\Debug\覆盤.csproj.CoreCompileInputs.cache
 C:\Users\Lix\Desktop\Reopen\覆盤\obj\Debug\覆盤.csproj.CopyComplete
-C:\Users\Lix\Desktop\Reopen\覆盤\bin\Debug\Futures Tutor.exe.config
-C:\Users\Lix\Desktop\Reopen\覆盤\bin\Debug\Futures Tutor.exe
-C:\Users\Lix\Desktop\Reopen\覆盤\bin\Debug\Futures Tutor.pdb
-C:\Users\Lix\Desktop\Reopen\覆盤\obj\Debug\Futures Tutor.exe
-C:\Users\Lix\Desktop\Reopen\覆盤\obj\Debug\Futures Tutor.pdb
+C:\Users\Lix\Desktop\Reopen\覆盤\bin\Debug\覆盤.exe.config
+C:\Users\Lix\Desktop\Reopen\覆盤\bin\Debug\覆盤.exe
+C:\Users\Lix\Desktop\Reopen\覆盤\bin\Debug\覆盤.pdb
+C:\Users\Lix\Desktop\Reopen\覆盤\obj\Debug\覆盤.exe
+C:\Users\Lix\Desktop\Reopen\覆盤\obj\Debug\覆盤.pdb
