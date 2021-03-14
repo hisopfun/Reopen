@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\MSBuild.ILMerge.Task.1.1.3\build\MSBuild.ILMerge.Task.props" Condition="Exists('..\packages\MSBuild.ILMerge.Task.1.1.3\build\MSBuild.ILMerge.Task.props')" />
-  <Import Project="..\packages\ILMerge.3.0.41\build\ILMerge.props" Condition="Exists('..\packages\ILMerge.3.0.41\build\ILMerge.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -14,8 +12,6 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -43,9 +39,7 @@
     <Reference Include="NPlot, Version=0.9.10.0, Culture=neutral, PublicKeyToken=4eda430eb4395eb1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPlot.0.9.10.0\lib\net20\NPlot.dll</HintPath>
     </Reference>
-    <Reference Include="System">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
-    </Reference>
+    <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -70,14 +64,18 @@
     <Compile Include="SOCKET.cs" />
     <Compile Include="RandomDate.cs" />
     <Compile Include="Kline.cs" />
-    <Compile Include="Form1.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Simulation.cs" />
-    <Compile Include="StopLimitControl.cs" />
+    <Compile Include="StopLimitControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="StopLimitControl.Designer.cs">
       <DependentUpon>StopLimitControl.cs</DependentUpon>
     </Compile>
@@ -102,7 +100,6 @@
     <EmbeddedResource Include="StopLimitControl.resx">
       <DependentUpon>StopLimitControl.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="ILMerge.props" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -119,16 +116,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="azwt1-0yq2a-001.ico" />
-    <Content Include="ILMergeOrder.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>此專案參考這部電腦上所缺少的 NuGet 套件。請啟用 NuGet 套件還原，以下載該套件。如需詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的檔案是 {0}。</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\ILMerge.3.0.41\build\ILMerge.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILMerge.3.0.41\build\ILMerge.props'))" />
-    <Error Condition="!Exists('..\packages\MSBuild.ILMerge.Task.1.1.3\build\MSBuild.ILMerge.Task.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuild.ILMerge.Task.1.1.3\build\MSBuild.ILMerge.Task.props'))" />
-    <Error Condition="!Exists('..\packages\MSBuild.ILMerge.Task.1.1.3\build\MSBuild.ILMerge.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuild.ILMerge.Task.1.1.3\build\MSBuild.ILMerge.Task.targets'))" />
-  </Target>
-  <Import Project="..\packages\MSBuild.ILMerge.Task.1.1.3\build\MSBuild.ILMerge.Task.targets" Condition="Exists('..\packages\MSBuild.ILMerge.Task.1.1.3\build\MSBuild.ILMerge.Task.targets')" />
 </Project>
