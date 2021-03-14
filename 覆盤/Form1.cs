@@ -585,6 +585,11 @@ namespace 覆盤
             }
         }
 
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
         private void contextMenuStrip4_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
 
