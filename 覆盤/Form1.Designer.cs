@@ -35,6 +35,7 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button2 = new System.Windows.Forms.Button();
@@ -55,9 +56,9 @@
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.chartControl1 = new 覆盤.ChartControl();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.stopLimitControl1 = new 覆盤.StopLimitControl();
-            this.chartControl1 = new 覆盤.ChartControl();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -72,19 +73,19 @@
             this.label4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label4.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.Black;
-            this.label4.Location = new System.Drawing.Point(656, 14);
+            this.label4.Location = new System.Drawing.Point(727, 13);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(110, 28);
             this.label4.TabIndex = 3;
-            this.label4.Text = "Time";
+            this.label4.Text = "time";
             // 
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.Color.Black;
-            this.button1.Location = new System.Drawing.Point(279, 15);
+            this.button1.Location = new System.Drawing.Point(279, 13);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(87, 26);
+            this.button1.Size = new System.Drawing.Size(87, 28);
             this.button1.TabIndex = 8;
             this.button1.Text = "Start";
             this.button1.UseVisualStyleBackColor = true;
@@ -105,9 +106,7 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(90, 27);
             this.comboBox1.TabIndex = 11;
-            this.comboBox1.Text = "2";
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
-            this.comboBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboBox1_KeyPress);
+            this.comboBox1.Text = "5000";
             // 
             // dateTimePicker1
             // 
@@ -125,12 +124,11 @@
             this.label12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label12.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label12.ForeColor = System.Drawing.Color.Black;
-            this.label12.Location = new System.Drawing.Point(868, 13);
+            this.label12.Location = new System.Drawing.Point(843, 13);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(106, 28);
             this.label12.TabIndex = 98;
             this.label12.Text = "5AVG ";
-            this.label12.Visible = false;
             // 
             // label13
             // 
@@ -138,7 +136,7 @@
             this.label13.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label13.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label13.ForeColor = System.Drawing.Color.Black;
-            this.label13.Location = new System.Drawing.Point(772, 14);
+            this.label13.Location = new System.Drawing.Point(955, 13);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(90, 28);
             this.label13.TabIndex = 99;
@@ -146,12 +144,38 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.radioButton3);
+            this.groupBox1.Controls.Add(this.checkBox1);
+            this.groupBox1.Controls.Add(this.button2);
+            this.groupBox1.Controls.Add(this.tabControl1);
+            this.groupBox1.Controls.Add(this.radioButton2);
+            this.groupBox1.Controls.Add(this.radioButton1);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.comboBox1);
+            this.groupBox1.Controls.Add(this.dateTimePicker1);
+            this.groupBox1.Controls.Add(this.label12);
+            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.label13);
+            this.groupBox1.Controls.Add(this.chartControl1);
             this.groupBox1.Font = new System.Drawing.Font("新細明體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(2, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(1240, 923);
             this.groupBox1.TabIndex = 100;
             this.groupBox1.TabStop = false;
+            // 
+            // label1
+            // 
+            this.label1.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Black;
+            this.label1.Location = new System.Drawing.Point(1051, 13);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(90, 28);
+            this.label1.TabIndex = 112;
+            this.label1.Text = "HalfRise";
             // 
             // radioButton3
             // 
@@ -168,13 +192,12 @@
             // checkBox1
             // 
             this.checkBox1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox1.Location = new System.Drawing.Point(209, 14);
+            this.checkBox1.Location = new System.Drawing.Point(657, 13);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(64, 28);
             this.checkBox1.TabIndex = 105;
             this.checkBox1.Text = "RT";
             this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.Visible = false;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // button2
@@ -185,7 +208,7 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(82, 28);
             this.button2.TabIndex = 104;
-            this.button2.Text = "Detail";
+            this.button2.Text = "detail";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -304,7 +327,7 @@
             this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
             this.tabPage2.Size = new System.Drawing.Size(268, 446);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Trade";
+            this.tabPage2.Text = "Statement";
             // 
             // label2
             // 
@@ -412,13 +435,10 @@
             "4.第一次創高是表態  第二次創高是盤型",
             "5.日K開在昨日紅K之上  -> 一下測後回升",
             "6.首1分K量  -> 預測早盤是否震盪",
-            "7.緩盤轉強攻盤作結束   可採用趨勢線出場",
-            "8.各種型態追A要帶量(1500)",
-            "9.價格斷裂突破要帶量",
-            "10.MACD 雙腳皆在0軸上or下  最簡單判斷盤勢的方式"});
+            "7.緩盤轉強攻盤作結束   可採用趨勢線出場"});
             this.listBox1.Location = new System.Drawing.Point(6, 6);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(255, 424);
+            this.listBox1.Size = new System.Drawing.Size(255, 324);
             this.listBox1.TabIndex = 0;
             // 
             // radioButton2
@@ -447,22 +467,6 @@
             this.radioButton1.UseVisualStyleBackColor = true;
             this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
-            // textBox1
-            // 
-            this.textBox1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(1248, 840);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(330, 95);
-            this.textBox1.TabIndex = 101;
-            // 
-            // stopLimitControl1
-            // 
-            this.stopLimitControl1.Location = new System.Drawing.Point(1248, 19);
-            this.stopLimitControl1.Name = "stopLimitControl1";
-            this.stopLimitControl1.Size = new System.Drawing.Size(330, 815);
-            this.stopLimitControl1.TabIndex = 110;
-            // 
             // chartControl1
             // 
             this.chartControl1.Location = new System.Drawing.Point(3, 47);
@@ -470,16 +474,34 @@
             this.chartControl1.Size = new System.Drawing.Size(1231, 870);
             this.chartControl1.TabIndex = 110;
             // 
+            // textBox1
+            // 
+            this.textBox1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox1.Location = new System.Drawing.Point(1290, 840);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(330, 95);
+            this.textBox1.TabIndex = 101;
+            // 
+            // stopLimitControl1
+            // 
+            this.stopLimitControl1.Location = new System.Drawing.Point(1290, 19);
+            this.stopLimitControl1.Name = "stopLimitControl1";
+            this.stopLimitControl1.Size = new System.Drawing.Size(330, 815);
+            this.stopLimitControl1.TabIndex = 110;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(1586, 937);
+            this.ClientSize = new System.Drawing.Size(1622, 937);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.stopLimitControl1);
+            this.Controls.Add(this.groupBox1);
             this.Font = new System.Drawing.Font("新細明體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ForeColor = System.Drawing.Color.White;
             this.Name = "Form1";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "未來家教 Futures Tutor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -526,6 +548,7 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.ListBox listBox1;
         private NPlot.Windows.PlotSurface2D plotSurface2D1;
+        private System.Windows.Forms.Label label1;
     }
 }
 

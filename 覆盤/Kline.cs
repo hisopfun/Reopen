@@ -36,9 +36,9 @@ namespace 覆盤
             KL.InitPS(KL.PS_MACD);
 
             KL.InitCandle();
-            KL.InitMITLinePlot();
-            KL.InitNowPrice();
-            KL.InitMACDChart(ref KL.mACD);
+            KL.InitHp();
+            KL.InitLPP();
+            KL.InitMACDChart(KL.mACD);
             KL.InitDayHalf();
             //TradingDateTimeAxis tdt = new TradingDateTimeAxis(KL.PS.XAxis1);
             //tdt.StartTradingTime = new TimeSpan(8, 45,0);
@@ -58,17 +58,11 @@ namespace 覆盤
         {
             if (KL.autoRefresh == false)                return;
             if (KL.KLine_num < mk.Count) return;
-
-      
-
             int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
 
             List<int[]> TX = new List<int[]>();
             for (i = 0; i < 6; i++)
                 TX.Add(new int[KL.KLine_num]);
-
-            //Dayhalf List
-            int[] Dayhalf = new int[KL.KLine_num];
 
             for (i = 0; i < KL.KLine_num; i++)
             {
@@ -84,15 +78,13 @@ namespace 覆盤
                     TX[2][i] = Convert.ToInt32(mk[i + istart].low);
                     TX[3][i] = Convert.ToInt32(mk[i + istart].close);
                     TX[4][i] = Convert.ToInt32(mk[i + istart].qty);
-
-                    //half
-                    Dayhalf[i] = (Highest + Lowest) / 2;
                 }
                 TX[5][i] = i + 1;
             }
 
             //Day Half
-            KL.RunDayHalf(Dayhalf.Take(mk.Count).ToArray(), TX[5].Take(mk.Count).ToArray());
+            KL.RunDayHalf(Lowest + (Highest - Lowest) / 2);
+
 
             KL.PS.InvokeIfRequired(() =>
             {
@@ -133,10 +125,10 @@ namespace 覆盤
             KL.InitPS(KL.PS_volumn);
             KL.InitPS(KL.PS_MACD);
 
-            KL.InitCloseLinePlot();
-            KL.InitMITLinePlot();
-            KL.InitNowPrice();
-            KL.InitMACDChart(ref KL.mACD);
+            KL.InitLp();
+            KL.InitHp();
+            KL.InitLPP();
+            KL.InitMACDChart(KL.mACD);
             KL.InitDayHalf();
             //KL.PS.YAxis1.WorldMin = 0;
             //KL.PS.YAxis1.WorldMax = 300;
@@ -150,22 +142,18 @@ namespace 覆盤
         {
             KL = kl;
             InitKLinePS();
+
+            
         }
         void klineplot.refreshK(List<TXF.K_data.K> mk)
         {
             if (KL.autoRefresh == false)                return;
             if (KL.KLine_num < mk.Count) return;
-
-
-
             int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
 
-            List<int[]> TX = new List<int[]>();
+            List<List<int>> TX = new List<List<int>>();
             for (i = 0; i < 6; i++)
-                TX.Add(new int[KL.KLine_num]);
-
-            //Dayhalf List
-            int[] Dayhalf = new int[KL.KLine_num];
+                TX.Add(new List<int>(new int[KL.KLine_num]));
 
             for (i = 0; i < KL.KLine_num; i++)
             {
@@ -182,23 +170,21 @@ namespace 覆盤
                     TX[3][i] = Convert.ToInt32(mk[i + istart].close);
                     //close[i] = Convert.ToInt32(mk[i + istart].close);
                     TX[4][i] = Convert.ToInt32(mk[i + istart].qty);
-
-                    //half
-                    Dayhalf[i] = (Highest + Lowest) / 2;
                 }
                 TX[5][i] = i + 1;
             }
 
 
             //Day Half
-            KL.RunDayHalf(Dayhalf.Take(mk.Count).ToArray(), TX[5].Take(mk.Count).ToArray());
+            KL.RunDayHalf(Lowest + (Highest - Lowest) / 2);
 
 
             KL.PS.InvokeIfRequired(() =>
             {
 
-                KL.linePlot.DataSource = TX[3].Take(mk.Count).ToArray();//.GetRange(0, mk.Count);//closes;
+                KL.linePlot.DataSource = TX[3].GetRange(0, mk.Count);//closes;
                 KL.linePlot.AbscissaData = TX[5];// times;
+
                 KL.AdjustChart(mk, Highest + 10, Lowest - 10);
                 KL.PS.Refresh();
             });
@@ -237,10 +223,10 @@ namespace 覆盤
             KL.InitPS(KL.PS_MACD);
 
             KL.InitCandle();
-            KL.InitCloseLinePlot();
-            KL.InitMITLinePlot();
-            KL.InitNowPrice();
-            KL.InitMACDChart(ref KL.mACD);
+            KL.InitLp();
+            KL.InitHp();
+            KL.InitLPP();
+            KL.InitMACDChart(KL.mACD);
             KL.InitDayHalf();
 
             KL.CP.BullishColor = Color.FromArgb(255,192,192);
@@ -258,15 +244,11 @@ namespace 覆盤
             if (KL.KLine_num < mk.Count) return;
 
 
-
             List<int[]> TX = new List<int[]>();
 
             int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
             for (i = 0; i < 6; i++)
                 TX.Add(new int[KL.KLine_num]);
-
-            //Dayhalf List
-            int[] Dayhalf = new int[KL.KLine_num];
 
             for (i = 0; i < KL.KLine_num; i++)
             {
@@ -282,17 +264,13 @@ namespace 覆盤
                     TX[2][i] = Convert.ToInt32(mk[i + istart].low);
                     TX[3][i] = Convert.ToInt32(mk[i + istart].close);
                     TX[4][i] = Convert.ToInt32(mk[i + istart].qty);
-
-                    //half
-                    Dayhalf[i] = (Highest + Lowest) / 2;
                 }
                 TX[5][i] = i + 1;
-                
             }
 
 
             //Day Half
-            KL.RunDayHalf(Dayhalf.Take(mk.Count).ToArray(), TX[5].Take(mk.Count).ToArray());
+            KL.RunDayHalf(Lowest + (Highest - Lowest) / 2);
 
             KL.PS.InvokeIfRequired(() =>
             {
@@ -304,6 +282,15 @@ namespace 覆盤
 
                 KL.linePlot.DataSource = TX[3].Take(mk.Count).ToArray();
                 KL.linePlot.AbscissaData = TX[5];
+                //KL.lpp.AbscissaData = new int[] { mk.Count };
+                //KL.lpp.DataSource = new float[] { mk[mk.Count-1].close };
+                //KL.lpp.TextData = new string[] { "⮜" };//⬅⮜←⟵
+
+                //KL.PS.XAxis1.WorldMin = 0;
+                //KL.PS.XAxis1.WorldMax = KL.KLine_num + 1;
+                //KL.PS.YAxis1.WorldMin = Lowest;
+                //KL.PS.YAxis1.WorldMax = Highest;
+                //KL.PS.YAxis1.TickTextNextToAxis = false;
                 KL.AdjustChart(mk, Highest + 10, Lowest - 10);
                 KL.PS.Refresh();
             });
@@ -316,6 +303,7 @@ namespace 覆盤
                 KL.PS_volumn.XAxis1.WorldMax = KL.KLine_num + 1;
                 KL.PS_volumn.YAxis1.WorldMin = 1;
                 KL.PS_volumn.YAxis1.WorldMax = Convert.ToInt32(Highest_Qty * 1.1);
+                //PS_volumn.Location = new System.Drawing.Point(PS.Location.X, PS_volumn.Location.Y);
                 KL.PS_volumn.YAxis1.TickTextNextToAxis = false;
                 KL.PS_volumn.Refresh();
             });
@@ -334,7 +322,7 @@ namespace 覆盤
         public NPlot.Windows.PlotSurface2D PS = null;
         public NPlot.Windows.PlotSurface2D PS_volumn = null;
         public NPlot.Windows.PlotSurface2D PS_MACD = null;
-        public Technical_analysis.MACD mACD;
+        public Technical_analysis.MACD mACD = new Technical_analysis.MACD();
         public NPlot.CandlePlot CP = new CandlePlot();
         public NPlot.HistogramPlot hp = new HistogramPlot();
         public NPlot.LabelPointPlot lpp = new LabelPointPlot();
@@ -349,7 +337,7 @@ namespace 覆盤
         public ToolTip tooltip = null;
 
         public List<NPlot.IDrawable> dw = null; //plot List
-        public LinePlot HLDayHalf = null; //Day Half
+        public HorizontalLine HLDayHalf = null; //Day Half
         public TextItem LPPDayHalf = null; //Day Half
         public NPlot.PointPlot pointPlot = new NPlot.PointPlot();
         public NPlot.LinePlot linePlot = new NPlot.LinePlot();
@@ -369,7 +357,6 @@ namespace 覆盤
             this.PS_MACD = nPS3;
             this.MK = nMK;
             this.KLine_num = nKLine_num;
-            this.mACD = new Technical_analysis.MACD(nKLine_num);
             this.KP = new LineP(this);
             this.KP.InitKLinePS();
      
@@ -403,27 +390,22 @@ namespace 覆盤
         }
 
         public void InitDayHalf() {
-            this.LPPDayHalf = new NPlot.TextItem(new PointD(KLine_num * 0.95 ,200), "");
+            this.LPPDayHalf = new NPlot.TextItem(new PointD(KLine_num * 0.95 ,200), "HLLLL");
             this.PS.Add(this.LPPDayHalf);
 
-            this.HLDayHalf = new LinePlot() { 
-                AbscissaData = new int[]{ 100, 200, 300, 400, 500, 600, 700 },
-                DataSource = new int[] { 100, 200, 300, 400, 500, 600, 700 }
-            };
-            this.HLDayHalf.Pen.Color = System.Drawing.Color.Gold;
+            this.HLDayHalf = new NPlot.HorizontalLine(200);
+            this.HLDayHalf.Pen.Color = System.Drawing.Color.Gray;
+            this.HLDayHalf.ShowInLegend = true;
             this.PS.Add(this.HLDayHalf);
         }
 
-        public void RunDayHalf(int[] nDayHalf, int[] times) {
-            if (nDayHalf.Length <= 0) return;
-            this.HLDayHalf.DataSource = nDayHalf;
-            this.HLDayHalf.AbscissaData = times;
-
-            this.LPPDayHalf.Start = new PointD(KLine_num * 0.95, nDayHalf[nDayHalf.Length - 1]);
-            this.LPPDayHalf.Text = nDayHalf[nDayHalf.Length - 1].ToString();
+        public void RunDayHalf(float nDayHalf) {
+            this.HLDayHalf.OrdinateValue = nDayHalf;
+            this.LPPDayHalf.Start = new PointD(KLine_num * 0.95, nDayHalf);
+            this.LPPDayHalf.Text = nDayHalf.ToString();
         }
 
-        public void InitMACDChart(ref Technical_analysis.MACD mACD)
+        public void InitMACDChart(Technical_analysis.MACD mACD)
         {
             this.PS_MACD.DateTimeToolTip = false;
             //mACD = new Technical_analysis.MACD();
@@ -441,7 +423,7 @@ namespace 覆盤
             this.PS_MACD.YAxis1.TickTextNextToAxis = false;
         }
 
-        public void InitNowPrice() {
+        public void InitLPP() {
             int[] times = { 500 };
             lpp.DataSource = new int[] { 100 };
             lpp.AbscissaData = times;
@@ -464,7 +446,7 @@ namespace 覆盤
 
         }
 
-        public void InitCloseLinePlot() {
+        public void InitLp() {
             int[] times = { 100, 200, 300, 400, 500, 600, 700 };
             //DateTime[] times = new DateTime[7];
             //for (int i = 0; i < 7; i++)
@@ -482,7 +464,7 @@ namespace 覆盤
             PS.YAxis1.TickTextNextToAxis = false;
         }
 
-        public void InitMITLinePlot() {
+        public void InitHp() {
             int[] times = { 100, 200, 300, 400, 500, 600, 700 };
             hp.AbscissaData = times;
             hp.DataSource = times;
@@ -684,12 +666,10 @@ namespace 覆盤
             //                Math.Abs(pos.Y - pointYPixel) < 2)
             //            {
             System.Drawing.Point here = new System.Drawing.Point(e.X, e.Y);
-        
             double x = this.PS.PhysicalXAxis1Cache.PhysicalToWorld(here, true);
             double y = this.PS.PhysicalYAxis1Cache.PhysicalToWorld(here, true);
-            if (x != this.PS.PhysicalXAxis1Cache.PhysicalToWorld(here, false)) return;
-            if (y != this.PS.PhysicalYAxis1Cache.PhysicalToWorld(here, false)) return;
-            tooltip.Show("X=" + (int)x + ", Y=" + (int)y, this.PS, pos.X + 10, pos.Y - 15);
+            tooltip.Show("X=" + (int)x + ", Y=" + (int)y, this.PS,
+                            pos.X + 10, pos.Y - 15);
             //            }
             //        }
             //    }

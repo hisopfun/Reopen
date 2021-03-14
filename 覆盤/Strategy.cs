@@ -104,7 +104,6 @@ namespace 覆盤
                 dealTime = nMatchTime;
                 dealPrice = nMatchPrice;
                 polarPrice = nMatchPrice;
-                writeTo(date + "," + nMatchTime.Substring(0,6) + ",B," + dealTime);
                 //if (mitPrice < nMatchPrice - 20)
                 //    mitPrice = nMatchPrice - 20;
                 //return "B," + nMatchPrice;
@@ -114,7 +113,6 @@ namespace 覆盤
                 dealTime = nMatchTime;
                 dealPrice = nMatchPrice;
                 polarPrice = nMatchPrice;
-                writeTo(date + "," + nMatchTime.Substring(0, 6) + ",S," + dealTime);
                 //if (mitPrice > nMatchPrice + 20)
                 //    mitPrice = nMatchPrice + 20;
                 //return "S," + nMatchPrice;
@@ -131,7 +129,7 @@ namespace 覆盤
                     dealTime = nMatchTime;
                     benefit += (mitPrice - dealPrice);
                     Bbenefit += (mitPrice - dealPrice);
-                    writeTo(date + "," + nMatchTime.Substring(0, 6) + ",S," + dealTime + "," + benefit);
+                    writeTo(date + "," + benefit);
                     return "S";
                 }
 
@@ -144,7 +142,7 @@ namespace 覆盤
                         last_bs = 0;
                         dealTime = nMatchTime;
                         benefit += stopProfit;
-                        writeTo(date + "," + nMatchTime.Substring(0, 6) + ",S," + dealTime + "," + benefit);
+                        writeTo(date + "," + benefit);
                         return "S";
                     }
                 }
@@ -161,7 +159,7 @@ namespace 覆盤
                     dealTime = nMatchTime;
                     benefit += (dealPrice - mitPrice);
                     Sbenefit += (dealPrice - mitPrice);
-                    writeTo(date + "," + nMatchTime.Substring(0, 6) + ",B," + dealTime + "," + benefit);
+                    writeTo(date + "," + benefit);
                     return "B";
                 }
 
@@ -175,7 +173,7 @@ namespace 覆盤
                         last_bs = 1;
                         dealTime = nMatchTime;
                         benefit += stopProfit;
-                        writeTo(date + "," + nMatchTime.Substring(0, 6) + ",B," + dealTime + "," + benefit);
+                        writeTo(date + "," + benefit);
                         return "B";
                     }
                 }
@@ -378,132 +376,5 @@ namespace 覆盤
 
             return order;
         }
-
-        public string planNight_Reverse_implement(List<TXF.K_data.K> mk, long nMatchPrice, string nMatchTime)//, string date)
-        {
-            string order = "X";
-            //if (last_bs != -1) return order;
-            
-            if (int.Parse(nMatchTime.Substring(0, 6)) >= int.Parse(exeStart) &&
-                int.Parse(nMatchTime.Substring(0, 6)) <= int.Parse(exeEnd))
-            {
-
-
-                //In
-                if (bs == -1)
-                {
-                    //qty is not 600 ~ 800
-                    if (mk.Count < 2) return order;
-                    if (int.Parse(mk[mk.Count - 1].time.Substring(4, 2)) < 40) return order;
-                    if (mk[mk.Count - 2].qty <= 400 || mk[mk.Count - 2].qty > 800)return order;
-                    if (mk[mk.Count - 1].qty > mk[mk.Count - 2].qty / 2) return order;
-
-                    signalStrong = mk[mk.Count - 2].qty.ToString();
-
-                    if (mk[mk.Count - 2].close - mk[mk.Count - 2].open < 0) //open > close
-                    {
-                        bs = 0;
-                        entries += 1;
-                        return "B";
-                    }
-                    else if (mk[mk.Count - 2].close - mk[mk.Count - 2].open > 0)//open < close
-                    {
-                        bs = 1;
-                        entries += 1;
-                        return "S";
-                    }
-                    return order;
-                }
-
-            }
-
-
-            //In 
-            if (bs == 0 && dealPrice == 0)
-            {
-                dealTime = nMatchTime;
-                dealPrice = nMatchPrice;
-                polarPrice = nMatchPrice;
-                mitPrice = nMatchPrice - 15;
-                writeTo(date + "," + nMatchTime.Substring(0, 6) + ",B," + dealPrice);
-            }
-            else if (bs == 1 && dealPrice == 0)
-            {
-                dealTime = nMatchTime;
-                dealPrice = nMatchPrice;
-                polarPrice = nMatchPrice;
-                mitPrice = nMatchPrice + 15;
-                writeTo(date + "," + nMatchTime.Substring(0, 6) + ",S," + dealPrice);
-            }
-
-            if (bs == 0 && dealPrice != 0)
-            {
-
-                //stop loss
-                if (nMatchPrice <= mitPrice)
-                {
-                    bs = -1;
-                    last_bs = 0;
-                    dealTime = nMatchTime;
-                    benefit += (mitPrice - dealPrice);
-                    Bbenefit += (mitPrice - dealPrice);
-                    writeTo(date + "," + nMatchTime.Substring(0, 6) + ",S," + mitPrice + "," + benefit);
-                    initial();
-                    return "S";
-                }
-
-                //stop profit
-                if (stopProfit != 0)
-                {
-                    if (nMatchPrice > dealPrice + stopProfit)
-                    {
-                        bs = -1;
-                        last_bs = 0;
-                        dealTime = nMatchTime;
-                        benefit += stopProfit;
-                        writeTo(date + "," + nMatchTime.Substring(0, 6) + ",S," + (dealPrice + stopProfit) + "," + benefit);
-                        initial();
-                        return "S";
-                    }
-                }
-                return "X";
-            }
-            else if (bs == 1 && dealPrice != 0)
-            {
-
-                //stop loss
-                if (nMatchPrice >= mitPrice)
-                {
-                    bs = -1;
-                    last_bs = 1;
-                    dealTime = nMatchTime;
-                    benefit += (dealPrice - mitPrice);
-                    Sbenefit += (dealPrice - mitPrice);
-                    writeTo(date + "," + nMatchTime.Substring(0, 6) + ",B," + mitPrice + "," + benefit);
-                    initial();
-                    return "B";
-                }
-
-
-                //stop profit
-                if (stopProfit != 0)
-                {
-                    if (nMatchPrice < dealPrice - stopProfit)
-                    {
-                        bs = -1;
-                        last_bs = 1;
-                        dealTime = nMatchTime;
-                        benefit += stopProfit;
-                        writeTo(date + "," + nMatchTime.Substring(0, 6) + ",B," + (dealPrice - stopProfit) + "," + benefit);
-                        initial();
-                        return "B";
-                    }
-                }
-                return "X";
-            }
-
-            return order;
-        }
     }
-
 }

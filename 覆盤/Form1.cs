@@ -26,66 +26,18 @@ namespace 覆盤
         TXF.K_data MKdata;
         TXF.K_data DKdata;
         Kline KL_1DK;
-        string date;
+        
         
         TIMES times;
         SOCKET SK;
         //TickEncoder tickGUI;
 
-        strategy plan10M, planMACD, planOSC, planNightReverse;
+        strategy plan10M, planMACD, planOSC;
 
         public void write(string path, string content) {
             using (FileStream fs = new FileStream(path, FileMode.Append)) {
                 using (StreamWriter sw = new StreamWriter(fs)) {
                     sw.Write(content);
-                }
-            }
-        }
-
-        private void DrawMat(strategy plan,  string[] word, string BS) {
-            if (BS != "X")
-            {
-                if (plan.dealPrice == 0)
-                    plan.dealPrice = int.Parse(word[4]);
-                else
-                {
-                    if (plan.last_bs == 0)
-                        plan.dealPrice = plan.dealPrice + (int)plan.benefit;
-                    else
-                        plan.dealPrice = plan.dealPrice - (int)plan.benefit;
-                }
-                //if (plan10M.benefit != 0)
-                //    stopLimitControl1.simu.MatList.Add(new Simulation.match(word[1], "TXF", BS, "1", (int.Parse(word[4]) + plan10M.benefit).ToString(), ""));
-                //else
-                stopLimitControl1.simu.MatList.Add(new Simulation.match(word[1], "TXF", BS, "1", plan.dealPrice.ToString(), ""));
-                stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
-                chartControl1.KL_1MK.DrawAllLpp(stopLimitControl1.simu);
-            }
-            if (plan.bs != -1 && BS != "X")
-            {
-
-                turn turn = new turn();
-                Point x = new Point();
-                if (BS == "B")
-                    x = turn.BuyTurn(MKdata.klist);
-                else if (BS == "S")
-                    x = turn.SellTurn(MKdata.klist);
-
-                plan.mitPrice = (int)x.price + ((plan.bs == 0) ? -1 : 1) * 3;
-
-                if (x != null)
-                {
-                    NPlot.LabelPointPlot lpp = new NPlot.LabelPointPlot();
-                    lpp.DataSource = new float[] { x.price };
-                    lpp.AbscissaData = new int[] { x.iTime };
-                    lpp.TextData = new string[] { "".ToString() };
-                    lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Below;
-                    lpp.Marker.Size = 10;
-                    lpp.Marker.Filled = true;
-                    lpp.Marker.Color = System.Drawing.Color.Blue;
-                    lpp.Marker.Type = Marker.MarkerType.Cross1;
-
-                    chartControl1.KL_1MK.PS.Add(lpp);
                 }
             }
         }
@@ -96,9 +48,7 @@ namespace 覆盤
 
             //Avoid PreOpen
             if (int.Parse(word[1].Substring(0, 4)) >= 0830 &&
-                int.Parse(word[1].Substring(0, 4)) < 0845 ||
-                int.Parse(word[1].Substring(0, 4)) >= 1450 &&
-                int.Parse(word[1].Substring(0, 4)) < 1500)
+                int.Parse(word[1].Substring(0, 4)) < 0845)
                 return;
 
             //StopLimit
@@ -114,30 +64,81 @@ namespace 覆盤
             chartControl1.KL_1MK.mACD.macd(MKdata.klist);
             KL_1DK.mACD.macd(DKdata.klist);
 
+            //plan10M
+/*            string BS = plan10M.plan10M_implement(int.Parse(word[4]) - Convert.ToInt32(MKdata.klist[0].close), int.Parse(word[4]), word[1]);
+            if (BS != "X")
+            {
+                if (plan10M.dealPrice == 0)
+                    plan10M.dealPrice = int.Parse(word[4]);
+                else
+                {
+                    if (plan10M.last_bs == 0)
+                        plan10M.dealPrice = plan10M.dealPrice + (int)plan10M.benefit;
+                    else
+                        plan10M.dealPrice = plan10M.dealPrice - (int)plan10M.benefit;
+                }
+                //if (plan10M.benefit != 0)
+                //    stopLimitControl1.simu.MatList.Add(new Simulation.match(word[1], "TXF", BS, "1", (int.Parse(word[4]) + plan10M.benefit).ToString(), ""));
+                //else
+                stopLimitControl1.simu.MatList.Add(new Simulation.match(word[1], "TXF", BS, "1",plan10M.dealPrice.ToString(), ""));
+                stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].iTIME = MKdata.klist.Count ;
+                chartControl1.KL_1MK.DrawAllLpp(stopLimitControl1.simu);
+            }
+            if (plan10M.bs != -1 && BS != "X")
+            {
+                
+                turn turn = new turn();
+                Point x = null;
+                if (BS == "B")
+                    x = turn.BuyTurn(MKdata.klist);
+                else if (BS == "S")
+                    x = turn.SellTurn(MKdata.klist);
 
-            ////plan10M
-            //string BS = plan10M.plan10M_implement(int.Parse(word[4]) - Convert.ToInt32(MKdata.klist[0].close), int.Parse(word[4]), word[1]);
-            //DrawMat(plan10M, word, BS);
+                plan10M.mitPrice = (int)x.price + ((plan10M.bs == 0)? -1 : 1 ) * 3;
 
-            ////planNightReverse
-            //string BS = planNightReverse.planNight_Reverse_implement(MKdata.klist, int.Parse(word[4]), word[1]);
-            
+                if (x != null)
+                {
+                    NPlot.LabelPointPlot lpp = new NPlot.LabelPointPlot();
+                    lpp.DataSource = new float[] { x.price };
+                    lpp.AbscissaData = new int[] { x.iTime };
+                    lpp.TextData = new string[] { "".ToString() };
+                    lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Below;
+                    lpp.Marker.Size = 10;
+                    lpp.Marker.Filled = true;
+                    lpp.Marker.Color = System.Drawing.Color.Blue;
+                    lpp.Marker.Type = Marker.MarkerType.Cross1;
+
+                    chartControl1.KL_1MK.PS.Add(lpp);
+                    //chartControl1.KL_1MK.PS.Add(new NPlot.HorizontalLine(x.price));
+                    //chartControl1.KL_1MK.PS.Add(new NPlot.VerticalLine(x.iTime));
+                }
+            }*/
             //stopLimitControl1.simu.Limit(word[1], "TXF", BS, "1", "M");
 
             ////planMACD
             //string BS = planMACD.planMACD(chartControl1.KL_1MK.mACD, int.Parse(word[4]), word[1]);
+
             //stopLimitControl1.simu.Limit(word[1], "TXF", BS, "1", "M");
 
             //planOSC
             //string BS = planMACD.planOSC(chartControl1.KL_1MK.mACD, int.Parse(word[4]), word[1]);
+            //if (BS == "B")
+            //{
+            //    turn b_turn = new turn();
+            //    Point x = b_turn.Buy_turn(MKdata.klist);
+            //    chartControl1.KL_1MK.PS.Add( new NPlot.PointPlot() { 
+            //        DataSource = new float[] { x.price},
+            //        AbscissaData = new int[] { x.iTime}
+            //    });
+            //}
             //stopLimitControl1.simu.Limit(word[1], "TXF", BS, "1", "M");
 
             //draw
-            MITandLIT(word);
+            Draw(word);
 
         }
 
-        public void MITandLIT(string[] word) { 
+        public void Draw(string[] word) { 
             //Order
             List<string> Limits = stopLimitControl1.simu.MITToLimit(word[1], word[2], word[3], word[4]);
             List<string> Deals = stopLimitControl1.simu.DealInfo(word[1], word[2], word[3], word[4]);
@@ -172,7 +173,7 @@ namespace 覆盤
             load_dayK();
             radioButton1.Checked = true;
             chartControl1.InitChart(Kind.Line);
-            tabControl1.TabPages.Remove(tabPage3);
+
             textBox1.Text = "";
         }
 
@@ -197,7 +198,7 @@ namespace 覆盤
                     times = new TIMES(int.Parse(comboBox1.Text));
                 });
                 stopLimitControl1.simu = new Simulation(chartControl1.plotSurface2D1);
-                chartControl1.KL_1MK.mACD = new Technical_analysis.MACD(chartControl1.KL_1MK.KLine_num);
+
                 Kind kind = Kind.Both;
                 radioButton1.InvokeIfRequired(() =>
                 {
@@ -215,14 +216,12 @@ namespace 覆盤
                         kind = Kind.Both;
                 });
                 chartControl1.InitChart(kind);
-                //chartControl1.KL_1MK.InitMACDChart(chartControl1.KL_1MK.mACD = new Technical_analysis.MACD());
+                chartControl1.KL_1MK.InitMACDChart(chartControl1.KL_1MK.mACD = new Technical_analysis.MACD());
 
                 plan10M = new strategy("plan10M", 0, 0, "100000", "134459", 20);
                 plan10M.date = date;
                 planMACD = new strategy("planMACD", 0, 0, "093000", "134459", 20);
                 planOSC = new strategy("planOSC", 0, 0, "093000", "134459", 0);
-                planNightReverse = new strategy("planNightReverse", 0, 0, "000000", "235959", 10);
-                planNightReverse.date = date;
             }
 
             checkBox1.InvokeIfRequired(() =>
@@ -233,7 +232,7 @@ namespace 覆盤
                     SK = new SOCKET(date, "122.99.4.117", 12002, checkBox1.Checked);
             });
 
-            SK.TE.TickEncoded += new TickEncoder.TickEncoderEventHandler( OnTickEncoded);
+            SK.TE.TickEncoded += OnTickEncoded;
 
 
             if (T_Quote != null)
@@ -264,7 +263,6 @@ namespace 覆盤
             //            dateTimePicker1.Value = dateTimePicker1.Value.AddDays(-1);
             //        });
             start(dateTimePicker1.Value.ToString("MM-dd-yyyy"));
-            date = dateTimePicker1.Value.ToString("MM-dd-yyyy");
             //    }
             //    else
             //    {
@@ -290,7 +288,6 @@ namespace 覆盤
                 textBox1.Text = "請稍後 約5秒";
             });
 
-            //wait
             while (SK.ticks.Count <= 0 && SK.t1.IsAlive)
             {
                 textBox1.InvokeIfRequired(() =>
@@ -336,9 +333,14 @@ namespace 覆盤
 
             //wait data
             WaitReopenData();
-            
+
+            string date = "";
+            dateTimePicker1.InvokeIfRequired(() => {
+                date = dateTimePicker1.Value.ToString("yyyy/M/d");
+            });
+
             bool istart = false;
-           
+            //foreach (string words in wordss) {
             while (SK.t1.IsAlive || SK.ticks.Count > 0) {
                 if (SK.ticks.Count > 0)
                 {
@@ -349,42 +351,36 @@ namespace 覆盤
                     if (words == "") break;
                     string[] word = words.Split(',');
 
-                    if (word.Length == 1)   continue;
+                    if (word.Length == 1) 
+                        continue;
                     if (word[1].Length < 6) return;
 
 
-                    //AM
-                    if (int.Parse(word[1].Substring(0, 4)) < 0845 ||
-                        int.Parse(word[1].Substring(0, 4)) > 1345)
-                        continue;
+                    if (!SK.realTime)
+                    {
+                        if (word[1].Substring(0, 6) == "084500")
+                            istart = true;
+                        if (int.Parse(word[1].Substring(0, 6)) > 134459 && istart) break;
+                        if (!istart) continue;
+                    }
 
-                    ////Night
-                    //if (int.Parse(word[1].Substring(0, 4)) >= 0830 &&
-                    //    int.Parse(word[1].Substring(0, 4)) <= 1345)
-                    //    continue;
-
-                    if (word[1].Substring(0, 4) == "1500")
-                        continue;
-                    //Avoid PreOpen
                     if (int.Parse(word[1].Substring(0, 4)) >= 0830 &&
-                        int.Parse(word[1].Substring(0, 4)) < 0845 ||
-                        int.Parse(word[1].Substring(0, 4)) >= 1450 &&
-                        int.Parse(word[1].Substring(0, 4)) < 1500)
+                        int.Parse(word[1].Substring(0, 4)) < 0845)
                         continue;
 
-                    if (word[1].Substring(0, 4) == "2230") 
-                        continue;
 
                     //Run All Ticks
+                    //RunTicks(word, istart, date);
                     SK.TE.Encode(words);
 
-                    //time interval
-                    int ss = times.tDiff(word[1]);
-                    if (ss > 0)
-                        Thread.Sleep(ss);
+                    //gui
+                    //tickGUI.Encode(words);
 
-                    if (SK.ticks.Count <= 0)
-                        continue;
+                    //run
+                    int ss = times.tDiff(word[1]);
+                    if (!SK.realTime)
+                        if (ss > 0)
+                            Thread.Sleep(ss);
                 }
             }
 
@@ -406,7 +402,49 @@ namespace 覆盤
             T_Quote.Abort();
         }
 
-        //大量K畫線
+        //private void RunTicks(string[] word, bool istart, string date) {
+
+        //    //Avoid PreOpen
+        //    if (int.Parse(word[1].Substring(0, 4)) >= 0830 &&
+        //        int.Parse(word[1].Substring(0, 4)) < 0845)
+        //        return;
+
+
+        //    //StopLimit
+        //    stopLimitControl1.StopLimitDGV(word[4], word[2], word[3], word[5]);
+
+        //    //MK
+        //    MKdata.Run(word[1], word[4], word[5]);
+       
+        //    DKdata.Run(date, word[4], word[5]);
+        //    chartControl1.KL_1MK.mACD.macd(MKdata.klist);
+
+        //    //MIT
+        //    List<string> Limits = stopLimitControl1.simu.MITToLimit(word[1], word[2], word[3], word[4]);
+        //    List<string> Deals = stopLimitControl1.simu.DealInfo(word[1], word[2], word[3], word[4]);
+        //    if (Deals != null && Deals.Count > 0)
+        //    {
+        //        //Draw MIT 
+        //        stopLimitControl1.simu.MatList[stopLimitControl1.simu.MatList.Count - 1].iTIME = MKdata.klist.Count;
+        //        chartControl1.KL_1MK.DrawAllLpp(stopLimitControl1.simu);
+        //        chartControl1.KL_1MK.DrawAllHL(stopLimitControl1.simu);
+
+        //        //MatList
+        //        dataGridView1.InvokeIfRequired(() =>
+        //        {
+        //            dataGridView1.DataSource = null;
+        //            dataGridView1.DataSource = stopLimitControl1.simu.MatList;
+        //        });
+
+        //        //Delete MIT DR
+        //        stopLimitControl1.DeleteMIT(Limits);
+
+        //        //Delete Lim DR
+        //        stopLimitControl1.DeleteLimit(Deals);
+
+        //    }
+
+        //}
 
      
 
@@ -414,7 +452,7 @@ namespace 覆盤
             bool close = false;
             while (true)
             {
-                Thread.Sleep(50);
+                Thread.Sleep(100);
                 
                 lock (Lock)
                 {
@@ -449,6 +487,14 @@ namespace 覆盤
                             });
                         }
 
+                        //Half Rise
+                        if (DKdata.klist != null && DKdata.klist.Count > 0)
+                        {
+                            label1.InvokeIfRequired(() =>
+                            {
+                                label1.Text = ((DKdata.klist[DKdata.klist.Count - 1].high + DKdata.klist[DKdata.klist.Count - 1].low) / 2).ToString();
+                            });
+                        }
 
                         //Qty
                         label3.InvokeIfRequired(() =>
@@ -497,7 +543,7 @@ namespace 覆盤
                     {
                         textBox1.Text = "After 11:00, it can rise without large volume.";
                     });
-
+                    
                 }
 
                 if (close) T_GUI.Abort();
@@ -573,20 +619,6 @@ namespace 覆盤
         private void button2_Click(object sender, EventArgs e)
         {
                 tabControl1.Visible = !tabControl1.Visible;
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            
-            times.speed = int.Parse(comboBox1.Text);
-        }
-
-        private void comboBox1_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar != 8 && !Char.IsDigit(e.KeyChar))
-            {
-                e.Handled = true;
-            }
         }
 
         private void contextMenuStrip4_Opening(object sender, System.ComponentModel.CancelEventArgs e)
