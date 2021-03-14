@@ -573,8 +573,8 @@ namespace 覆盤
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
-            times.speed = int.Parse(comboBox1.Text);
+            if (times != null)
+                times.speed = int.Parse(comboBox1.Text);
         }
 
         private void comboBox1_KeyPress(object sender, KeyPressEventArgs e)
