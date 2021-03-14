@@ -23,6 +23,7 @@ namespace 覆盤
         }
         public void InitChart(Kind kd)
         {
+
             if (kd == Kind.Line)
                 KL_1MK.KP = new LineP(KL_1MK);
             if (kd == Kind.Candle)

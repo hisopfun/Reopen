@@ -35,7 +35,6 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button2 = new System.Windows.Forms.Button();
@@ -77,15 +76,15 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(110, 28);
             this.label4.TabIndex = 3;
-            this.label4.Text = "time";
+            this.label4.Text = "Time";
             // 
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.Color.Black;
-            this.button1.Location = new System.Drawing.Point(279, 13);
+            this.button1.Location = new System.Drawing.Point(350, 13);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(87, 28);
+            this.button1.Size = new System.Drawing.Size(87, 27);
             this.button1.TabIndex = 8;
             this.button1.Text = "Start";
             this.button1.UseVisualStyleBackColor = true;
@@ -102,7 +101,7 @@
             "4",
             "5",
             "10"});
-            this.comboBox1.Location = new System.Drawing.Point(560, 14);
+            this.comboBox1.Location = new System.Drawing.Point(631, 14);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(90, 27);
             this.comboBox1.TabIndex = 11;
@@ -112,7 +111,7 @@
             // 
             this.dateTimePicker1.CalendarFont = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dateTimePicker1.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dateTimePicker1.Location = new System.Drawing.Point(372, 15);
+            this.dateTimePicker1.Location = new System.Drawing.Point(443, 13);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(182, 26);
             this.dateTimePicker1.TabIndex = 80;
@@ -144,7 +143,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.radioButton3);
             this.groupBox1.Controls.Add(this.checkBox1);
             this.groupBox1.Controls.Add(this.button2);
@@ -165,18 +163,6 @@
             this.groupBox1.TabIndex = 100;
             this.groupBox1.TabStop = false;
             // 
-            // label1
-            // 
-            this.label1.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Black;
-            this.label1.Location = new System.Drawing.Point(1051, 13);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(90, 28);
-            this.label1.TabIndex = 112;
-            this.label1.Text = "HalfRise";
-            // 
             // radioButton3
             // 
             this.radioButton3.AutoSize = true;
@@ -192,9 +178,9 @@
             // checkBox1
             // 
             this.checkBox1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox1.Location = new System.Drawing.Point(657, 13);
+            this.checkBox1.Location = new System.Drawing.Point(280, 13);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(64, 28);
+            this.checkBox1.Size = new System.Drawing.Size(64, 27);
             this.checkBox1.TabIndex = 105;
             this.checkBox1.Text = "RT";
             this.checkBox1.UseVisualStyleBackColor = true;
@@ -327,7 +313,7 @@
             this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
             this.tabPage2.Size = new System.Drawing.Size(268, 446);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Statement";
+            this.tabPage2.Text = "Trrade";
             // 
             // label2
             // 
@@ -435,7 +421,10 @@
             "4.第一次創高是表態  第二次創高是盤型",
             "5.日K開在昨日紅K之上  -> 一下測後回升",
             "6.首1分K量  -> 預測早盤是否震盪",
-            "7.緩盤轉強攻盤作結束   可採用趨勢線出場"});
+            "7.緩盤轉強攻盤作結束   可採用趨勢線出場",
+            "8.各種型態追A要帶量(1500)",
+            "9.價格斷裂突破要帶量",
+            "10.MACD 雙腳皆在0軸上or下  最簡單判斷盤勢的方式\""});
             this.listBox1.Location = new System.Drawing.Point(6, 6);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(255, 324);
@@ -548,7 +537,6 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.ListBox listBox1;
         private NPlot.Windows.PlotSurface2D plotSurface2D1;
-        private System.Windows.Forms.Label label1;
     }
 }
 

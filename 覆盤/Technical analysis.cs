@@ -8,10 +8,10 @@ public class Technical_analysis
 {
     public class MACD {
         public float[] times_DIF, times_DEM;
-        public EMA EMA1 = new EMA(12, System.Drawing.Color.Red);
-        public EMA EMA2 = new EMA(26, System.Drawing.Color.Blue);
+        public EMA EMA1;
+        public EMA EMA2;
         private List<float> DIF { get; } = new List<float>();
-        public EMA DEM { get; } = new EMA(9, System.Drawing.Color.Yellow);
+        public EMA DEM { get; } 
         public List<float> OSC { get; } = new List<float>();
         public NPlot.LinePlot LP_DIF = new NPlot.LinePlot();
         public NPlot.LinePlot LP_DEM = new NPlot.LinePlot();
@@ -19,11 +19,15 @@ public class Technical_analysis
 
         public NPlot.HorizontalLine horizontalLine = new NPlot.HorizontalLine(0);
         public float highest = int.MinValue, lowest = int.MaxValue;
-        public MACD() {
+        public MACD(int n) {
             InitLp();
             InitBar();
-            times_DIF = new float[300 - 26];
-            times_DEM = new float[300 - 26 - 9 + 1];
+            EMA1 = new EMA(12, n, System.Drawing.Color.Red);
+            EMA2 = new EMA(26, n, System.Drawing.Color.Blue);
+            DEM = new EMA(9, n, System.Drawing.Color.Yellow);
+
+            times_DIF = new float[n - 26];
+            times_DEM = new float[n - 26 - 9 + 1];
             int i;
             for (i = 0; i < times_DIF.Length; i++) {
                 times_DIF[i] = i + 26 + 1;
@@ -40,8 +44,8 @@ public class Technical_analysis
             int[] times = { 100, 200, 300, 400, 500, 600, 700 };
             LP_DIF.AbscissaData = times;
             LP_DIF.DataSource = times;
-            LP_DEM.AbscissaData = new int[]{ 400, 500, 600, 700 }; 
-            LP_DEM.DataSource = new int[] { 700, 600, 500, 400 };
+            LP_DEM.AbscissaData = times;
+            LP_DEM.DataSource = times.Reverse().ToArray();
         }
 
         public void InitBar() {
@@ -62,15 +66,15 @@ public class Technical_analysis
             LP_DEM.DataSource = DEM.Chart_EMA;
             LP_DEM.AbscissaData = times_DEM;
 
-            List<float> Top = new List<float>(), Bottom = new List<float>();
-            foreach (float val in OSC) {
-                Top.Add(Math.Max(0, val));
-                Bottom.Add(Math.Min(0, val));
-            }
+            //List<float> Top = new List<float>(), Bottom = new List<float>();
+            //foreach (float val in OSC) {
+            //    Top.Add(Math.Max(0, val));
+            //    Bottom.Add(Math.Min(0, val));
+            //}
 
-            Bar_OSC.OrdinateDataTop = Top;
-            Bar_OSC.OrdinateDataBottom = Bottom;
-            Bar_OSC.AbscissaData = times_DEM;
+            //Bar_OSC.OrdinateDataTop = Top;
+            //Bar_OSC.OrdinateDataBottom = Bottom;
+            //Bar_OSC.AbscissaData = times_DEM;
         }
 
         public void diff_OSC() {
@@ -138,10 +142,10 @@ public class Technical_analysis
         public List<float> Chart_EMA = new List<float>();
         public NPlot.LinePlot LP_EMA = new NPlot.LinePlot();
 
-        public EMA(int nMACount, System.Drawing.Color color)
+        public EMA(int nMACount, int n, System.Drawing.Color color)
         {
             ema_kind = nMACount;
-            times = new float[300 - nMACount + 1];
+            times = new float[n - nMACount + 1];
             int i;
             for (i = 0; i < times.Length; i++)
             {
