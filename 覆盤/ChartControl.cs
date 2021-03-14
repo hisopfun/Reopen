@@ -42,7 +42,19 @@ namespace 覆盤
         private void plotSurface2D1_MouseMove(object sender, MouseEventArgs e)
         {
             KL_1MK.lineCrossMove(e.X, e.Y);
-            KL_1MK.showTooltip(e);
+
+            if (this.KL_1MK.lineCrossY != null && this.KL_1MK.lineCrossX != null)
+            {
+                KL_1MK.showTooltip(e);
+            }
+            else
+            {
+                if (KL_1MK.tooltip != null)
+                {
+                    KL_1MK.tooltip.RemoveAll();
+                }
+            }
+
             //using (FileStream fs = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "//test.TXT", FileMode.Append))
             //{
             //    using (StreamWriter sw = new StreamWriter(fs))

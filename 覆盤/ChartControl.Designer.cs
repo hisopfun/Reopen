@@ -39,6 +39,7 @@
             this.plotSurface2D1.AutoScaleTitle = false;
             this.plotSurface2D1.BackColor = System.Drawing.Color.Gray;
             this.plotSurface2D1.DateTimeToolTip = false;
+            this.plotSurface2D1.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.plotSurface2D1.Legend = null;
             this.plotSurface2D1.LegendZOrder = -1;
             this.plotSurface2D1.Location = new System.Drawing.Point(3, 3);
@@ -64,6 +65,7 @@
             this.plotSurface2D2.AutoScaleTitle = false;
             this.plotSurface2D2.BackColor = System.Drawing.Color.Gray;
             this.plotSurface2D2.DateTimeToolTip = false;
+            this.plotSurface2D2.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.plotSurface2D2.Legend = null;
             this.plotSurface2D2.LegendZOrder = -1;
             this.plotSurface2D2.Location = new System.Drawing.Point(3, 531);
@@ -87,6 +89,7 @@
             this.plotSurface2D5.AutoScaleTitle = false;
             this.plotSurface2D5.BackColor = System.Drawing.Color.Gray;
             this.plotSurface2D5.DateTimeToolTip = false;
+            this.plotSurface2D5.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.plotSurface2D5.Legend = null;
             this.plotSurface2D5.LegendZOrder = -1;
             this.plotSurface2D5.Location = new System.Drawing.Point(3, 716);

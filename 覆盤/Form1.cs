@@ -173,7 +173,6 @@ namespace 覆盤
             radioButton1.Checked = true;
             chartControl1.InitChart(Kind.Line);
             tabControl1.TabPages.Remove(tabPage3);
-            textBox1.Text = "";
         }
 
 
@@ -185,6 +184,12 @@ namespace 覆盤
             dataGridView1.InvokeIfRequired(() =>
             {
                 dataGridView1.DataSource = null;
+            });
+
+            button1.InvokeIfRequired(() =>
+            {
+                button1.BackColor = Color.FromArgb(255, 128, 128);
+                button1.Enabled = false;
             });
 
             stopLimitControl1.Init();
@@ -285,49 +290,37 @@ namespace 覆盤
             string contents = "";
 
             //socket
-            textBox1.InvokeIfRequired(() =>
+            linkLabel1.InvokeIfRequired(() =>
             {
-                textBox1.Text = "請稍後 約5秒";
+                linkLabel1.Text = "請稍後 約5秒";
             });
 
             //wait
             while (SK.ticks.Count <= 0 && SK.t1.IsAlive)
             {
-                textBox1.InvokeIfRequired(() =>
+                linkLabel1.InvokeIfRequired(() =>
                 {
-                    textBox1.Text += ".";
+                    linkLabel1.Text += ".";
                 });
 
                 Thread.Sleep(1000);
             }
 
-            textBox1.InvokeIfRequired(() =>
+            linkLabel1.InvokeIfRequired(() =>
             {
                 if (SK.firstMsg != "")
-                    textBox1.Text = SK.firstMsg;
+                    linkLabel1.Text = SK.firstMsg;
             });
 
             contents = SK.datas.Replace("DONE", "");
             if (contents.Contains("NO DATA") || contents.Contains("無法連線，因為目標電腦拒絕連線"))
             {
-                textBox1.InvokeIfRequired(() =>
+                linkLabel1.InvokeIfRequired(() =>
                 {
-                    textBox1.Text = "NO DATA";
+                    linkLabel1.Text = "NO DATA";
                 });
                 
-                comboBox1.InvokeIfRequired(() => {
-                    comboBox1.Enabled = true;
-                });
 
-                button1.InvokeIfRequired(() =>
-                {
-                    button1.Enabled = true;
-                });
-
-                dataGridView1.InvokeIfRequired(() =>
-                {
-                    dateTimePicker1.Enabled = true;
-                });
                 return;
             }
         }
@@ -393,6 +386,7 @@ namespace 覆盤
             button1.InvokeIfRequired(() =>
             {
                 button1.Enabled = true;
+                button1.BackColor = Color.FromArgb(128,255,  128);
             });
 
             dataGridView1.InvokeIfRequired(() =>
@@ -489,9 +483,10 @@ namespace 覆盤
                 if (time == "") 
                     return;
                 else if (time.Substring(0, 4) == "1100") {
-                    textBox1.InvokeIfRequired(() =>
+                    linkLabel1.InvokeIfRequired(() =>
                     {
-                        textBox1.Text = "After 11:00, it can rise without large volume.";
+                        //textBox1.Text = "After 11:00, it can rise without large volume.";
+                        
                     });
 
                 }
@@ -568,7 +563,11 @@ namespace 覆盤
 
         private void button2_Click(object sender, EventArgs e)
         {
-                tabControl1.Visible = !tabControl1.Visible;
+            tabControl1.Visible = !tabControl1.Visible;
+            if (tabControl1.Visible)
+                button2.BackColor = Color.Gold;
+            else
+                button2.BackColor = Color.Gray;
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -589,6 +588,20 @@ namespace 覆盤
         {
 
         }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string link = "";
+            if (linkLabel1.Text.Contains("https")) {
+                int iStart = linkLabel1.Text.IndexOf("https");
+                int iEnd = linkLabel1.Text.IndexOf(" ", iStart);
+
+                link = linkLabel1.Text.Substring(iStart, iEnd - iStart + 1);
+            }
+            if (link !="")
+                System.Diagnostics.Process.Start(link);
+        }
+
 
         private void contextMenuStrip4_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {

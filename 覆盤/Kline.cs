@@ -392,12 +392,13 @@ namespace 覆盤
             PlotSurface2D.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
             PlotSurface2D.TabIndex = 2;
             PlotSurface2D.Title = "123";
-            PlotSurface2D.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            PlotSurface2D.TitleFont = new System.Drawing.Font("Consolas", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             PlotSurface2D.Clear();
 
-            Grid mygrid = new Grid() {
-                HorizontalGridType = Grid.GridType.Fine,
-                VerticalGridType = Grid.GridType.Fine
+            Grid mygrid = new Grid()
+            {
+                HorizontalGridType = Grid.GridType.None,
+                VerticalGridType = Grid.GridType.Coarse
             };
             PlotSurface2D.Add(mygrid);
         }
@@ -430,8 +431,8 @@ namespace 覆盤
             this.PS_MACD.Clear();
             this.PS_MACD.Add(new NPlot.Grid()
             {
-                HorizontalGridType = NPlot.Grid.GridType.Fine,
-                VerticalGridType = NPlot.Grid.GridType.Fine
+                HorizontalGridType = NPlot.Grid.GridType.None,
+                VerticalGridType = NPlot.Grid.GridType.Coarse
             });
 
             this.PS_MACD.Add(this.mACD.LP_DIF);
@@ -503,7 +504,7 @@ namespace 覆盤
             CP.BullishColor = Color.Red;
             CP.BearishColor = Color.Green;
             CP.Style = CandlePlot.Styles.Filled;
-
+            
             int[] opens =  { 100, 200,300, 500, 750, 850, 1000 };
             int[] closes = { 200, 300, 500, 250, 850, 1000, 1200 };
             int[] lows =   { 50, 200, 250, 250, 750, 750, 950 };
@@ -525,6 +526,7 @@ namespace 覆盤
             PS.YAxis1.TickTextNextToAxis = false;
             this.PS.XAxis1.WorldMin = 50;
             this.PS.XAxis1.WorldMax = 750;
+            
             //PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.HorizontalDrag());
             //PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.VerticalDrag());
             //PS.AddInteraction(new NPlot.Windows.PlotSurface2D.Interactions.AxisDrag(true));
