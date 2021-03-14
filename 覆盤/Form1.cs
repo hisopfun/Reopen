@@ -187,11 +187,6 @@ namespace 覆盤
                 dataGridView1.DataSource = null;
             });
 
-            button1.InvokeIfRequired(() =>
-            {
-                button1.Enabled = false;
-            });
-
             stopLimitControl1.Init();
 
             lock (Lock)
