@@ -84,8 +84,10 @@ namespace 覆盤
             DGV_StopLimit.InvokeIfRequired(() => { 
                 DGV_StopLimit.DataSource = this.dt;
                 DGV_StopLimit.DefaultCellStyle.Font = new Font("Consolas", 12, FontStyle.Bold);
+                
                 DGV_StopLimit.ColumnHeadersDefaultCellStyle.Font = new Font("Consolas", 12, FontStyle.Bold);
-           
+                //DGV_StopLimit.DefaultCellStyle.Font.Style = FontStyle.
+                DGV_StopLimit.DefaultCellStyle.BackColor = Color.FromArgb(64, 64, 64); 
 
                 //visible
                 DGV_StopLimit.Columns[0].Visible = false;
@@ -169,7 +171,7 @@ namespace 覆盤
                     }
                     DGV_StopLimit.Rows[0].Frozen = true;
                 }
-
+             
             });
 
 
@@ -179,6 +181,7 @@ namespace 覆盤
         private void DGV_StopLimit_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             string Pri = "";
+            if (e == null || e.RowIndex < 0) return;
             Pri = DGV_StopLimit[0, e.RowIndex].Value.ToString();
             DeleteMIT();
             DeleteLimit();
@@ -280,6 +283,7 @@ namespace 覆盤
         private void DGV_StopLimit_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             string Pri = "";
+            if (e == null || e.RowIndex < 0) return;
             Pri = DGV_StopLimit[0, e.RowIndex].Value.ToString();
             DeleteMIT();
             DeleteLimit();
@@ -388,12 +392,12 @@ namespace 覆盤
                 {
                     if (lastPri != 0)
                     {
-                        DGV_StopLimit[4, upPri - lastPri + 1].Style.BackColor = Color.White;
+                        DGV_StopLimit[4, upPri - lastPri + 1].Style.BackColor = Color.FromArgb(64, 64, 64);
                     }
                     lastPri = (int)mk[mk.Count - 1].close;
                     lastTime = mk[mk.Count - 1].time;
 
-                    DGV_StopLimit[4, upPri - lastPri + 1].Style.BackColor = Color.Yellow;
+                    DGV_StopLimit[4, upPri - lastPri + 1].Style.BackColor = Color.Orange;
                 }
 
                 //Run MIT and Limit
@@ -474,16 +478,16 @@ namespace 覆盤
             if (OI > 0)
             {
                 DGV_StopLimit.DefaultCellStyle.BackColor = Color.FromArgb(255, 192, 192);
-                DGV_StopLimit.Columns[4].DefaultCellStyle.BackColor = Color.White;
+                DGV_StopLimit.Columns[4].DefaultCellStyle.BackColor = Color.FromArgb(64, 64, 64); ;
             }
             else if (OI < 0)
             {
                 DGV_StopLimit.DefaultCellStyle.BackColor = Color.FromArgb(192, 255, 192);
-                DGV_StopLimit.Columns[4].DefaultCellStyle.BackColor = Color.White;
+                DGV_StopLimit.Columns[4].DefaultCellStyle.BackColor = Color.FromArgb(64, 64, 64); ;
             }
             else
             {
-                DGV_StopLimit.DefaultCellStyle.BackColor = Color.White;
+                DGV_StopLimit.DefaultCellStyle.BackColor = Color.FromArgb(64, 64, 64); ;
             }
         }
         private void setLimitValue(string Price, string BS, string Qty) {
@@ -523,6 +527,11 @@ namespace 覆盤
         private void DGV_StopLimit_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
         {
             autoScroll = true;
+        }
+
+        private void DGV_StopLimit_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
 
         private void RUN_MIT_Limit() {

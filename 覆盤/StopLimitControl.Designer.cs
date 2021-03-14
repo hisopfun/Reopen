@@ -45,14 +45,14 @@
             this.DGV_StopLimit.AllowUserToResizeColumns = false;
             this.DGV_StopLimit.AllowUserToResizeRows = false;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
             this.DGV_StopLimit.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.DGV_StopLimit.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.DGV_StopLimit.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
             this.DGV_StopLimit.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.White;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
@@ -61,7 +61,7 @@
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("新細明體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Transparent;
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.Desktop;
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
@@ -75,7 +75,7 @@
             this.DGV_StopLimit.ReadOnly = true;
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
             dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
@@ -87,7 +87,9 @@
             dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.White;
             dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.Black;
             this.DGV_StopLimit.RowsDefaultCellStyle = dataGridViewCellStyle5;
-            this.DGV_StopLimit.RowTemplate.DefaultCellStyle.ForeColor = System.Drawing.Color.Black;
+            this.DGV_StopLimit.RowTemplate.DefaultCellStyle.ForeColor = System.Drawing.Color.White;
+            this.DGV_StopLimit.RowTemplate.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.DGV_StopLimit.RowTemplate.DefaultCellStyle.SelectionForeColor = System.Drawing.Color.White;
             this.DGV_StopLimit.RowTemplate.Height = 24;
             this.DGV_StopLimit.RowTemplate.ReadOnly = true;
             this.DGV_StopLimit.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
@@ -98,6 +100,7 @@
             this.DGV_StopLimit.Size = new System.Drawing.Size(235, 931);
             this.DGV_StopLimit.TabIndex = 111;
             this.DGV_StopLimit.TabStop = false;
+            this.DGV_StopLimit.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DGV_StopLimit_CellContentClick);
             this.DGV_StopLimit.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DGV_StopLimit_CellMouseClick);
             this.DGV_StopLimit.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DGV_StopLimit_CellMouseDoubleClick);
             this.DGV_StopLimit.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.DGV_StopLimit_CellMouseEnter);
