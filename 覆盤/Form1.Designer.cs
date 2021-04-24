@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.stopLimitControl1 = new 覆盤.StopLimitControl();
-            this.chartControl1 = new 覆盤.ChartControl();
             this.label13 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.label12 = new System.Windows.Forms.Label();
@@ -40,44 +38,34 @@
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.plotSurface2D1 = new NPlot.Windows.PlotSurface2D();
+            this.plotSurface2D4 = new NPlot.Windows.PlotSurface2D();
+            this.plotSurface2D3 = new NPlot.Windows.PlotSurface2D();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.listBox1 = new System.Windows.Forms.ListBox();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.plotSurface2D3 = new NPlot.Windows.PlotSurface2D();
-            this.plotSurface2D4 = new NPlot.Windows.PlotSurface2D();
-            this.plotSurface2D1 = new NPlot.Windows.PlotSurface2D();
             this.button2 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.btn_B = new System.Windows.Forms.Button();
+            this.btn_S = new System.Windows.Forms.Button();
+            this.chartControl1 = new 覆盤.ChartControl();
+            this.stopLimitControl1 = new 覆盤.StopLimitControl();
             this.tabControl1.SuspendLayout();
-            this.tabPage3.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.tabPage1.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // stopLimitControl1
-            // 
-            this.stopLimitControl1.Location = new System.Drawing.Point(1260, 9);
-            this.stopLimitControl1.Name = "stopLimitControl1";
-            this.stopLimitControl1.Size = new System.Drawing.Size(330, 792);
-            this.stopLimitControl1.TabIndex = 110;
-            // 
-            // chartControl1
-            // 
-            this.chartControl1.Location = new System.Drawing.Point(9, 49);
-            this.chartControl1.Name = "chartControl1";
-            this.chartControl1.Size = new System.Drawing.Size(1231, 870);
-            this.chartControl1.TabIndex = 110;
             // 
             // label13
             // 
@@ -152,8 +140,9 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(90, 27);
             this.comboBox1.TabIndex = 11;
-            this.comboBox1.Text = "2";
+            this.comboBox1.Text = "1";
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.comboBox1.TextChanged += new System.EventHandler(this.comboBox1_TextChanged);
             this.comboBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboBox1_KeyPress);
             // 
             // label4
@@ -210,6 +199,190 @@
             this.tabControl1.TabIndex = 97;
             this.tabControl1.Visible = false;
             // 
+            // tabPage1
+            // 
+            this.tabPage1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.tabPage1.Controls.Add(this.plotSurface2D1);
+            this.tabPage1.Controls.Add(this.plotSurface2D4);
+            this.tabPage1.Controls.Add(this.plotSurface2D3);
+            this.tabPage1.ForeColor = System.Drawing.Color.Black;
+            this.tabPage1.Location = new System.Drawing.Point(4, 23);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPage1.Size = new System.Drawing.Size(268, 445);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Day";
+            // 
+            // plotSurface2D1
+            // 
+            this.plotSurface2D1.AutoScaleAutoGeneratedAxes = false;
+            this.plotSurface2D1.AutoScaleTitle = false;
+            this.plotSurface2D1.BackColor = System.Drawing.Color.Gray;
+            this.plotSurface2D1.DateTimeToolTip = false;
+            this.plotSurface2D1.Legend = null;
+            this.plotSurface2D1.LegendZOrder = -1;
+            this.plotSurface2D1.Location = new System.Drawing.Point(3, 360);
+            this.plotSurface2D1.Name = "plotSurface2D1";
+            this.plotSurface2D1.RightMenu = null;
+            this.plotSurface2D1.ShowCoordinates = true;
+            this.plotSurface2D1.Size = new System.Drawing.Size(260, 81);
+            this.plotSurface2D1.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+            this.plotSurface2D1.TabIndex = 98;
+            this.plotSurface2D1.Text = "plotSurface2D1";
+            this.plotSurface2D1.Title = "";
+            this.plotSurface2D1.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.plotSurface2D1.XAxis1 = null;
+            this.plotSurface2D1.XAxis2 = null;
+            this.plotSurface2D1.YAxis1 = null;
+            this.plotSurface2D1.YAxis2 = null;
+            // 
+            // plotSurface2D4
+            // 
+            this.plotSurface2D4.AutoScaleAutoGeneratedAxes = false;
+            this.plotSurface2D4.AutoScaleTitle = false;
+            this.plotSurface2D4.BackColor = System.Drawing.Color.Gray;
+            this.plotSurface2D4.DateTimeToolTip = false;
+            this.plotSurface2D4.Legend = null;
+            this.plotSurface2D4.LegendZOrder = -1;
+            this.plotSurface2D4.Location = new System.Drawing.Point(3, 212);
+            this.plotSurface2D4.Name = "plotSurface2D4";
+            this.plotSurface2D4.RightMenu = null;
+            this.plotSurface2D4.ShowCoordinates = true;
+            this.plotSurface2D4.Size = new System.Drawing.Size(260, 142);
+            this.plotSurface2D4.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+            this.plotSurface2D4.TabIndex = 97;
+            this.plotSurface2D4.Text = "plotSurface2D4";
+            this.plotSurface2D4.Title = "";
+            this.plotSurface2D4.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.plotSurface2D4.XAxis1 = null;
+            this.plotSurface2D4.XAxis2 = null;
+            this.plotSurface2D4.YAxis1 = null;
+            this.plotSurface2D4.YAxis2 = null;
+            // 
+            // plotSurface2D3
+            // 
+            this.plotSurface2D3.AutoScaleAutoGeneratedAxes = false;
+            this.plotSurface2D3.AutoScaleTitle = false;
+            this.plotSurface2D3.BackColor = System.Drawing.Color.Gray;
+            this.plotSurface2D3.DateTimeToolTip = false;
+            this.plotSurface2D3.Legend = null;
+            this.plotSurface2D3.LegendZOrder = -1;
+            this.plotSurface2D3.Location = new System.Drawing.Point(3, 3);
+            this.plotSurface2D3.Name = "plotSurface2D3";
+            this.plotSurface2D3.RightMenu = null;
+            this.plotSurface2D3.ShowCoordinates = true;
+            this.plotSurface2D3.Size = new System.Drawing.Size(260, 203);
+            this.plotSurface2D3.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+            this.plotSurface2D3.TabIndex = 96;
+            this.plotSurface2D3.Text = "plotSurface2D3";
+            this.plotSurface2D3.Title = "";
+            this.plotSurface2D3.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.plotSurface2D3.XAxis1 = null;
+            this.plotSurface2D3.XAxis2 = null;
+            this.plotSurface2D3.YAxis1 = null;
+            this.plotSurface2D3.YAxis2 = null;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.tabPage2.Controls.Add(this.label2);
+            this.tabPage2.Controls.Add(this.label3);
+            this.tabPage2.Controls.Add(this.label9);
+            this.tabPage2.Controls.Add(this.label6);
+            this.tabPage2.Controls.Add(this.label10);
+            this.tabPage2.Controls.Add(this.label11);
+            this.tabPage2.Controls.Add(this.dataGridView1);
+            this.tabPage2.ForeColor = System.Drawing.Color.Black;
+            this.tabPage2.Location = new System.Drawing.Point(4, 23);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPage2.Size = new System.Drawing.Size(268, 445);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Trade";
+            // 
+            // label2
+            // 
+            this.label2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label2.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(4, 185);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(87, 22);
+            this.label2.TabIndex = 97;
+            this.label2.Text = "Qty";
+            // 
+            // label3
+            // 
+            this.label3.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.label3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label3.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(96, 185);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(101, 22);
+            this.label3.TabIndex = 96;
+            this.label3.Text = "0";
+            // 
+            // label9
+            // 
+            this.label9.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.label9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label9.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(96, 206);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(101, 22);
+            this.label9.TabIndex = 98;
+            this.label9.Text = "0";
+            // 
+            // label6
+            // 
+            this.label6.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label6.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(4, 206);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(87, 22);
+            this.label6.TabIndex = 99;
+            this.label6.Text = "Profit";
+            // 
+            // label10
+            // 
+            this.label10.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.label10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label10.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(4, 228);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(87, 22);
+            this.label10.TabIndex = 101;
+            this.label10.Text = "Entries";
+            // 
+            // label11
+            // 
+            this.label11.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.label11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label11.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(96, 228);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(101, 22);
+            this.label11.TabIndex = 100;
+            this.label11.Text = "0";
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowHeadersVisible = false;
+            this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
+            this.dataGridView1.RowTemplate.Height = 24;
+            this.dataGridView1.Size = new System.Drawing.Size(268, 182);
+            this.dataGridView1.TabIndex = 89;
+            // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.listBox1);
@@ -238,195 +411,12 @@
             "7.緩盤轉強攻盤作結束   可採用趨勢線出場",
             "8.各種型態追A要帶量(1500)",
             "9.價格斷裂突破要帶量",
-            "10.MACD 雙腳皆在0軸上or下  最簡單判斷盤勢的方式\""});
+            "10.MACD 雙腳皆在0軸上or下  最簡單判斷盤勢的方式",
+            "11.日線收斂尾  當沖容易亂竄  急拉急殺出量"});
             this.listBox1.Location = new System.Drawing.Point(6, 6);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(255, 324);
+            this.listBox1.Size = new System.Drawing.Size(255, 424);
             this.listBox1.TabIndex = 0;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.tabPage2.Controls.Add(this.label2);
-            this.tabPage2.Controls.Add(this.label3);
-            this.tabPage2.Controls.Add(this.label9);
-            this.tabPage2.Controls.Add(this.label6);
-            this.tabPage2.Controls.Add(this.label10);
-            this.tabPage2.Controls.Add(this.label11);
-            this.tabPage2.Controls.Add(this.dataGridView1);
-            this.tabPage2.ForeColor = System.Drawing.Color.Black;
-            this.tabPage2.Location = new System.Drawing.Point(4, 23);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage2.Size = new System.Drawing.Size(268, 445);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Trade";
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
-            this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(268, 182);
-            this.dataGridView1.TabIndex = 89;
-            // 
-            // label11
-            // 
-            this.label11.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label11.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(96, 228);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(101, 22);
-            this.label11.TabIndex = 100;
-            this.label11.Text = "0";
-            // 
-            // label10
-            // 
-            this.label10.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.label10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label10.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(4, 228);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(87, 22);
-            this.label10.TabIndex = 101;
-            this.label10.Text = "Entries";
-            // 
-            // label6
-            // 
-            this.label6.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label6.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(4, 206);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(87, 22);
-            this.label6.TabIndex = 99;
-            this.label6.Text = "Profit";
-            // 
-            // label9
-            // 
-            this.label9.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label9.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(96, 206);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(101, 22);
-            this.label9.TabIndex = 98;
-            this.label9.Text = "0";
-            // 
-            // label3
-            // 
-            this.label3.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label3.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(96, 185);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(101, 22);
-            this.label3.TabIndex = 96;
-            this.label3.Text = "0";
-            // 
-            // label2
-            // 
-            this.label2.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label2.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(4, 185);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(87, 22);
-            this.label2.TabIndex = 97;
-            this.label2.Text = "Qty";
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.tabPage1.Controls.Add(this.plotSurface2D1);
-            this.tabPage1.Controls.Add(this.plotSurface2D4);
-            this.tabPage1.Controls.Add(this.plotSurface2D3);
-            this.tabPage1.ForeColor = System.Drawing.Color.Black;
-            this.tabPage1.Location = new System.Drawing.Point(4, 23);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage1.Size = new System.Drawing.Size(268, 445);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Day";
-            // 
-            // plotSurface2D3
-            // 
-            this.plotSurface2D3.AutoScaleAutoGeneratedAxes = false;
-            this.plotSurface2D3.AutoScaleTitle = false;
-            this.plotSurface2D3.BackColor = System.Drawing.Color.Gray;
-            this.plotSurface2D3.DateTimeToolTip = false;
-            this.plotSurface2D3.Legend = null;
-            this.plotSurface2D3.LegendZOrder = -1;
-            this.plotSurface2D3.Location = new System.Drawing.Point(3, 3);
-            this.plotSurface2D3.Name = "plotSurface2D3";
-            this.plotSurface2D3.RightMenu = null;
-            this.plotSurface2D3.ShowCoordinates = true;
-            this.plotSurface2D3.Size = new System.Drawing.Size(260, 181);
-            this.plotSurface2D3.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-            this.plotSurface2D3.TabIndex = 96;
-            this.plotSurface2D3.Text = "plotSurface2D3";
-            this.plotSurface2D3.Title = "";
-            this.plotSurface2D3.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.plotSurface2D3.XAxis1 = null;
-            this.plotSurface2D3.XAxis2 = null;
-            this.plotSurface2D3.YAxis1 = null;
-            this.plotSurface2D3.YAxis2 = null;
-            // 
-            // plotSurface2D4
-            // 
-            this.plotSurface2D4.AutoScaleAutoGeneratedAxes = false;
-            this.plotSurface2D4.AutoScaleTitle = false;
-            this.plotSurface2D4.BackColor = System.Drawing.Color.Gray;
-            this.plotSurface2D4.DateTimeToolTip = false;
-            this.plotSurface2D4.Legend = null;
-            this.plotSurface2D4.LegendZOrder = -1;
-            this.plotSurface2D4.Location = new System.Drawing.Point(3, 190);
-            this.plotSurface2D4.Name = "plotSurface2D4";
-            this.plotSurface2D4.RightMenu = null;
-            this.plotSurface2D4.ShowCoordinates = true;
-            this.plotSurface2D4.Size = new System.Drawing.Size(260, 164);
-            this.plotSurface2D4.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-            this.plotSurface2D4.TabIndex = 97;
-            this.plotSurface2D4.Text = "plotSurface2D4";
-            this.plotSurface2D4.Title = "";
-            this.plotSurface2D4.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.plotSurface2D4.XAxis1 = null;
-            this.plotSurface2D4.XAxis2 = null;
-            this.plotSurface2D4.YAxis1 = null;
-            this.plotSurface2D4.YAxis2 = null;
-            // 
-            // plotSurface2D1
-            // 
-            this.plotSurface2D1.AutoScaleAutoGeneratedAxes = false;
-            this.plotSurface2D1.AutoScaleTitle = false;
-            this.plotSurface2D1.BackColor = System.Drawing.Color.Gray;
-            this.plotSurface2D1.DateTimeToolTip = false;
-            this.plotSurface2D1.Legend = null;
-            this.plotSurface2D1.LegendZOrder = -1;
-            this.plotSurface2D1.Location = new System.Drawing.Point(3, 360);
-            this.plotSurface2D1.Name = "plotSurface2D1";
-            this.plotSurface2D1.RightMenu = null;
-            this.plotSurface2D1.ShowCoordinates = true;
-            this.plotSurface2D1.Size = new System.Drawing.Size(260, 81);
-            this.plotSurface2D1.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-            this.plotSurface2D1.TabIndex = 98;
-            this.plotSurface2D1.Text = "plotSurface2D1";
-            this.plotSurface2D1.Title = "";
-            this.plotSurface2D1.TitleFont = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.plotSurface2D1.XAxis1 = null;
-            this.plotSurface2D1.XAxis2 = null;
-            this.plotSurface2D1.YAxis1 = null;
-            this.plotSurface2D1.YAxis2 = null;
             // 
             // button2
             // 
@@ -479,12 +469,57 @@
             this.linkLabel1.TabIndex = 113;
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
+            // btn_B
+            // 
+            this.btn_B.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.btn_B.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_B.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_B.ForeColor = System.Drawing.Color.Black;
+            this.btn_B.Location = new System.Drawing.Point(982, 15);
+            this.btn_B.Name = "btn_B";
+            this.btn_B.Size = new System.Drawing.Size(82, 30);
+            this.btn_B.TabIndex = 114;
+            this.btn_B.Text = "B";
+            this.btn_B.UseVisualStyleBackColor = false;
+            this.btn_B.Click += new System.EventHandler(this.btn_B_Click);
+            // 
+            // btn_S
+            // 
+            this.btn_S.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.btn_S.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_S.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_S.ForeColor = System.Drawing.Color.Black;
+            this.btn_S.Location = new System.Drawing.Point(1070, 14);
+            this.btn_S.Name = "btn_S";
+            this.btn_S.Size = new System.Drawing.Size(82, 30);
+            this.btn_S.TabIndex = 115;
+            this.btn_S.Text = "S";
+            this.btn_S.UseVisualStyleBackColor = false;
+            this.btn_S.Click += new System.EventHandler(this.btn_S_Click);
+            // 
+            // chartControl1
+            // 
+            this.chartControl1.Location = new System.Drawing.Point(9, 49);
+            this.chartControl1.Name = "chartControl1";
+            this.chartControl1.Size = new System.Drawing.Size(1231, 870);
+            this.chartControl1.TabIndex = 110;
+            // 
+            // stopLimitControl1
+            // 
+            this.stopLimitControl1.BackColor = System.Drawing.Color.Transparent;
+            this.stopLimitControl1.Location = new System.Drawing.Point(1260, 9);
+            this.stopLimitControl1.Name = "stopLimitControl1";
+            this.stopLimitControl1.Size = new System.Drawing.Size(330, 792);
+            this.stopLimitControl1.TabIndex = 110;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(1598, 931);
+            this.Controls.Add(this.btn_S);
+            this.Controls.Add(this.btn_B);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.radioButton3);
             this.Controls.Add(this.checkBox1);
@@ -510,10 +545,10 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
-            this.tabPage3.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.tabPage1.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -549,6 +584,8 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.Button btn_B;
+        private System.Windows.Forms.Button btn_S;
     }
 }
 

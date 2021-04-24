@@ -36,10 +36,11 @@ namespace 覆盤
             KL.InitPS(KL.PS_MACD);
 
             KL.InitCandle();
-            KL.InitMITLinePlot();
+            KL.InitQtyPlot();
             KL.InitNowPrice();
             KL.InitMACDChart(ref KL.mACD);
             KL.InitDayHalf();
+            KL.InitLineCross();
             //TradingDateTimeAxis tdt = new TradingDateTimeAxis(KL.PS.XAxis1);
             //tdt.StartTradingTime = new TimeSpan(8, 45,0);
             //tdt.EndTradingTime = new TimeSpan(13,45,0);
@@ -134,12 +135,12 @@ namespace 覆盤
             KL.InitPS(KL.PS_MACD);
 
             KL.InitCloseLinePlot();
-            KL.InitMITLinePlot();
+            KL.InitQtyPlot();
             KL.InitNowPrice();
             KL.InitMACDChart(ref KL.mACD);
             KL.InitDayHalf();
-            //KL.PS.YAxis1.WorldMin = 0;
-            //KL.PS.YAxis1.WorldMax = 300;
+            KL.InitLineCross();
+      
 
             KL.PS.InvokeIfRequired(() =>
             {
@@ -153,6 +154,7 @@ namespace 覆盤
         }
         void klineplot.refreshK(List<TXF.K_data.K> mk)
         {
+            
             if (KL.autoRefresh == false)                return;
             if (KL.KLine_num < mk.Count) return;
 
@@ -196,8 +198,9 @@ namespace 覆盤
 
             KL.PS.InvokeIfRequired(() =>
             {
+      
 
-                KL.linePlot.DataSource = TX[3].Take(mk.Count).ToArray();//.GetRange(0, mk.Count);//closes;
+                KL.linePlot.DataSource = TX[3].Take(mk.Count).ToArray();//.GetRange(0, mk.Count);//closes;   //mk.GroupBy(e => e.close).SelectMany(g => g.Select(p => Convert.ToInt32(p.close))).ToArray();
                 KL.linePlot.AbscissaData = TX[5];// times;
                 KL.AdjustChart(mk, Highest + 10, Lowest - 10);
                 KL.PS.Refresh();
@@ -205,8 +208,9 @@ namespace 覆盤
 
             KL.PS_volumn.InvokeIfRequired(() =>
             {
+
                 KL.hp.AbscissaData = TX[5];
-                KL.hp.DataSource = TX[4];
+                KL.hp.DataSource =TX[4];
                 KL.PS_volumn.XAxis1.WorldMin = 0;
                 KL.PS_volumn.XAxis1.WorldMax = KL.KLine_num + 1;
                 KL.PS_volumn.YAxis1.WorldMin = 1;
@@ -238,10 +242,11 @@ namespace 覆盤
 
             KL.InitCandle();
             KL.InitCloseLinePlot();
-            KL.InitMITLinePlot();
+            KL.InitQtyPlot();
             KL.InitNowPrice();
             KL.InitMACDChart(ref KL.mACD);
             KL.InitDayHalf();
+            KL.InitLineCross();
 
             KL.CP.BullishColor = Color.FromArgb(255,192,192);
             KL.CP.BearishColor = Color.FromArgb(192, 255, 192);
@@ -372,7 +377,7 @@ namespace 覆盤
             this.mACD = new Technical_analysis.MACD(nKLine_num);
             this.KP = new LineP(this);
             this.KP.InitKLinePS();
-     
+
         }
 
         public void InitPS(NPlot.Windows.PlotSurface2D PlotSurface2D) {
@@ -397,12 +402,21 @@ namespace 覆盤
 
             Grid mygrid = new Grid()
             {
-                HorizontalGridType = Grid.GridType.None,
+                HorizontalGridType = Grid.GridType.Coarse,
                 VerticalGridType = Grid.GridType.Coarse
             };
             PlotSurface2D.Add(mygrid);
         }
 
+        public void InitLineCross() {
+            this.lineCrossX = null;
+            this.lineCrossY = null;
+            this.MACD_lineCrossX = null;
+            this.Volume_lineCrossX = null;
+            if (this.tooltip != null)
+                this.tooltip.RemoveAll();
+            this.tooltip = null;
+        }
         public void InitDayHalf() {
             this.LPPDayHalf = new NPlot.TextItem(new PointD(KLine_num * 0.95 ,200), "");
             this.PS.Add(this.LPPDayHalf);
@@ -429,12 +443,12 @@ namespace 覆盤
             this.PS_MACD.DateTimeToolTip = false;
             //mACD = new Technical_analysis.MACD();
             this.PS_MACD.Clear();
-            this.PS_MACD.Add(new NPlot.Grid()
-            {
-                HorizontalGridType = NPlot.Grid.GridType.None,
-                VerticalGridType = NPlot.Grid.GridType.Coarse
-            });
-
+            //this.PS_MACD.Add(new NPlot.Grid()
+            //{
+            //    HorizontalGridType = NPlot.Grid.GridType.Coarse,
+            //    VerticalGridType = NPlot.Grid.GridType.Coarse
+            //});
+            
             this.PS_MACD.Add(this.mACD.LP_DIF);
             this.PS_MACD.Add(this.mACD.LP_DEM);
             this.PS_MACD.Add(this.mACD.Bar_OSC);
@@ -442,6 +456,7 @@ namespace 覆盤
             this.PS_MACD.YAxis1.TickTextNextToAxis = false;
             this.PS_MACD.XAxis1.WorldMin = 50;
             this.PS_MACD.XAxis1.WorldMax = 750;
+            
         }
 
         public void InitNowPrice() {
@@ -487,7 +502,7 @@ namespace 覆盤
             this.PS.XAxis1.WorldMax = 750;
         }
 
-        public void InitMITLinePlot() {
+        public void InitQtyPlot() {
             int[] times = { 100, 200, 300, 400, 500, 600, 700 };
             hp.AbscissaData = times;
             hp.DataSource = times;
@@ -573,12 +588,28 @@ namespace 覆盤
                 lpp.TextData = new string[] { "\n" + Price.ToString() };
             }
 
+            if (graph == MatGraph.buy)
+            {
+                lpp.Marker.Color = System.Drawing.Color.Red;
+                lpp.Marker.Type = Marker.MarkerType.TriangleUp;
+                lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Below;
+                lpp.TextData = new string[] { "\n" + Price.ToString() };
+            }
+
+            if (graph == MatGraph.sell)
+            {
+                lpp.Marker.Color = System.Drawing.Color.Green;
+                lpp.Marker.Type = Marker.MarkerType.TriangleDown;
+                lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Below;
+                lpp.TextData = new string[] { "\n" + Price.ToString() };
+            }
+
             lpp.Marker.Filled = true;
             PS.Add(lpp);
         }
 
         public enum MatGraph { 
-            redCircle, redSquare, greenCircle, greenSquare
+            redCircle, redSquare, greenCircle, greenSquare, buy, sell
         }
 
         public void DrawAllLpp(Simulation simu) {//label point plot
@@ -590,25 +621,29 @@ namespace 覆盤
                     //Buy in
                     if (simu.MatList[i].BS == "B")
                     {
-                        DrawLpp(MatGraph.redCircle, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                        //DrawLpp(MatGraph.redCircle, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                        DrawLpp(MatGraph.buy, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
                     }
 
                     //Sell in
                     else 
                     {
-                        DrawLpp(MatGraph.greenCircle, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                        //DrawLpp(MatGraph.greenCircle, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                        DrawLpp(MatGraph.sell, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
                     }
                 }
 
                 //Buy out
                 else if (simu.Qty(simu.MatList.GetRange(0, i)) == 1 && simu.MatList[i].BS == "S") {
-                    DrawLpp(MatGraph.redSquare, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                    //DrawLpp(MatGraph.redSquare, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                    DrawLpp(MatGraph.sell, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
                 }
 
                 //Sell out
                 else if (simu.Qty(simu.MatList.GetRange(0, i)) == -1 && simu.MatList[i].BS == "B")
                 {
-                    DrawLpp(MatGraph.greenSquare, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                    //DrawLpp(MatGraph.greenSquare, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                    DrawLpp(MatGraph.buy, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
                 }
 
             }
@@ -772,6 +807,8 @@ namespace 覆盤
                 this.Volume_lineCrossX.AbscissaValue = x;
                 this.MACD_lineCrossX.AbscissaValue = x;
             }
+            
+            
             this.PS.Refresh();
             this.PS_volumn.Refresh();
             this.PS_MACD.Refresh();

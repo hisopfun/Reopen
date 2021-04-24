@@ -64,6 +64,7 @@ namespace 覆盤
         }
 
         public void writeTo(string str) {
+            return;
             using (FileStream fs = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "/Strategy_Log.TXT", FileMode.Append)) {
                 using (StreamWriter sw = new StreamWriter(fs)) {
                     sw.WriteLine(str);

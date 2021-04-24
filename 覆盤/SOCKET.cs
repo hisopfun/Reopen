@@ -31,9 +31,15 @@ namespace 覆盤
 
         public int serverPort = 0;
         public Queue<string> ticks = new Queue<string>();
+        public List<string> DayK = new List<string>();
         public object Lock = new object();
         public bool realTime = false;
         public TickEncoder TE;
+        public Step step = Step.FirstMsg;
+
+        public enum Step { 
+            FirstMsg, TickMsg, DayKMsg
+        }
         private string GetPublicIpAddress()
         {
             var request = (HttpWebRequest)WebRequest.Create("http://ifconfig.me");
@@ -201,6 +207,8 @@ namespace 覆盤
             }
         }
 
+
+        
         private void Receive(Socket client)
         {
             try
@@ -218,38 +226,72 @@ namespace 覆盤
                 MethodBase m = MethodBase.GetCurrentMethod();
             }
         }
-        private void ReciveReOpenData(string msg){
-
-            if (msg.Contains("DONE"))
+        
+        private void Dayk(ref string msg) {
+            if (this.step != Step.DayKMsg) return;
+            datas += msg;
+            //DayK 
+            if (datas.Contains("DONE DayK"))
             {
+                //Catch DayK data
+                datas = datas.Substring(0, datas.IndexOf("DONE DayK") - 1);
+
+                //Day Enqueue
+                foreach (string day in datas.Split('\n')) {
+                    if (day != "")
+                        lock(Lock)
+                            DayK.Add(day);
+                }
+
+                //Close Socket
                 Sclient.Shutdown(SocketShutdown.Both);
                 Sclient.Close();
                 t1.Abort();
             }
+
+            
+            
+        }
+        private void ReciveReOpenData(ref string msg){
+
+            if (this.step != Step.TickMsg) return;
             datas += msg;
-            if (datas.Contains('\n'))
+            if (msg.Contains("DONE Tick"))
             {
-                string[] words = datas.Split('\n');
-                int i;
-                for (i = 0; i < words.Length; i++)
-                {
-                    if (i < words.Length - 1)
-                        lock (Lock)
-                            ticks.Enqueue(words[i]);
-                    else
-                        datas = words[i];
+                //Catch tick data
+                datas = datas.Substring(0, datas.IndexOf("DONE Tick") - 1);
+                foreach(string tick in datas.Split('\n')) { 
+                    lock (Lock)
+                        ticks.Enqueue(tick);
                 }
+
+                //For DayK
+                msg = msg.Substring(msg.IndexOf("DONE Tick") + "DONE Tick".Length, msg.Length - msg.IndexOf("DONE Tick") - "DONE Tick".Length);
+                datas = "";
+                this.step = Step.DayKMsg;
+                return;
             }
+            
+            //if (datas.Contains('\n'))
+            //{
+            //    string[] words = datas.Split('\n');
+            //    for (int i = 0; i < words.Length; i++)
+            //    {
+            //        if (i < words.Length - 1)
+            //            lock (Lock)
+            //                ticks.Enqueue(words[i]);
+            //        else
+            //            datas = words[i];
+            //    }
+            //}
         }
 
-        private void FirstMsg(string msg) {
+        private void FirstMsg(ref string msg) {
             if (firstMsg == "")
             {
-                //if (msg.Contains("\n"))
-                //{
                 firstMsg = msg.Split('\n')[0];
-                //    datas += msg.Split('\n')[1];
-                //}
+                msg = "";
+                this.step = Step.TickMsg;
             }
         }
 
@@ -284,13 +326,13 @@ namespace 覆盤
                         }
 
                         //First Msg
-                        FirstMsg(msg);
+                        FirstMsg(ref msg);
 
                         //history ticks data
-                        ReciveReOpenData(msg);
+                        ReciveReOpenData(ref msg);
 
                         //history Day K data
-
+                        Dayk(ref msg);
                     }
                     else {
                         //ticks.Enqueue(msg);

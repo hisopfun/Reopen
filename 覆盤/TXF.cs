@@ -23,6 +23,18 @@ public class TXF
             }
         }
         public List<K> klist = new List<K>();
+
+        public bool Run(string nTime, float open, float high, float low, float close, uint qty) {
+            klist.Add(new K(nTime, close));
+            klist[klist.Count - 1].ktime = nTime;
+            klist[klist.Count - 1].time = nTime;
+            klist[klist.Count - 1].open = open;
+            klist[klist.Count - 1].high = high;
+            klist[klist.Count - 1].low = low;
+            klist[klist.Count - 1].close = close;
+            klist[klist.Count - 1].qty = qty;
+            return false;
+        }
         public bool Run(string nTime, string nPri, string nQty) {
             if (nTime == "") return false;
             if (nQty == "") return false;

@@ -186,7 +186,7 @@ namespace 覆盤
             DeleteMIT();
             DeleteLimit();
 
-
+            DGV_StopLimit.ClearSelection();
             if (e.Button == MouseButtons.Left)
             {
                 if (e.RowIndex == 0) return;
@@ -288,6 +288,7 @@ namespace 覆盤
             DeleteMIT();
             DeleteLimit();
 
+            DGV_StopLimit.ClearSelection();
             if (e.Button == MouseButtons.Left)
             {
                 if (e.RowIndex == 0) return;
@@ -604,6 +605,7 @@ namespace 覆盤
 
         
         public void DGV_StopLimit_DataError(object sender, DataGridViewDataErrorEventArgs anError) {
+            return;
             using (FileStream fs = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "//DataErr.TXT", FileMode.Append)) {
                 using (StreamWriter sw = new StreamWriter(fs)) {
                     sw.WriteLine(anError.ToString());

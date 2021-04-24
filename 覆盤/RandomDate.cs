@@ -22,8 +22,8 @@ namespace 覆盤
 
         public static bool CheckDate(DateTime date)
         {
-
-            if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\TXF\\" + date.ToString("MM-dd-yyyy") + "TXF.TXT"))
+            return false;
+            if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\TXF\\{date.ToString("MM-dd-yyyy")}TXF.TXT"))
             {
                 using (StreamReader sr = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\TXF\\" + date.ToString("MM-dd-yyyy") + "TXF.TXT"))
                 {
@@ -87,6 +87,8 @@ namespace 覆盤
 
         public TIMES(int nSpeed) {
             speed = nSpeed;
+            if (nSpeed <= 1)
+                speed = 1;
         }
 
         public int tDiff(string dt) {
