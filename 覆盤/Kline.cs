@@ -60,16 +60,14 @@ namespace 覆盤
             if (KL.autoRefresh == false)                return;
             if (KL.KLine_num < mk.Count) return;
 
-      
-
             int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
 
             List<int[]> TX = new List<int[]>();
             for (i = 0; i < 6; i++)
-                TX.Add(new int[KL.KLine_num]);
+                TX.Add(new int[KL.KLine_num / KL.MK]);
 
             //Dayhalf List
-            int[] Dayhalf = new int[KL.KLine_num];
+            int[] Dayhalf = new int[KL.KLine_num / KL.MK];
 
             for (i = 0; i < KL.KLine_num; i++)
             {
@@ -77,19 +75,23 @@ namespace 覆盤
                 {
                     int istart = mk.Count - KL.KLine_num;
                     istart = Math.Max(0, istart);
-                    Highest_Qty = Math.Max(Highest_Qty, Convert.ToInt32(mk[i + istart].qty));
+
+                    if (TX[0][i / KL.MK] == 0)
+                        TX[0][i / KL.MK] = Convert.ToInt32(mk[i + istart].open);
+                    TX[1][i / KL.MK] = Math.Max( Convert.ToInt32(mk[i + istart].high), TX[1][i / KL.MK]);
+                    if (TX[2][i / KL.MK] == 0) TX[2][i / KL.MK] = Convert.ToInt32(mk[i + istart].low);
+                    TX[2][i / KL.MK] = Math.Min( Convert.ToInt32(mk[i + istart].low), TX[2][i / KL.MK]);
+                    TX[3][i / KL.MK] = Convert.ToInt32(mk[i + istart].close);
+                    TX[4][i / KL.MK] += Convert.ToInt32(mk[i + istart].qty);
+
+
+                    Highest_Qty = Math.Max(Highest_Qty, TX[4][i / KL.MK]);
                     Highest = Math.Max(Highest, Convert.ToInt32(mk[i + istart].high));
                     Lowest = Math.Min(Lowest, Convert.ToInt32(mk[i + istart].low));
-                    TX[0][i] = Convert.ToInt32(mk[i + istart].open);
-                    TX[1][i] = Convert.ToInt32(mk[i + istart].high);
-                    TX[2][i] = Convert.ToInt32(mk[i + istart].low);
-                    TX[3][i] = Convert.ToInt32(mk[i + istart].close);
-                    TX[4][i] = Convert.ToInt32(mk[i + istart].qty);
-
                     //half
-                    Dayhalf[i] = (Highest + Lowest) / 2;
+                    //Dayhalf[i] = (Highest + Lowest) / 2;
                 }
-                TX[5][i] = i + 1;
+                TX[5][i / KL.MK] = i / KL.MK + 1;
             }
 
             //Day Half
@@ -107,18 +109,8 @@ namespace 覆盤
                 KL.PS.Refresh();
             });
 
-            KL.PS_volumn.InvokeIfRequired(() =>
-            {
-                KL.hp.AbscissaData = TX[5];
-                KL.hp.DataSource = TX[4];
-                KL.PS_volumn.XAxis1.WorldMin = 0;
-                KL.PS_volumn.XAxis1.WorldMax = KL.KLine_num + 1;
-                KL.PS_volumn.YAxis1.WorldMin = 1;
-                KL.PS_volumn.YAxis1.WorldMax = Convert.ToInt32(Highest_Qty * 1.1);
-                //PS_volumn.Location = new System.Drawing.Point(PS.Location.X, PS_volumn.Location.Y);
-                KL.PS_volumn.YAxis1.TickTextNextToAxis = false;
-                KL.PS_volumn.Refresh();
-            });
+            //adjust Volume chart
+            KL.AdjustQty(TX[4], TX[5], Highest_Qty);
 
             //MACD
             KL.Adjust_MACD(KL.mACD);
@@ -158,16 +150,14 @@ namespace 覆盤
             if (KL.autoRefresh == false)                return;
             if (KL.KLine_num < mk.Count) return;
 
-
-
             int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
 
             List<int[]> TX = new List<int[]>();
             for (i = 0; i < 6; i++)
-                TX.Add(new int[KL.KLine_num]);
+                TX.Add(new int[KL.KLine_num / KL.MK]);
 
             //Dayhalf List
-            int[] Dayhalf = new int[KL.KLine_num];
+            int[] Dayhalf = new int[KL.KLine_num / KL.MK];
 
             for (i = 0; i < KL.KLine_num; i++)
             {
@@ -175,20 +165,22 @@ namespace 覆盤
                 {
                     int istart = mk.Count - KL.KLine_num;
                     istart = Math.Max(0, istart);
-                    Highest_Qty = Math.Max(Highest_Qty, Convert.ToInt32(mk[i + istart].qty));
-                    Highest = Math.Max(Highest, Convert.ToInt32(mk[i + istart].high));
-                    Lowest = Math.Min(Lowest, Convert.ToInt32(mk[i + istart].low));
+
                     //TX[0][i] = Convert.ToInt32(mk[i + istart].open);
                     //TX[1][i] = Convert.ToInt32(mk[i + istart].high);
                     //TX[2][i] = Convert.ToInt32(mk[i + istart].low);
-                    TX[3][i] = Convert.ToInt32(mk[i + istart].close);
+                    TX[3][i / KL.MK] = Convert.ToInt32(mk[i + istart].close);
                     //close[i] = Convert.ToInt32(mk[i + istart].close);
-                    TX[4][i] = Convert.ToInt32(mk[i + istart].qty);
+                    TX[4][i / KL.MK] += Convert.ToInt32(mk[i + istart].qty);
 
                     //half
-                    Dayhalf[i] = (Highest + Lowest) / 2;
+                    //Dayhalf[i] = (Highest + Lowest) / 2;
+
+                    Highest_Qty = Math.Max(Highest_Qty, TX[4][i / KL.MK]);
+                    Highest = Math.Max(Highest, Convert.ToInt32(mk[i + istart].high));
+                    Lowest = Math.Min(Lowest, Convert.ToInt32(mk[i + istart].low));
                 }
-                TX[5][i] = i + 1;
+                TX[5][i / KL.MK] = i / KL.MK + 1;
             }
 
 
@@ -198,27 +190,14 @@ namespace 覆盤
 
             KL.PS.InvokeIfRequired(() =>
             {
-      
-
-                KL.linePlot.DataSource = TX[3].Take(mk.Count).ToArray();//.GetRange(0, mk.Count);//closes;   //mk.GroupBy(e => e.close).SelectMany(g => g.Select(p => Convert.ToInt32(p.close))).ToArray();
+                KL.linePlot.DataSource = TX[3].Take((mk.Count - 1) / KL.MK + 1).ToArray();//.GetRange(0, mk.Count);//closes;   //mk.GroupBy(e => e.close).SelectMany(g => g.Select(p => Convert.ToInt32(p.close))).ToArray();
                 KL.linePlot.AbscissaData = TX[5];// times;
                 KL.AdjustChart(mk, Highest + 10, Lowest - 10);
                 KL.PS.Refresh();
             });
 
-            KL.PS_volumn.InvokeIfRequired(() =>
-            {
-
-                KL.hp.AbscissaData = TX[5];
-                KL.hp.DataSource =TX[4];
-                KL.PS_volumn.XAxis1.WorldMin = 0;
-                KL.PS_volumn.XAxis1.WorldMax = KL.KLine_num + 1;
-                KL.PS_volumn.YAxis1.WorldMin = 1;
-                KL.PS_volumn.YAxis1.WorldMax = Convert.ToInt32(Highest_Qty * 1.1);
-                //PS_volumn.Location = new System.Drawing.Point(PS.Location.X, PS_volumn.Location.Y);
-                KL.PS_volumn.YAxis1.TickTextNextToAxis = false;
-                KL.PS_volumn.Refresh();
-            });
+            //adjust Volume chart
+            KL.AdjustQty(TX[4], TX[5], Highest_Qty);
 
             //MACD
             KL.Adjust_MACD(KL.mACD);
@@ -262,16 +241,14 @@ namespace 覆盤
             if (KL.autoRefresh == false)                return;
             if (KL.KLine_num < mk.Count) return;
 
-
-
             List<int[]> TX = new List<int[]>();
 
             int i, Highest = 0, Lowest = int.MaxValue, Highest_Qty = 0;
             for (i = 0; i < 6; i++)
-                TX.Add(new int[KL.KLine_num]);
+                TX.Add(new int[KL.KLine_num / KL.MK]);
 
             //Dayhalf List
-            int[] Dayhalf = new int[KL.KLine_num];
+            int[] Dayhalf = new int[KL.KLine_num / KL.MK];
 
             for (i = 0; i < KL.KLine_num; i++)
             {
@@ -279,51 +256,34 @@ namespace 覆盤
                 {
                     int istart = mk.Count - KL.KLine_num;
                     istart = Math.Max(0, istart);
-                    Highest_Qty = Math.Max(Highest_Qty, Convert.ToInt32(mk[i + istart].qty));
-                    Highest = Math.Max(Highest, Convert.ToInt32(mk[i + istart].high));
-                    Lowest = Math.Min(Lowest, Convert.ToInt32(mk[i + istart].low));
-                    TX[0][i] = Convert.ToInt32(mk[i + istart].open);
-                    TX[1][i] = Convert.ToInt32(mk[i + istart].high);
-                    TX[2][i] = Convert.ToInt32(mk[i + istart].low);
-                    TX[3][i] = Convert.ToInt32(mk[i + istart].close);
-                    TX[4][i] = Convert.ToInt32(mk[i + istart].qty);
+
+                    if (TX[0][i / KL.MK] == 0)
+                        TX[0][i / KL.MK] = Convert.ToInt32(mk[i + istart].open);
+                    TX[1][i / KL.MK] = Math.Max(Convert.ToInt32(mk[i + istart].high), TX[1][i / KL.MK]);
+                    if (TX[2][i / KL.MK] == 0) TX[2][i / KL.MK] = Convert.ToInt32(mk[i + istart].low);
+                    TX[2][i / KL.MK] = Math.Min(Convert.ToInt32(mk[i + istart].low), TX[2][i / KL.MK]);
+                    TX[3][i / KL.MK] = Convert.ToInt32(mk[i + istart].close);
+                    TX[4][i / KL.MK] += Convert.ToInt32(mk[i + istart].qty);
 
                     //half
-                    Dayhalf[i] = (Highest + Lowest) / 2;
+                    //Dayhalf[i / KL.MK] = (Highest + Lowest) / 2;
+
+
+                    Highest_Qty = Math.Max(Highest_Qty, TX[4][i / KL.MK]);
+                    Highest = Math.Max(Highest, Convert.ToInt32(mk[i + istart].high));
+                    Lowest = Math.Min(Lowest, Convert.ToInt32(mk[i + istart].low));
+
                 }
-                TX[5][i] = i + 1;
+                TX[5][i / KL.MK] = i / KL.MK + 1;
                 
             }
 
 
             //Day Half
-            KL.RunDayHalf(Dayhalf.Take(mk.Count).ToArray(), TX[5].Take(mk.Count).ToArray());
+            //KL.RunDayHalf(Dayhalf.Take(mk.Count).ToArray(), TX[5].Take(mk.Count).ToArray());
 
-            KL.PS.InvokeIfRequired(() =>
-            {
-                KL.CP.OpenData = TX[0];// opens;
-                KL.CP.HighData = TX[1];//highs;
-                KL.CP.LowData = TX[2];//lows;
-                KL.CP.CloseData = TX[3];//closes;
-                KL.CP.AbscissaData = TX[5];// times;
-
-                KL.linePlot.DataSource = TX[3].Take(mk.Count).ToArray();
-                KL.linePlot.AbscissaData = TX[5];
-                KL.AdjustChart(mk, Highest + 10, Lowest - 10);
-                KL.PS.Refresh();
-            });
-
-            KL.PS_volumn.InvokeIfRequired(() =>
-            {
-                KL.hp.AbscissaData = TX[5];
-                KL.hp.DataSource = TX[4];
-                KL.PS_volumn.XAxis1.WorldMin = 0;
-                KL.PS_volumn.XAxis1.WorldMax = KL.KLine_num + 1;
-                KL.PS_volumn.YAxis1.WorldMin = 1;
-                KL.PS_volumn.YAxis1.WorldMax = Convert.ToInt32(Highest_Qty * 1.1);
-                KL.PS_volumn.YAxis1.TickTextNextToAxis = false;
-                KL.PS_volumn.Refresh();
-            });
+            //adjust Volume chart
+            KL.AdjustQty(TX[4], TX[5], Highest_Qty);
 
             //MACD
             KL.Adjust_MACD(KL.mACD);
@@ -553,10 +513,8 @@ namespace 覆盤
             NPlot.LabelPointPlot lpp = new LabelPointPlot()
             {
                 DataSource = new int[] { Price },
-                AbscissaData = new int[] { iTime },
-
+                AbscissaData = new int[] { (iTime - 1) / MK + 1},
             };
-
 
             lpp.Marker.Size = 10;
             if (graph == MatGraph.redCircle)
@@ -685,16 +643,31 @@ namespace 覆盤
         public void AdjustChart(List<TXF.K_data.K> mk, float Highest, float Lowest) {
             if (mk.Count > 0)
             {
-                lpp.AbscissaData = new int[] { mk.Count };
+                lpp.AbscissaData = new int[] { (mk.Count - 1) / MK + 1 };
                 lpp.DataSource = new float[] { mk[mk.Count - 1].close };
                 lpp.TextData = new string[] { "⟵" };//⬅⮜←⟵
 
                 PS.XAxis1.WorldMin = 0;
-                PS.XAxis1.WorldMax = KLine_num + 1;
+                PS.XAxis1.WorldMax = KLine_num / MK + 1;
                 PS.YAxis1.WorldMin = Lowest;
                 PS.YAxis1.WorldMax = Highest;
                 PS.YAxis1.TickTextNextToAxis = false;
             }
+        }
+
+        public void AdjustQty( int[] data, int[] abscissa, int Highest_Qty) {
+            PS_volumn.InvokeIfRequired(() =>
+            {
+                hp.AbscissaData = abscissa;
+                hp.DataSource = data;
+                PS_volumn.XAxis1.WorldMin = 0;
+                PS_volumn.XAxis1.WorldMax = KLine_num / MK + 1;
+                PS_volumn.YAxis1.WorldMin = 1;
+                PS_volumn.YAxis1.WorldMax = Convert.ToInt32(Highest_Qty * 1.1);
+                //PS_volumn.Location = new System.Drawing.Point(PS.Location.X, PS_volumn.Location.Y);
+                PS_volumn.YAxis1.TickTextNextToAxis = false;
+                PS_volumn.Refresh();
+            });
         }
 
         public void showTooltip(MouseEventArgs e)

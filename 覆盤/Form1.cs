@@ -31,23 +31,27 @@ namespace 覆盤
         TXF.K_data DKdata;
         Kline KL_1DK;
         string date;
-        
+
         TIMES times;
         SOCKET SK;
         //TickEncoder tickGUI;
 
         strategy plan10M, planMACD, planOSC, planNightReverse;
 
-        public void write(string path, string content) {
+        public void write(string path, string content)
+        {
             return;
-            using (FileStream fs = new FileStream(path, FileMode.Append)) {
-                using (StreamWriter sw = new StreamWriter(fs)) {
+            using (FileStream fs = new FileStream(path, FileMode.Append))
+            {
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
                     sw.Write(content);
                 }
             }
         }
 
-        private void DrawMat(strategy plan,  string[] word, string BS) {
+        private void DrawMat(strategy plan, string[] word, string BS)
+        {
             if (BS != "X")
             {
                 if (plan.dealPrice == 0)
@@ -116,8 +120,11 @@ namespace 覆盤
             DKdata.Run("000000", word[4], word[5]);
 
             //MACD
-            chartControl1.KL_1MK.mACD.macd(MKdata.klist);
-            KL_1DK.mACD.macd(DKdata.klist);
+            lock (Lock)
+            {
+                chartControl1.KL_1MK.mACD.macd(MKdata.klist);
+                KL_1DK.mACD.macd(DKdata.klist);
+            }
 
 
             ////plan10M
@@ -142,7 +149,8 @@ namespace 覆盤
 
         }
 
-        public void MITandLIT(string[] word) { 
+        public void MITandLIT(string[] word)
+        {
             //Order
             List<string> Limits = stopLimitControl1.simu.MITToLimit(word[1], word[2], word[3], word[4]);
             List<string> Deals = stopLimitControl1.simu.DealInfo(word[1], word[2], word[3], word[4]);
@@ -180,7 +188,8 @@ namespace 覆盤
         }
 
 
-        public void start(string date) {
+        public void start(string date)
+        {
             //comboBox1.Enabled = false;
             //button1.Enabled = false;
             //dateTimePicker1.Enabled = false;
@@ -202,7 +211,8 @@ namespace 覆盤
             {
                 MKdata = new TXF.K_data();
                 DKdata = new TXF.K_data();
-                comboBox1.InvokeIfRequired(() => { 
+                comboBox1.InvokeIfRequired(() =>
+                {
                     times = new TIMES(int.Parse(comboBox1.Text));
                 });
                 stopLimitControl1.simu = new Simulation(chartControl1.plotSurface2D1);
@@ -242,7 +252,7 @@ namespace 覆盤
                     SK = new SOCKET(date, "122.99.4.117", 12002, checkBox1.Checked);
             });
 
-            SK.TE.TickEncoded += new TickEncoder.TickEncoderEventHandler( OnTickEncoded);
+            SK.TE.TickEncoded += new TickEncoder.TickEncoderEventHandler(OnTickEncoded);
 
 
             if (T_Quote != null)
@@ -290,7 +300,8 @@ namespace 覆盤
         }
 
 
-        public void WaitReopenData() {
+        public void WaitReopenData()
+        {
             string contents = "";
 
             //socket
@@ -323,19 +334,21 @@ namespace 覆盤
                 {
                     linkLabel1.Text = "NO DATA";
                 });
-                
+
 
                 return;
             }
         }
 
-        public void quote() {
+        public void quote()
+        {
 
             //wait data
             WaitReopenData();
-            
+
             //DayK 
-            while (SK.t1.IsAlive || SK.DayK.Count > 0) {
+            while (SK.t1.IsAlive || SK.DayK.Count > 0)
+            {
                 string ddate = date.Substring(6, 4) + date.Substring(0, 2) + date.Substring(3, 2);
                 var sel = SK.DayK.Where(line => int.Parse(line.Split(',')[0].Replace("/", "")) < int.Parse(ddate.Replace("/", ""))).ToList();
                 if (sel.Count > KL_1DK.KLine_num)
@@ -349,8 +362,20 @@ namespace 覆盤
                 break;
             }
 
+            //5 AVG
+            if (DKdata.klist.Count > 4)
+            {
+                label12.InvokeIfRequired(() =>
+                {
+                    label12.Text = AVG5().ToString();
+                });
+            }
+
             //ticks
-            while (SK.t1.IsAlive || SK.ticks.Count > 0) {
+            while (SK.t1.IsAlive || SK.ticks.Count > 0)
+            {
+
+                
                 if (SK.ticks.Count > 0)
                 {
                     string words = "";
@@ -360,7 +385,7 @@ namespace 覆盤
                     if (words == "") break;
                     string[] word = words.Split(',');
 
-                    if (word.Length == 1)   continue;
+                    if (word.Length == 1) continue;
                     if (word[1].Length < 6) return;
 
 
@@ -374,7 +399,7 @@ namespace 覆盤
                     //    int.Parse(word[1].Substring(0, 4)) <= 1345)
                     //    continue;
 
-                    
+
                     //Avoid PreOpen
                     if (int.Parse(word[1].Substring(0, 4)) >= 0830 &&
                         int.Parse(word[1].Substring(0, 4)) < 0845 ||
@@ -382,7 +407,7 @@ namespace 覆盤
                         int.Parse(word[1].Substring(0, 4)) < 1500)
                         continue;
 
-         
+
                     //Run All Ticks
                     SK.TE.Encode(words);
 
@@ -391,20 +416,20 @@ namespace 覆盤
                     if (ss > 0)
                         Thread.Sleep(ss);
 
-            
                 }
             }
 
             //Screenshot.CaptureMyScreen();
 
-            comboBox1.InvokeIfRequired(() => {
+            comboBox1.InvokeIfRequired(() =>
+            {
                 comboBox1.Enabled = true;
             });
 
             button1.InvokeIfRequired(() =>
             {
                 button1.Enabled = true;
-                button1.BackColor = Color.FromArgb(128,255,  128);
+                button1.BackColor = Color.FromArgb(128, 255, 128);
             });
 
             dataGridView1.InvokeIfRequired(() =>
@@ -416,19 +441,20 @@ namespace 覆盤
 
         //大量K畫線
 
-     
 
-        public void gui() {
+
+        public void gui()
+        {
             bool close = false;
             while (true)
             {
                 Thread.Sleep(50);
-                
+
                 lock (Lock)
                 {
 
 
-                    if (MKdata.klist.Count > 0 && DKdata.klist.Count >0)
+                    if (MKdata.klist.Count > 0 && DKdata.klist.Count > 0)
                     {
 
                         //DGV
@@ -486,9 +512,11 @@ namespace 覆盤
                         //    dataGridView1.DataSource = stopLimitControl1.simu.MatList;
                         //});
 
-
-                        chartControl1.KL_1MK.KP.refreshK(MKdata.klist);
-                        KL_1DK.KP.refreshK(DKdata.klist);
+                        lock (Lock)
+                        {
+                            chartControl1.KL_1MK.KP.refreshK(MKdata.klist);
+                            KL_1DK.KP.refreshK(DKdata.klist);
+                        }
                     }
                 }
 
@@ -498,19 +526,20 @@ namespace 覆盤
                     time = label4.Text.Replace(":", string.Empty);
                 });
 
-                if (time == "") 
+                if (time == "")
                     return;
-                else if (time.Substring(0, 4) == "1100") {
+                else if (time.Substring(0, 4) == "1100")
+                {
                     linkLabel1.InvokeIfRequired(() =>
                     {
                         //textBox1.Text = "After 11:00, it can rise without large volume.";
-                        
+
                     });
 
                 }
 
                 if (close) T_GUI.Abort();
-                if (T_Quote!= null && !T_Quote.IsAlive) close = true;
+                if (T_Quote != null && !T_Quote.IsAlive) close = true;
 
             }
         }
@@ -609,13 +638,14 @@ namespace 覆盤
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             string link = "";
-            if (linkLabel1.Text.Contains("https")) {
+            if (linkLabel1.Text.Contains("https"))
+            {
                 int iStart = linkLabel1.Text.IndexOf("https");
                 int iEnd = linkLabel1.Text.IndexOf(" ", iStart);
 
                 link = linkLabel1.Text.Substring(iStart, iEnd - iStart + 1);
             }
-            if (link !="")
+            if (link != "")
                 System.Diagnostics.Process.Start(link);
         }
 
@@ -629,7 +659,7 @@ namespace 覆盤
 
         private void button3_Click(object sender, EventArgs e)
         {
-       
+
             //T_Quote.Start();
         }
 
@@ -685,36 +715,14 @@ namespace 覆盤
 
 
 
-        private void load_dayK() {
-            ////return;
-            //DKdata.klist = new List<TXF.K_data.K>();
-            ////using (StreamReader sr = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\日K.TXT")) {
-            ////    string words = sr.ReadLine();
-            ////    while ((words = sr.ReadLine()) != null) {
-            //        string[] word = words.Split(',');
-            //        if (Convert.ToDateTime(word[0]).Date >= dateTimePicker1.Value.Date)
-            //        {
-            //            if (DKdata.klist.Count < 1) return;
-            //            float avgDay5 = 0;
-            //            int i;
-            //            for (i = 1; i < 6; i++)
-            //            {
-            //                avgDay5 += DKdata.klist[DKdata.klist.Count - i].high - DKdata.klist[DKdata.klist.Count - i].low;
-            //            }
-            //            avgDay5 /= 5;
-            //            label12.Text = avgDay5.ToString();
-            //            break;
-            //        }
-            //        DKdata.klist.Add(new TXF.K_data.K("", 0));
-            //        DKdata.klist[DKdata.klist.Count - 1].ktime = word[0];
-            //        DKdata.klist[DKdata.klist.Count - 1].open = float.Parse(word[1]);
-            //        DKdata.klist[DKdata.klist.Count - 1].high = float.Parse(word[2]);
-            //        DKdata.klist[DKdata.klist.Count - 1].low = float.Parse(word[3]);
-            //        DKdata.klist[DKdata.klist.Count - 1].close = float.Parse(word[4]);
-            //        DKdata.klist[DKdata.klist.Count - 1].qty = uint.Parse(word[12]);
-            ////    }
-            ////}
-            //KL_1DK.KP.refreshK(DKdata.klist);
+        private float AVG5()
+        {
+            float sum5 = 0;
+            int  i = 5;
+            while (i-- > 0) { 
+                sum5 += DKdata.klist[DKdata.klist.Count - 1 - i].high - DKdata.klist[DKdata.klist.Count - i - 1].low;
+            }
+            return sum5 / 5;
         }
     }
     //擴充方法
