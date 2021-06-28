@@ -58,11 +58,11 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.btn_B = new System.Windows.Forms.Button();
             this.btn_S = new System.Windows.Forms.Button();
-            this.chartControl1 = new 覆盤.ChartControl();
-            this.stopLimitControl1 = new 覆盤.StopLimitControl();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chartControl1 = new 覆盤.ChartControl();
+            this.stopLimitControl1 = new 覆盤.StopLimitControl();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -91,7 +91,7 @@
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.Color.Black;
-            this.button1.Location = new System.Drawing.Point(270, 12);
+            this.button1.Location = new System.Drawing.Point(281, 12);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(87, 31);
             this.button1.TabIndex = 8;
@@ -111,6 +111,7 @@
             this.label12.TabIndex = 98;
             this.label12.Text = "5AVG ";
             this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label12.Visible = false;
             // 
             // dateTimePicker1
             // 
@@ -119,7 +120,7 @@
             this.dateTimePicker1.CalendarTitleBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.dateTimePicker1.CalendarTitleForeColor = System.Drawing.Color.White;
             this.dateTimePicker1.Font = new System.Drawing.Font("Consolas", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dateTimePicker1.Location = new System.Drawing.Point(363, 14);
+            this.dateTimePicker1.Location = new System.Drawing.Point(374, 13);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(171, 27);
             this.dateTimePicker1.TabIndex = 80;
@@ -416,7 +417,8 @@
             "9.價格斷裂突破要帶量",
             "10.MACD 雙腳皆在0軸上or下  最簡單判斷盤勢的方式",
             "11.日線收斂尾  當沖容易亂竄  急拉急殺出量",
-            "12.過高沒量  型態(頭肩頂)成功率上升"});
+            "12.過高沒量  型態(頭肩頂)成功率上升",
+            "13.如果不是大漲大跌的盤，一般盤型缺口容易補(2021/5/20實戰)"});
             this.listBox1.Location = new System.Drawing.Point(6, 6);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(255, 424);
@@ -439,7 +441,7 @@
             // checkBox1
             // 
             this.checkBox1.Font = new System.Drawing.Font("Consolas", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox1.Location = new System.Drawing.Point(230, 15);
+            this.checkBox1.Location = new System.Drawing.Point(237, 15);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(44, 27);
             this.checkBox1.TabIndex = 105;
@@ -501,6 +503,42 @@
             this.btn_S.UseVisualStyleBackColor = false;
             this.btn_S.Click += new System.EventHandler(this.btn_S_Click);
             // 
+            // radioButton4
+            // 
+            this.radioButton4.AutoSize = true;
+            this.radioButton4.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.radioButton4.Location = new System.Drawing.Point(827, 17);
+            this.radioButton4.Name = "radioButton4";
+            this.radioButton4.Size = new System.Drawing.Size(58, 22);
+            this.radioButton4.TabIndex = 116;
+            this.radioButton4.Text = "Line";
+            this.radioButton4.UseVisualStyleBackColor = true;
+            this.radioButton4.Visible = false;
+            // 
+            // radioButton6
+            // 
+            this.radioButton6.AutoSize = true;
+            this.radioButton6.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.radioButton6.Location = new System.Drawing.Point(891, 17);
+            this.radioButton6.Name = "radioButton6";
+            this.radioButton6.Size = new System.Drawing.Size(58, 22);
+            this.radioButton6.TabIndex = 118;
+            this.radioButton6.Text = "Line";
+            this.radioButton6.UseVisualStyleBackColor = true;
+            this.radioButton6.Visible = false;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.radioButton1);
+            this.groupBox1.Controls.Add(this.radioButton2);
+            this.groupBox1.Controls.Add(this.radioButton3);
+            this.groupBox1.Location = new System.Drawing.Point(12, 4);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(219, 41);
+            this.groupBox1.TabIndex = 119;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "groupBox1";
+            // 
             // chartControl1
             // 
             this.chartControl1.Location = new System.Drawing.Point(9, 49);
@@ -515,40 +553,6 @@
             this.stopLimitControl1.Name = "stopLimitControl1";
             this.stopLimitControl1.Size = new System.Drawing.Size(330, 792);
             this.stopLimitControl1.TabIndex = 110;
-            // 
-            // radioButton4
-            // 
-            this.radioButton4.AutoSize = true;
-            this.radioButton4.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.radioButton4.Location = new System.Drawing.Point(827, 17);
-            this.radioButton4.Name = "radioButton4";
-            this.radioButton4.Size = new System.Drawing.Size(58, 22);
-            this.radioButton4.TabIndex = 116;
-            this.radioButton4.Text = "Line";
-            this.radioButton4.UseVisualStyleBackColor = true;
-            // 
-            // radioButton6
-            // 
-            this.radioButton6.AutoSize = true;
-            this.radioButton6.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.radioButton6.Location = new System.Drawing.Point(891, 17);
-            this.radioButton6.Name = "radioButton6";
-            this.radioButton6.Size = new System.Drawing.Size(58, 22);
-            this.radioButton6.TabIndex = 118;
-            this.radioButton6.Text = "Line";
-            this.radioButton6.UseVisualStyleBackColor = true;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.radioButton1);
-            this.groupBox1.Controls.Add(this.radioButton2);
-            this.groupBox1.Controls.Add(this.radioButton3);
-            this.groupBox1.Location = new System.Drawing.Point(12, 4);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(241, 41);
-            this.groupBox1.TabIndex = 119;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "groupBox1";
             // 
             // Form1
             // 

@@ -439,7 +439,6 @@ namespace 覆盤
             //pp.DataSource = new int[] { 500 };
             //pp.AbscissaData = new int[] { 200 };
             //PS.Add(pp);
-
         }
 
         public void InitCloseLinePlot() {
@@ -546,21 +545,21 @@ namespace 覆盤
                 lpp.TextData = new string[] { "\n" + Price.ToString() };
             }
 
-            if (graph == MatGraph.buy)
-            {
-                lpp.Marker.Color = System.Drawing.Color.Red;
-                lpp.Marker.Type = Marker.MarkerType.TriangleUp;
-                lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Below;
-                lpp.TextData = new string[] { "\n" + Price.ToString() };
-            }
+            //if (graph == MatGraph.buy)
+            //{
+            //    lpp.Marker.Color = System.Drawing.Color.Red;
+            //    lpp.Marker.Type = Marker.MarkerType.TriangleUp;
+            //    lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Below;
+            //    lpp.TextData = new string[] { "\n" + Price.ToString() };
+            //}
 
-            if (graph == MatGraph.sell)
-            {
-                lpp.Marker.Color = System.Drawing.Color.Green;
-                lpp.Marker.Type = Marker.MarkerType.TriangleDown;
-                lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Below;
-                lpp.TextData = new string[] { "\n" + Price.ToString() };
-            }
+            //if (graph == MatGraph.sell)
+            //{
+            //    lpp.Marker.Color = System.Drawing.Color.Green;
+            //    lpp.Marker.Type = Marker.MarkerType.TriangleDown;
+            //    lpp.LabelTextPosition = LabelPointPlot.LabelPositions.Below;
+            //    lpp.TextData = new string[] { "\n" + Price.ToString() };
+            //}
 
             lpp.Marker.Filled = true;
             PS.Add(lpp);
@@ -579,29 +578,29 @@ namespace 覆盤
                     //Buy in
                     if (simu.MatList[i].BS == "B")
                     {
-                        //DrawLpp(MatGraph.redCircle, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
-                        DrawLpp(MatGraph.buy, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                        DrawLpp(MatGraph.redCircle, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                        //DrawLpp(MatGraph.buy, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
                     }
 
                     //Sell in
                     else 
                     {
-                        //DrawLpp(MatGraph.greenCircle, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
-                        DrawLpp(MatGraph.sell, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                        DrawLpp(MatGraph.greenCircle, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                        //DrawLpp(MatGraph.sell, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
                     }
                 }
 
                 //Buy out
                 else if (simu.Qty(simu.MatList.GetRange(0, i)) == 1 && simu.MatList[i].BS == "S") {
-                    //DrawLpp(MatGraph.redSquare, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
-                    DrawLpp(MatGraph.sell, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                    DrawLpp(MatGraph.redSquare, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                    //DrawLpp(MatGraph.sell, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
                 }
 
                 //Sell out
                 else if (simu.Qty(simu.MatList.GetRange(0, i)) == -1 && simu.MatList[i].BS == "B")
                 {
-                    //DrawLpp(MatGraph.greenSquare, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
-                    DrawLpp(MatGraph.buy, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                    DrawLpp(MatGraph.greenSquare, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
+                    //DrawLpp(MatGraph.buy, int.Parse(simu.MatList[i].Price), simu.MatList[i].iTIME);
                 }
 
             }

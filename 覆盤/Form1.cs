@@ -103,18 +103,19 @@ namespace 覆盤
         {
             string[] word = e.tick.Split(',');
 
+            string time = word[1].Replace(":", "").Replace(".", "");
             //Avoid PreOpen
-            if (int.Parse(word[1].Substring(0, 4)) >= 0830 &&
-                int.Parse(word[1].Substring(0, 4)) < 0845 ||
-                int.Parse(word[1].Substring(0, 4)) >= 1450 &&
-                int.Parse(word[1].Substring(0, 4)) < 1500)
+            if (int.Parse(time.Substring(0, 4)) >= 0830 &&
+                int.Parse(time.Substring(0, 4)) < 0845 ||
+                int.Parse(time.Substring(0, 4)) >= 1450 &&
+                int.Parse(time.Substring(0, 4)) < 1500)
                 return;
 
             //StopLimit
             //stopLimitControl1.StopLimitDGV(word[4], word[2], word[3], word[5]);
 
             //MK
-            MKdata.Run(word[1], word[4], word[5]);
+            MKdata.Run(time, word[4], word[5]);
 
             //DK
             DKdata.Run("000000", word[4], word[5]);
@@ -247,9 +248,9 @@ namespace 覆盤
             checkBox1.InvokeIfRequired(() =>
             {
                 if (checkBox1.Checked)
-                    SK = new SOCKET(date, "127.0.0.1", 12002, checkBox1.Checked);
+                    SK = new SOCKET(date, "futurestutor.hopto.org", 12002, checkBox1.Checked);
                 else
-                    SK = new SOCKET(date, "122.99.4.117", 12002, checkBox1.Checked);
+                    SK = new SOCKET(date, "futurestutor.hopto.org", 12002, checkBox1.Checked);
             });
 
             SK.TE.TickEncoded += new TickEncoder.TickEncoderEventHandler(OnTickEncoded);
